@@ -11,13 +11,13 @@ function UploadPage () {
     const history = useHistory()
 
     const send = () => {
-        history.pushState({pathname: "/results"})
+        history.push({pathname: "/results"})
     }
 
     return(
         <>
             <h2>Upload an image to generate a color scheme</h2>
-            <button onClick={() => send()}>Upload</button>
+            <button className='upload' onClick={() => send()}>Upload</button>
         </>
     )
 }
