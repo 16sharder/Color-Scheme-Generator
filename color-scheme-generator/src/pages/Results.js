@@ -15,25 +15,41 @@ function ResultsPage () {
         history.pushState({pathname: "/results"})
     }
 
-    const colors = []
+    // creation of 6 random colors
+    const colors = [], rgbs = [], text = []
     for (let r=0; r<6; r++) {
-        let value = []
-        for (let i=1; i<7; i++) {
-            const val = Math.floor(Math.random() * 16);
-            value.push(val)
-        }
-        let color = "#"
-        for (let val of value){
-            if (val == 10) val = "a"
-            else if (val == 11) val = "b"
-            else if (val == 12) val = "c"
-            else if (val == 13) val = "d"
-            else if (val == 14) val = "e"
-            else if (val == 15) val = "f"
+        let color = "#", two = true, thr = 0, rgb = [], blk = false
+        for (let i=0; i<6; i++) {
+            // chooses 6 random numbers per color, from 1 to 16
+            let val = Math.floor(Math.random() * 16);
+
+            // for every 2 numbers, multiplies first by 16
+            if (two) {
+                thr = val * 16
+                two = false
+            // adds second to first, creating 1 out of 3 rgb vals
+            } else {
+                rgb.push(thr+val)
+                if (thr+val > 175) blk = true
+                thr = 0
+                two = true
+            }
+
+            // for each random num, determines its hex val
+            if (val == 10) val = "A"
+            else if (val == 11) val = "B"
+            else if (val == 12) val = "C"
+            else if (val == 13) val = "D"
+            else if (val == 14) val = "E"
+            else if (val == 15) val = "F"
             else val = String(val)
             color = color.concat(val)
         }
+        // pushes calculated hex val and rgb vals
+        if (blk) text.push("black")
+        else text.push("white")
         colors.push(color)
+        rgbs.push(rgb)
     }
 
     return(
@@ -43,18 +59,22 @@ function ResultsPage () {
             <table>
                 <tbody>
                     <tr>
-                        <td style={{"backgroundColor": colors[0]}}><div className='stats'>Color 1</div></td>
-                        <td style={{"backgroundColor": colors[1]}}><div className='stats'>Color 2</div></td>
-                        <td style={{"backgroundColor": colors[2]}}><div className='stats'>Color 3</div></td>
+                        {colors.slice(0, 3).map((color, i) => 
+                        <td style={{"backgroundColor": color, "color": text[i]}} key={i}>
+                            <div className='stats'>{color}
+                            <br/>rgb({rgbs[i][0]}, {rgbs[i][1]}, {rgbs[i][2]})</div>
+                        </td>)}
                     </tr>
                     <tr>
-                        <td style={{"backgroundColor": colors[3]}}><div className='stats'>Color 4</div></td>
-                        <td style={{"backgroundColor": colors[4]}}><div className='stats'>Color 5</div></td>
-                        <td style={{"backgroundColor": colors[5]}}><div className='stats'>Color 6</div></td>
+                        {colors.slice(3, 6).map((color, i) => 
+                        <td style={{"backgroundColor": color, "color": text[i+3]}} key={i}>
+                            <div className='stats'>{color}
+                            <br/>rgb({rgbs[i+3][0]}, {rgbs[i+3][1]}, {rgbs[i+3][2]})</div>
+                        </td>)}
                     </tr>
                 </tbody>
             </table>
-            <button onClick={() => send()}>Upload</button>
+            <button onClick={() => send()}>Upload New Image</button>
         </>
     )
 }

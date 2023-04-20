@@ -14,14 +14,14 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color:bisque;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: black;
 }
 
 .App-link {
@@ -41,7 +41,9 @@
 
 
 
-
+h2, h4 {
+  margin: 10px;
+}
 
 .upload {
   font-size: xx-large;
@@ -49,13 +51,15 @@
 
 button {
   font-size: large;
+  margin: 15px;
 }
 
 table {
   border-collapse: collapse;
 }
+
 td {
-  width: 200px;
-  height: 200px;
-  border: 3px solid blue;
+  font-size: large;
+  width: 225px;
+  height: 225px;
 }
