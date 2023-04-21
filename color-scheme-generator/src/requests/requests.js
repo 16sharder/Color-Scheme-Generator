@@ -12,5 +12,15 @@ async function postPath (filepath) {
 }
 
 
+async function getColors () {
+    const response = await fetch("/get-colors")
+    if (response.status !== 200){
+        alert(`Color retrieval failed. Status code = ${response.status}`)
+    } else {
+        const data = await response.text()
+        return data
+    }
+}
 
-export {postPath}
+
+export {postPath, getColors}

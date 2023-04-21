@@ -16,7 +16,7 @@ function UploadPage () {
 
     const send = async () => {
         postPath(filepath)
-        history.push({pathname: "/results"})
+        history.push({pathname: "/loading"})
     }
 
     return(

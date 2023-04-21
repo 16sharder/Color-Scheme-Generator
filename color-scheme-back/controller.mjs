@@ -9,14 +9,25 @@ const PORT = process.env.PORT;
 
 app.use(express.json());
 
-function request(filepath) {
-    fs.writeFile("../textfiles/path.txt", filepath, (err) => {if (err) return console.log(err)})
+function write(path, data) {
+    fs.writeFile(path, data, (err,) => {if (err) return console.log(err)})
+}
+
+function read(path) {
+    const data = fs.readFileSync(path, "utf-8")
+    return(data)
 }
 
 app.post('/upload', function (req, res) {
-  // Runs the function on the back end
-  request(req.body.filepath)
+  // Runs the write function with path.txt as path and filepath as data
+  write("../textfiles/path.txt", req.body.filepath)
   res.type("application/json").status(201)
+})
+
+app.get('/get-colors', function (req, res) {
+  // Runs the read function
+  const colors = read("../textfiles/path.txt")
+  res.type("application/json").status(200).send(colors)
 })
 
 

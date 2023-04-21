@@ -13,7 +13,6 @@ function ResultsPage () {
     const location = useLocation()
 
     const colorList = location.state.colors
-    console.log(colorList)
 
     const send = () => {
         history.push({pathname: "/"})

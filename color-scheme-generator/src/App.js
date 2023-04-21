@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 
 import UploadPage from './pages/Upload';
 import ResultsPage from './pages/Results';
+import LoadingPage from './pages/Loading';
 
 
 function App() {
@@ -13,6 +14,9 @@ function App() {
         <header className="App-header">
           <Route path="/" exact>
             <UploadPage />
+          </Route>
+          <Route path="/loading">
+            <LoadingPage />
           </Route>
           <Route path="/results">
             <ResultsPage />
