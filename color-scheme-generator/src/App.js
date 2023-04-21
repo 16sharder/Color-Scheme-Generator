@@ -6,13 +6,12 @@ import UploadPage from './pages/Upload';
 import ResultsPage from './pages/Results';
 
 
-
 function App() {
   return (
     <div className="App">
       <Router>
         <header className="App-header">
-          <Route path="/upload">
+          <Route path="/" exact>
             <UploadPage />
           </Route>
           <Route path="/results">

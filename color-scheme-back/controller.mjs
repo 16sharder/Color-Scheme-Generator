@@ -16,7 +16,6 @@ function request(filepath) {
 
 app.post('/upload', function (req, res) {
   // Runs the function on the back end
-  console.log(req)
   const colors = request(req.body.filepath)
   res.type("application/json").status(201).send(colors)
 })

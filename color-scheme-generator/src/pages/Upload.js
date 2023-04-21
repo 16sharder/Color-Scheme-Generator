@@ -22,7 +22,7 @@ function UploadPage () {
             alert(`Upload image failed. Status code = ${response.status}`)
         }
         console.log(response)
-        history.push({pathname: "/results"})
+        // history.push({pathname: "/results"})
     }
 
     return(
