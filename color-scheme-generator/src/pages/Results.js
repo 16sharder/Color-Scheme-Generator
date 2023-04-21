@@ -5,14 +5,18 @@
 // Includes an upload button to generate a new scheme
 
 import React from 'react';
-import {useState} from "react"
-import {useHistory} from "react-router-dom"
+// import {useState} from "react"
+import {useHistory, useLocation} from "react-router-dom"
 
 function ResultsPage () {
     const history = useHistory()
+    const location = useLocation()
+
+    const colorList = location.state.colors
+    console.log(colorList)
 
     const send = () => {
-        history.pushState({pathname: "/results"})
+        history.push({pathname: "/"})
     }
 
     // creation of 6 random colors

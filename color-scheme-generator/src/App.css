@@ -49,6 +49,14 @@ h2, h4 {
   font-size: xx-large;
 }
 
+form {
+  width: 80%;
+}
+
+input {
+  width: 50%
+}
+
 button {
   font-size: large;
   margin: 15px;
