@@ -7,22 +7,16 @@ import React from 'react';
 import {useState} from 'react'
 import {useHistory} from "react-router-dom"
 
+import { postPath } from '../requests/requests';
+
 function UploadPage () {
     const [filepath, setPath] = useState()
 
     const history = useHistory()
 
     const send = async () => {
-        const response = await fetch("/upload", {
-            method: "POST", 
-            body: JSON.stringify({filepath: filepath}),
-            headers: {"Content-type": "application/json"}
-        })
-        if (response.status !== 201){
-            alert(`Upload image failed. Status code = ${response.status}`)
-        }
-        console.log(response)
-        // history.push({pathname: "/results"})
+        postPath(filepath)
+        history.push({pathname: "/results"})
     }
 
     return(
