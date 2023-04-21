@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3676abd3-f3f5-4e17-9bcb-614b004df0b6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/color-scheme-generator/src/pages/Results.js" beforeDir="false" afterPath="$PROJECT_DIR$/color-scheme-generator/src/pages/Results.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/textfiles/path.txt" beforeDir="false" afterPath="$PROJECT_DIR$/textfiles/path.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/color-scheme-back/controller.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/color-scheme-back/controller.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/color-scheme-generator/src/pages/Loading.js" beforeDir="false" afterPath="$PROJECT_DIR$/color-scheme-generator/src/pages/Loading.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/color-scheme-generator/src/requests/requests.js" beforeDir="false" afterPath="$PROJECT_DIR$/color-scheme-generator/src/requests/requests.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

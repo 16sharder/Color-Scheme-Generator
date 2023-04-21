@@ -25,9 +25,15 @@ app.post('/upload', function (req, res) {
 })
 
 app.get('/get-colors', function (req, res) {
-  // Runs the read function
+  // Runs the read function with path.txt as path
   const colors = read("../textfiles/path.txt")
   res.type("application/json").status(200).send(colors)
+})
+
+app.get('/reset', function (req, res) {
+  // Resets the path.txt file with write
+  write("../textfiles/path.txt", "")
+  res.type("application/json").status(200)
 })
 
 

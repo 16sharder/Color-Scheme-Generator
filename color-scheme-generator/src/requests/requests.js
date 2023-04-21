@@ -22,5 +22,12 @@ async function getColors () {
     }
 }
 
+async function resetFile () {
+    const response = await fetch("/reset")
+    if (response.status !== 200){
+        alert(`Reset file failed. Status code = ${response.status}`)
+    }
+}
 
-export {postPath, getColors}
+
+export {postPath, getColors, resetFile}

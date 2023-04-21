@@ -6,13 +6,13 @@
 import React from 'react';
 import {useHistory} from "react-router-dom"
 
-import { getColors } from '../requests/requests';
+import { getColors, resetFile } from '../requests/requests';
 
 function LoadingPage () {const history = useHistory()
 
     const send = async () => {
         const colors = await getColors()
-        console.log(colors)
+        resetFile()
         history.push({pathname: "/results", state: {colors: colors}})
     }
 
