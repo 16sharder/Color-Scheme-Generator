@@ -13,10 +13,20 @@ function LoadingPage () {const history = useHistory()
     const send = async () => {
         const colors = await getColors()
         resetFile()
-        history.push({pathname: "/results", state: {colors: colors}})
+
+        // if there was an error with the file path, asks the user to try again
+        if (colors == "File not found"){
+            alert("File not found - Please try again")
+            history.push({pathname: "/"})
+        }
+        // if there was no error, continues to the results page
+        else history.push({pathname: "/results", state: {colors: colors}})
+
+        // reloads the page to allow user to input again successfully
         window.location.reload()
     }
 
+    // timer causes the send function to wait 15 seconds before execution
     setTimeout(send, 15000)
 
     return(

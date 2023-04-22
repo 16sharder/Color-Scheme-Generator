@@ -9,6 +9,7 @@ import React from 'react';
 import {useHistory, useLocation} from "react-router-dom"
 
 function convertHex (num) {
+    // converts a number from 0 to 15 to hex string
     let hex;
     if (num == 10) hex = "A"
     else if (num == 11) hex = "B"
@@ -30,16 +31,20 @@ function ResultsPage () {
     colorString = colorString.slice(1, colorString.length - 1)
 
     const rgbs = [], hexvals = [], text = []
+
     // splits the string to retrieve 6 single strings, one for each color
     const colorList = colorString.split("), (")
     for (let color of colorList){
         // splits the color's string and makes it an array of ints
         color = color.split(", ")
         let hex = "#", blk = false
+        // for each number in the color, creates rgb and hex vals
         for (let i in color){
             color[i] = Number(color[i])
+            // blk variable used to determine if color is light or dark
             if (color[i] > 175) blk = true
 
+            // converts number to hex and adds to hex val
             const hex2 = color[i] % 16
             const hex1 = (color[i] - hex2) / 16
             hex = hex.concat(convertHex(hex1))

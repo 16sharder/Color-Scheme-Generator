@@ -13,7 +13,15 @@ while end is False:
             # after saving the path, erases the contents of the file
             open("../textfiles/path.txt", 'w').close()
 
-            image = Image.open(image_path)
+            # attempts to open the file
+            try:
+                image = Image.open(image_path)
+            # if the attempt fails, writes file not found before continuing loop
+            except FileNotFoundError:
+                with open("../textfiles/colors.txt", 'w') as fileW:
+                    fileW.write("File not found")
+                    fileW.close()
+                continue
 
             pixels = image.load()
             width = image.size[0]
