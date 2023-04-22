@@ -26,11 +26,8 @@ function ResultsPage () {
 
     // retrieves the string of rgb vals, cutting off unneccessary first and last char
     let colorString = location.state.colors
-    colorString = colorString.slice(1, colorString.length - 1)
 
-    const send = () => {
-        history.push({pathname: "/"})
-    }
+    colorString = colorString.slice(1, colorString.length - 1)
 
     const rgbs = [], hexvals = [], text = []
     // splits the string to retrieve 6 single strings, one for each color
@@ -76,7 +73,7 @@ function ResultsPage () {
                     </tr>
                 </tbody>
             </table>
-            <button onClick={() => send()}>Upload New Image</button>
+            <button onClick={() => history.push({pathname: "/"})}>Upload New Image</button>
         </>
     )
 }

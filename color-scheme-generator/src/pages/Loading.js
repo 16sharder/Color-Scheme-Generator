@@ -14,6 +14,7 @@ function LoadingPage () {const history = useHistory()
         const colors = await getColors()
         resetFile()
         history.push({pathname: "/results", state: {colors: colors}})
+        window.location.reload()
     }
 
     setTimeout(send, 15000)

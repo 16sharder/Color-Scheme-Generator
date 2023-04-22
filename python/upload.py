@@ -4,11 +4,14 @@ import os
 end = False
 
 while end is False:
-    with open("../textfiles/path.txt", 'r+') as file:
-        # if the file isn't empty, proceeds to read the path
-        if os.stat("../textfiles/path.txt").st_size != 0:
+    # if the file isn't empty, proceeds to read the path
+    if os.stat("../textfiles/path.txt").st_size != 0:
+        with open("../textfiles/path.txt", 'r+') as file:
             image_path = file.read()
             file.close()
+
+            # after saving the path, erases the contents of the file
+            open("../textfiles/path.txt", 'w').close()
 
             image = Image.open(image_path)
 
@@ -79,14 +82,15 @@ while end is False:
                         maxi = cat[pixel]
                 colors.append(color)
 
+            # converts each color to one long string
             string = ""
             for color in colors:
                 string += str(color)
                 if color != colors[5]:
                     string += ", "
 
-            with open("../textfiles/path.txt", 'w') as fileW:
+            # writes the string to the colors text file
+            with open("../textfiles/colors.txt", 'w') as fileW:
                 fileW.write(string)
                 fileW.close()
-                end = True
 
