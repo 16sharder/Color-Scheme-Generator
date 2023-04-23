@@ -18,23 +18,28 @@ function read(path) {
     return(data)
 }
 
-app.post('/upload', function (req, res) {
-  // Runs the write function with path.txt as path and filepath as data
-  write("../textfiles/path.txt", req.body.filepath)
+
+
+app.post('/reset', function (req, res) {
+  // Resets the given text file with write
+  write(req.body.path, "")
   res.type("application/json").status(201)
 })
 
-app.get('/get-colors', function (req, res) {
-  // Runs the read function with path.txt as path
-  const colors = read("../textfiles/colors.txt")
-  res.type("application/json").status(200).send(colors)
+app.post('/write', function (req, res) {
+  // Runs the write function
+  console.log(req.body.text)
+  write(req.body.path, req.body.text)
+  res.type("application/json").status(201)
 })
 
-app.get('/reset', function (req, res) {
-  // Resets the path.txt file with write
-  write("../textfiles/colors.txt", "")
-  res.type("application/json").status(200)
+app.post('/read', function (req, res) {
+  // Runs the read function and returns the results
+  const data = read(req.body.path)
+  res.type("application/json").status(201).send(data)
 })
+
+
 
 
 

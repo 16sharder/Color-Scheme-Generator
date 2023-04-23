@@ -64,14 +64,14 @@ function ResultsPage () {
                 <tbody>
                     <tr>
                         {hexvals.slice(0, 3).map((color, i) => 
-                        <td style={{"backgroundColor": color, "color": text[i]}} key={i}>
+                        <td className="color" style={{"backgroundColor": color, "color": text[i]}} key={i}>
                             <div className='stats'>{color}
                             <br/>rgb({rgbs[i][0]}, {rgbs[i][1]}, {rgbs[i][2]})</div>
                         </td>)}
                     </tr>
                     <tr>
                         {hexvals.slice(3, 6).map((color, i) => 
-                        <td style={{"backgroundColor": color, "color": text[i+3]}} key={i}>
+                        <td className="color" style={{"backgroundColor": color, "color": text[i+3]}} key={i}>
                             <div className='stats'>{color}
                             <br/>rgb({rgbs[i+3][0]}, {rgbs[i+3][1]}, {rgbs[i+3][2]})</div>
                         </td>)}

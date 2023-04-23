@@ -1,9 +1,9 @@
 from PIL import Image
 import os
 
-end = False
+end = True
 
-while end is False:
+while end:
     # if the file isn't empty, proceeds to read the path
     if os.stat("../textfiles/path.txt").st_size != 0:
         with open("../textfiles/path.txt", 'r+') as file:

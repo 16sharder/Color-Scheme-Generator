@@ -66,8 +66,24 @@ table {
   border-collapse: collapse;
 }
 
-td {
+td.color {
   font-size: large;
   width: 225px;
   height: 225px;
+}
+
+td.folder {
+  max-width: 220px;
+  font: large bold;
+  padding: 10px;
+  border: 1px black solid;
+  background-color: white;
+}
+
+div.folder {
+  width: 200px;
+  font-size: small;
+  padding: 10px;
+  border: 1px black solid;
+  background-color: white;
 }

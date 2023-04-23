@@ -12,7 +12,7 @@ function LoadingPage () {const history = useHistory()
 
     const send = async () => {
         const colors = await getColors()
-        resetFile()
+        resetFile("../textfiles/colors.txt")
 
         // if there was an error with the file path, asks the user to try again
         if (colors == "File not found"){
