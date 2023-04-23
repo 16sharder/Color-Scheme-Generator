@@ -22,6 +22,11 @@ while end:
                     fileW.write("File not found")
                     fileW.close()
                 continue
+            except IsADirectoryError:
+                with open("../textfiles/colors.txt", 'w') as fileW:
+                    fileW.write("Directory")
+                    fileW.close()
+                continue
 
             pixels = image.load()
             width = image.size[0]
@@ -32,6 +37,7 @@ while end:
             for w in range(width):
                 for h in range(height):
                     pixel = pixels[w, h]
+                    pixel = pixel[:3]
 
                     # puts the pixel's color into one of 27 categories
                     r = pixel[0] // 85      # 255/85 = 3 categories for red

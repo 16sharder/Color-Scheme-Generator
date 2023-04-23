@@ -52,6 +52,7 @@ function ResultsPage () {
         }
         rgbs.push(color)
         hexvals.push(hex)
+        console.log(blk)
         if (blk) text.push("black")
         else text.push("white")
     }

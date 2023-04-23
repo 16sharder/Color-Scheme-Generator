@@ -28,7 +28,6 @@ app.post('/reset', function (req, res) {
 
 app.post('/write', function (req, res) {
   // Runs the write function
-  console.log(req.body.text)
   write(req.body.path, req.body.text)
   res.type("application/json").status(201)
 })

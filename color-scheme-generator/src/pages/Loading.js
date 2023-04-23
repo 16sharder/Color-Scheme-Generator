@@ -19,6 +19,10 @@ function LoadingPage () {const history = useHistory()
             alert("File not found - Please try again")
             history.push({pathname: "/"})
         }
+        else if (colors == "Directory"){
+            alert("A folder is not a valid image - Please try again")
+            history.push({pathname: "/"})
+        }
         // if there was no error, continues to the results page
         else history.push({pathname: "/results", state: {colors: colors}})
 
