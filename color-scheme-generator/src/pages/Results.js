@@ -49,6 +49,11 @@ function ResultsPage () {
         else text.push("white")
     }
 
+    const newUpload = () => {
+        history.push({pathname: "/"})
+        window.location.reload()
+    }
+
     return(
         <>
             <h1>Here is your color scheme:</h1>
@@ -83,7 +88,7 @@ function ResultsPage () {
                         <td></td>
                         <td><button>Download Results</button></td>
                         <td></td>
-                        <td><button onClick={() => history.push({pathname: "/"})}>Upload New Image</button></td>
+                        <td><button onClick={() => newUpload()}>Upload New Image</button></td>
                         <td></td>
                     </tr>
                 </tbody>
