@@ -52,17 +52,29 @@ function StartPage () {
     return(
         <>
             <h2>Upload an image to generate a color scheme</h2>
+            <div className='folderpath'>
+                {path.split("/").slice(1, 9).map((folder, i) => 
+                <a onClick={() => send(path.slice(0, path.indexOf(folder)) + folder)} key={i}>/{folder}</a>
+                )}
+                <br/>
+                {path.split("/").slice(9, 17).map((folder, i) => 
+                <a onClick={() => send(path.slice(0, path.indexOf(folder)) + folder)} key={i}>/{folder}</a>
+                )}
+                <br/>
+                {path.split("/").slice(18, 26).map((folder, i) => 
+                <a onClick={() => send(path.slice(0, path.indexOf(folder)) + folder)} key={i}>/{folder}</a>
+                )}
+            </div>
             <table>
                 <tbody>
                     <tr>
-                        {path.split("/").map((folder, i) => 
-                        <td className='folder' onClick={() => send(path.slice(0, path.indexOf(folder)) + folder)} key={i}>{folder}</td>
-                        )}
                         <td className='folder'>
                             Folders: <br/>
                             {curdir.map((item, i) => 
                             <div className='folder' onClick={() => send(path + "/" + item)} key={i}>{item}</div>
                             )}
+                        </td>
+                        <td className='folder'>
                             <br />
                             Images: <br/>
                             {images.map((item, i) => 
@@ -72,6 +84,7 @@ function StartPage () {
                     </tr>
                 </tbody>
             </table>
+            <br/>
         </>
     )
 }

@@ -59,9 +59,9 @@ function ViewDetails () {
             <thead>
                 <tr>
                     <th>
-                    Here is a list of all of the colors that appear in your <br />
-                    image. The number represents the number of <br />
-                    pixels of that color in your image.
+                    Here is a list of 600 of the colors that appear in your
+                    image. The numbers to the right of each hex value represent
+                    the number of pixels of that color in your image.
                     </th>
                     <th>
                         <button onClick={() => history.push({pathname: "/results", state: {colors: rgbs}})}>Return to Results</button>

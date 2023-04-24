@@ -19,6 +19,7 @@ function UploadPage () {
 
     const ret = (path) => {
         history.push({pathname: "/select1", state: {path: path}})
+        window.location.reload()
     }
 
     const send = async () => {
@@ -29,15 +30,19 @@ function UploadPage () {
     return(
         <>
             <h2>Upload an image to generate a color scheme</h2>
-            <table>
-                <tbody>
-                    <tr>
-                        {path.split("/").map((folder, i) => 
-                        <td className='folder' onClick={() => ret(path.slice(0, path.indexOf(folder)) + folder)} key={i}>{folder}</td>
-                        )}
-                    </tr>
-                </tbody>
-            </table>
+            <div className='folderpath'>
+                {path.split("/").slice(1, 9).map((folder, i) => 
+                <a onClick={() => ret(path.slice(0, path.indexOf(folder)) + folder)} key={i}>/{folder}</a>
+                )}
+                <br/>
+                {path.split("/").slice(9, 17).map((folder, i) => 
+                <a onClick={() => ret(path.slice(0, path.indexOf(folder)) + folder)} key={i}>/{folder}</a>
+                )}
+                <br/>
+                {path.split("/").slice(18, 26).map((folder, i) => 
+                <a onClick={() => ret(path.slice(0, path.indexOf(folder)) + folder)} key={i}>/{folder}</a>
+                )}
+            </div>
             <button className='upload' onClick={() => send()}>Upload</button>
         </>
     )

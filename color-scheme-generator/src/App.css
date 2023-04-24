@@ -39,10 +39,12 @@
 
 
 
+h1 {
+  margin: 0px
+}
 
-
-h2, h4 {
-  margin: 10px;
+h2 {
+  margin: 40px
 }
 
 .upload {
@@ -74,23 +76,28 @@ table {
 
 
 td.folder {
-  max-width: 220px;
+  width: 420px;
   font: large bold;
   padding: 10px;
-  border: 1px black solid;
+  border: 2px black solid;
   background-color: white;
+  vertical-align: top;
 }
 
 div.folder {
-  width: 200px;
+  width: 400px;
   font-size: small;
   padding: 10px;
   border: 1px black solid;
   background-color: white;
 }
 
-.fixed {
-  position: fixed;
+.folderpath {
+  min-width: 885px;
+  font: large bold;
+  border: 3px black solid;
+  background-color: white;
+  padding: 20px;
 }
 
 

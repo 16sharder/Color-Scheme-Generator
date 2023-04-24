@@ -51,8 +51,8 @@ function ResultsPage () {
 
     return(
         <>
-            <h2>Here is your color scheme:</h2>
-            <h4>Select a color to edit or discard it</h4>
+            <h1>Here is your color scheme:</h1>
+            <h3>Select a color to edit or discard it</h3>
             <table className="colors">
                 <tbody>
                     <tr>
