@@ -9,6 +9,8 @@ import UploadPage from './pages/Upload';
 import ResultsPage from './pages/Results';
 import LoadingPage from './pages/Loading';
 import ViewDetails from './pages/ViewDetails';
+import ModifyScheme from './pages/ModifyScheme';
+import EditColor from './pages/EditColor';
 
 
 function App() {
@@ -36,6 +38,12 @@ function App() {
           </Route>
           <Route path="/details">
             <ViewDetails />
+          </Route>
+          <Route path="/modify">
+            <ModifyScheme />
+          </Route>
+          <Route path="/edit">
+            <EditColor />
           </Route>
         </header>
       </Router>

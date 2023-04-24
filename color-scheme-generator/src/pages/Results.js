@@ -56,22 +56,28 @@ function ResultsPage () {
             <table className="colors">
                 <tbody>
                     <tr>
-                        <td><button>Modify Scheme</button></td>
+                        <td><button onClick={() => history.push({pathname: "/modify", state: {colors: rgbs}})}>
+                            Modify Scheme <a className='small'>(i)</a></button></td>
+
                         {hexvals.slice(0, 3).map((color, i) => 
-                        <td className="color" style={{"backgroundColor": color, "color": text[i]}} key={i}>
+                        <td className="color" style={{"backgroundColor": color, "color": text[i]}} onClick={() => history.push({pathname: "/edit", state: {colors: rgbs}})} key={i}>
                             <div className='stats'>{color}
                             <br/>rgb({rgbs[i][0]}, {rgbs[i][1]}, {rgbs[i][2]})</div>
                         </td>)}
+
                         <td><button>Hide Color Statistics</button></td>
                     </tr>
                     <tr>
                         <td><button>Restore Original Colors</button></td>
+
                         {hexvals.slice(3, 6).map((color, i) => 
-                        <td className="color" style={{"backgroundColor": color, "color": text[i+3]}} key={i}>
+                        <td className="color" style={{"backgroundColor": color, "color": text[i+3]}} onClick={() => history.push({pathname: "/edit"})} key={i}>
                             <div className='stats'>{color}
                             <br/>rgb({rgbs[i+3][0]}, {rgbs[i+3][1]}, {rgbs[i+3][2]})</div>
                         </td>)}
-                        <td><button onClick={() => history.push({pathname: "/details", state: {colors: hexvals, rgbs: rgbs, text: text}})}>See Image Details</button></td>
+
+                        <td><button onClick={() => history.push({pathname: "/details", state: {colors: hexvals, rgbs: rgbs, text: text}})}>
+                            See Image Details <a className='small'>(i)</a></button></td>
                     </tr>
                     <tr>
                         <td></td>
