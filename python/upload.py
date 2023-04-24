@@ -108,3 +108,37 @@ while end:
                 fileW.write(string)
                 fileW.close()
 
+            details = ""
+            for cat in cats:
+                highest = []
+                for pixel in cat:
+                    if pixel == "count":
+                        continue
+                    percent = 100 * cat[pixel] / (width*height)
+                    highest.append(cat[pixel])
+
+                highest.sort(reverse=True)
+                if len(highest) > 100:
+                    highest = highest[0:100]
+
+                for pixel in cat:
+                    if pixel == "count":
+                        continue
+                    try:
+                        idx = highest.index(cat[pixel])
+                        lest = list(pixel)
+                        lest.append(cat[pixel])
+                        highest[idx] = lest
+                    except ValueError:
+                        continue
+
+                for val in highest:
+                    if type(val) != list:
+                        continue
+                    details += str(val) + ", "
+                details += "*,* "
+
+            with open("../textfiles/details.txt", 'w') as fileD:
+                fileD.write(details)
+                fileD.close()
+

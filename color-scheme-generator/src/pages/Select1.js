@@ -8,7 +8,7 @@ import React from 'react';
 import {useState} from 'react'
 import {useHistory, useLocation} from "react-router-dom"
 
-import { getDirectory, readDirectory, resetFile } from '../requests/requests';
+import { getDirectory, readDirectory, resetFile } from '../helpers/requests';
 
 function Select1Page () {
 
@@ -55,11 +55,16 @@ function Select1Page () {
         <>
             <h2>Upload an image to generate a color scheme</h2>
             <table>
-                <tbody>
+                <thead>
                     <tr>
                         {path.split("/").map((folder, i) => 
-                        <td className='folder' onClick={() => send(path.slice(0, path.indexOf(folder)) + folder)} key={i}>{folder}</td>
+                        <th className='folder' onClick={() => send(path.slice(0, path.indexOf(folder)) + folder)} key={i}>{folder}</th>
                         )}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
                         <td className='folder'>
                             Folders: <br/>
                             {curdir.map((item, i) => 

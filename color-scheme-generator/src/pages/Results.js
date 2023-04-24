@@ -87,3 +87,4 @@ function ResultsPage () {
 }
 
 export default ResultsPage
+export {convertHex}

@@ -13,6 +13,33 @@ async function resetFile (path) {
     return
 }
 
+// places the directory path on getdir.txt, then reads from directory.txt for files in dir
+async function getDirectory (path) {
+    const response = await fetch("/write", {
+        method: "POST", 
+        body: JSON.stringify({path: "../textfiles/getdir.txt", text: path}),
+        headers: {"Content-type": "application/json"}
+    })
+    if (response.status !== 201){
+        alert(`Request directory failed. Status code = ${response.status}`)
+    }
+    return
+}
+
+async function readDirectory () {
+    const res = await fetch("/read", {
+        method: "POST", 
+        body: JSON.stringify({path: "../textfiles/directory.txt"}),
+        headers: {"Content-type": "application/json"}
+    })
+    if (res.status !== 201){
+        alert(`Retrieve directory failed. Status code = ${res.status}`)
+    } else {
+        const data = await res.text()
+        return data
+    }
+}
+
 // places the path for the image on path.txt (for colors)
 async function postPath (filepath) {
     const response = await fetch("/write", {
@@ -41,33 +68,20 @@ async function getColors () {
     }
 }
 
-// places the directory path on getdir.txt, then reads from directory.txt for files in dir
-async function getDirectory (path) {
-    console.log(path)
-    const response = await fetch("/write", {
+
+async function getDetails () {
+    const response = await fetch("/read", {
         method: "POST", 
-        body: JSON.stringify({path: "../textfiles/getdir.txt", text: path}),
+        body: JSON.stringify({path: "../textfiles/details.txt"}),
         headers: {"Content-type": "application/json"}
     })
     if (response.status !== 201){
-        alert(`Request directory failed. Status code = ${response.status}`)
-    }
-    return
-}
-
-async function readDirectory () {
-    const res = await fetch("/read", {
-        method: "POST", 
-        body: JSON.stringify({path: "../textfiles/directory.txt"}),
-        headers: {"Content-type": "application/json"}
-    })
-    if (res.status !== 201){
-        alert(`Retrieve directory failed. Status code = ${res.status}`)
+        alert(`Detail retrieval failed. Status code = ${response.status}`)
     } else {
-        const data = await res.text()
+        const data = await response.text()
         return data
     }
 }
 
 
-export {postPath, getColors, resetFile, getDirectory, readDirectory}
+export {resetFile, getDirectory, readDirectory, postPath, getColors, getDetails}

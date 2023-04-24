@@ -8,7 +8,7 @@ import React from 'react';
 import {useState} from 'react'
 import {useHistory} from "react-router-dom"
 
-import { getDirectory, readDirectory, resetFile } from '../requests/requests';
+import { getDirectory, readDirectory, resetFile } from '../helpers/requests';
 
 function StartPage () {
 

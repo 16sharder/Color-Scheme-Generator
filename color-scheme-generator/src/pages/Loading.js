@@ -6,7 +6,7 @@
 import React from 'react';
 import {useHistory} from "react-router-dom"
 
-import { getColors, resetFile } from '../requests/requests';
+import { getColors, resetFile } from '../helpers/requests';
 
 function LoadingPage () {const history = useHistory()
 

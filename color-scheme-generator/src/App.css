@@ -89,13 +89,17 @@ div.folder {
   background-color: white;
 }
 
+.fixed {
+  position: fixed;
+}
+
 
 
 
 
 table.colors td{
   font-size: large;
-  width: 250px;
+  min-width: 250px;
 }
 
 td.color {
@@ -114,4 +118,5 @@ table.details {
 
 table.details td{
   width: 16.65%;
+  vertical-align: top;
 }
