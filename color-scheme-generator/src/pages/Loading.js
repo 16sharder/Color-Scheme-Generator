@@ -11,20 +11,38 @@ import { getColors, resetFile } from '../requests/requests';
 function LoadingPage () {const history = useHistory()
 
     const send = async () => {
-        const colors = await getColors()
+        let colorString = await getColors()
         resetFile("../textfiles/colors.txt")
 
         // if there was an error with the file path, asks the user to try again
-        if (colors == "File not found"){
+        if (colorString == "File not found"){
             alert("File not found - Please try again")
             history.push({pathname: "/"})
         }
-        else if (colors == "Directory"){
+        else if (colorString == "Directory"){
             alert("A folder is not a valid image - Please try again")
             history.push({pathname: "/"})
         }
         // if there was no error, continues to the results page
-        else history.push({pathname: "/results", state: {colors: colors}})
+        else{
+            // cuts off the unnecessary first and last chars
+            colorString = colorString.slice(1, colorString.length - 1)
+
+            // splits the string to retrieve 6 single strings, one for each color
+            const colorList = colorString.split("), (")
+            const colors = []
+            for (let color of colorList){
+                // splits the color's string and makes it an array of rgb vals
+                color = color.split(", ")
+                for (let i in color){
+                    color[i] = Number(color[i])
+                }
+                colors.push(color)
+            }
+
+
+            history.push({pathname: "/results", state: {colors: colors}})
+        }
 
         // reloads the page to allow user to input again successfully
         window.location.reload()

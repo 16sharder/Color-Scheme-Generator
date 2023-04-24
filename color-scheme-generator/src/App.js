@@ -8,6 +8,7 @@ import Select2Page from './pages/Select2';
 import UploadPage from './pages/Upload';
 import ResultsPage from './pages/Results';
 import LoadingPage from './pages/Loading';
+import ViewDetails from './pages/ViewDetails';
 
 
 function App() {
@@ -32,6 +33,9 @@ function App() {
           </Route>
           <Route path="/results">
             <ResultsPage />
+          </Route>
+          <Route path="/details">
+            <ViewDetails />
           </Route>
         </header>
       </Router>

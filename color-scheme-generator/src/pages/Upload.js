@@ -1,13 +1,12 @@
 // The Upload Page:
-// Shown when the user arrives at the website
+// Shown when the user has selected an image from the directory
 // This page allows the user to upload an image for color scheme generation
 // Allows the user to access their folders before sending to results page
 
 import React from 'react';
-import {useState} from 'react'
 import {useHistory, useLocation} from "react-router-dom"
 
-import { getDirectory, postPath, readDirectory, resetFile } from '../requests/requests';
+import { postPath, resetFile } from '../requests/requests';
 
 function UploadPage () {
 

@@ -1,7 +1,8 @@
-// The Upload Page:
-// Shown when the user arrives at the website
-// This page allows the user to upload an image for color scheme generation
-// Allows the user to access their folders before sending to results page
+// The First Select Page:
+// Shown alternately with the Second Select Page while the user is choosing a file
+// This page allows the user to select a file or a folder
+// Sends them to the Second Select Page if they select a folder
+// Sends them to the Upload Page if they select a file
 
 import React from 'react';
 import {useState} from 'react'
