@@ -1,16 +1,18 @@
-// The First Select Page:
-// Shown alternately with the Second Select Page while the user is choosing a file
+// The Second Select Page:
+// Shown alternately with the First Select Page while the user is choosing a file
 // This page allows the user to select a file or a folder
-// Sends them to the Second Select Page if they select a folder
+// Sends them to the First Select Page if they select a folder
 // Sends them to the Upload Page if they select a file
 
 import React from 'react';
 import {useState} from 'react'
 import {useHistory, useLocation} from "react-router-dom"
 
-import { getDirectory, readDirectory, resetFile } from '../helpers/requests';
+import { readDirectory, resetFile } from '../../helpers/requests';
+import { getDirectory } from '../../helpers/zmq';
+import { sendMessage } from '../../helpers/rabbitmq';
 
-function Select1Page () {
+function Select2Page () {
 
     const history = useHistory()
     const location = useLocation()
@@ -19,35 +21,28 @@ function Select1Page () {
     const [curdir, setDir] = useState([])
     const [images, setImgs] = useState([])
 
+    const string = getDirectory(path)
+    const pd = string.split("*,* ")
 
-    const read = async () => {
-        const string = await readDirectory()
-        const pd = string.split("*,* ")
-        resetFile("../textfiles/directory.txt")
+    setPath(pd[0])
+    const folders = pd[1]
+    const imges = pd[2]
 
-        setPath(pd[0])
-        const folders = pd[1]
-        const imges = pd[2]
+    const directory = folders.split(",* ")
+    
+    const imgs = imges.split(",* ")
 
-        const directory = folders.split(",* ")
-        
-        const imgs = imges.split(",* ")
-
-        setDir(directory.slice(0, directory.length - 1))
-        setImgs(imgs.slice(0, imgs.length - 1))
-    }
-
-    getDirectory(path)
-    setTimeout(read, 100)
+    setDir(directory.slice(0, directory.length - 1))
+    setImgs(imgs.slice(0, imgs.length - 1))
 
 
-    const send = (path) => {
-        history.push({pathname: "/select2", state: {path: path}})
+    const send = (filepath) => {
+        history.push({pathname: "/select1", state: {path: filepath}})
         window.location.reload()
     }
 
-    const imgSelect = (path) => {
-        history.push({pathname: "/upload", state: {path: path}})
+    const imgSelect = (filepath) => {
+        history.push({pathname: "/upload", state: {path: filepath}})
         window.location.reload()
     }
 
@@ -75,6 +70,7 @@ function Select1Page () {
                             {curdir.map((item, i) => 
                             <div className='folder' onClick={() => send(path + "/" + item)} key={i}>{item}</div>
                             )}
+                            <br />
                         </td>
                         <td className='folder'>
                             Images: <br/>
@@ -86,9 +82,8 @@ function Select1Page () {
                 </tbody>
             </table>
             <br/>
-            
         </>
     )
 }
 
-export default Select1Page
+export default Select2Page

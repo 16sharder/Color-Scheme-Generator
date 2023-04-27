@@ -2,10 +2,10 @@ import './App.css';
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 
-import StartPage from './pages/Start';
-import Select1Page from './pages/Select1';
-import Select2Page from './pages/Select2';
-import UploadPage from './pages/Upload';
+import StartPage from './pages/Upload/Start';
+import Select1Page from './pages/Upload/Select1';
+import Select2Page from './pages/Upload/Select2';
+import UploadPage from './pages/Upload/Upload';
 import ResultsPage from './pages/Results';
 import LoadingPage from './pages/Loading';
 import ViewDetails from './pages/ViewDetails';

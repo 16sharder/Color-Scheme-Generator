@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
 import fs from "fs"
-import asyncHandler from 'express-async-handler';
 
 const app = express()
 

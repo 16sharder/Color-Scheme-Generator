@@ -1,51 +1,48 @@
-// The Upload Page:
-// Shown when the user arrives at the website
-// This page allows the user to start selecting a file
-// Sends them to the First Select Page if they select a folder
+// The First Select Page:
+// Shown alternately with the Second Select Page while the user is choosing a file
+// This page allows the user to select a file or a folder
+// Sends them to the Second Select Page if they select a folder
 // Sends them to the Upload Page if they select a file
 
 import React from 'react';
 import {useState} from 'react'
-import {useHistory} from "react-router-dom"
+import {useHistory, useLocation} from "react-router-dom"
 
-import { getDirectory, readDirectory, resetFile } from '../helpers/requests';
+import { readDirectory, resetFile } from '../../helpers/requests';
+import { getDirectory } from '../../helpers/zmq';
+import { sendMessage } from '../../helpers/rabbitmq';
 
-function StartPage () {
+function Select1Page () {
 
     const history = useHistory()
+    const location = useLocation()
 
-    const [path, setPath] = useState("/")
+    const [path, setPath] = useState(location.state.path)
     const [curdir, setDir] = useState([])
     const [images, setImgs] = useState([])
 
+    const string = getDirectory(path)
+    const pd = string.split("*,* ")
 
-    const read = async () => {
-        const string = await readDirectory()
-        const pd = string.split("*,* ")
-        resetFile("../textfiles/directory.txt")
+    setPath(pd[0])
+    const folders = pd[1]
+    const imges = pd[2]
 
-        setPath(pd[0])
-        const folders = pd[1]
-        const imges = pd[2]
+    const directory = folders.split(",* ")
+    
+    const imgs = imges.split(",* ")
 
-        const directory = folders.split(",* ")
-        
-        const imgs = imges.split(",* ")
+    setDir(directory.slice(0, directory.length - 1))
+    setImgs(imgs.slice(0, imgs.length - 1))
 
-        setDir(directory.slice(0, directory.length - 1))
-        setImgs(imgs.slice(0, imgs.length - 1))
-    }
 
-    getDirectory("/")
-    setTimeout(read, 100)
-
-    const send = async (path) => {
-        history.push({pathname: "/select1", state: {path: path}})
+    const send = (filepath) => {
+        history.push({pathname: "/select2", state: {path: filepath}})
         window.location.reload()
     }
 
-    const imgSelect = (path) => {
-        history.push({pathname: "/upload", state: {path: path}})
+    const imgSelect = (filepath) => {
+        history.push({pathname: "/upload", state: {path: filepath}})
         window.location.reload()
     }
 
@@ -75,7 +72,6 @@ function StartPage () {
                             )}
                         </td>
                         <td className='folder'>
-                            <br />
                             Images: <br/>
                             {images.map((item, i) => 
                             <div className='folder' onClick={() => imgSelect(path + "/" + item)} key={i}>{item}</div>
@@ -85,8 +81,9 @@ function StartPage () {
                 </tbody>
             </table>
             <br/>
+            
         </>
     )
 }
 
-export default StartPage
+export default Select1Page

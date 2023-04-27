@@ -1,5 +1,10 @@
 from PIL import Image
 import os
+import zmq
+
+context = zmq.Context()
+socket = context.socket(zmq.REP)
+socket.bind("tcp://*:1952")
 
 end = True
 

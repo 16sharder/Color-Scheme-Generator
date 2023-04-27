@@ -6,7 +6,7 @@
 import React from 'react';
 import {useHistory, useLocation} from "react-router-dom"
 
-import { postPath, resetFile } from '../helpers/requests';
+import { postPath, resetFile } from '../../helpers/requests';
 
 function UploadPage () {
 
