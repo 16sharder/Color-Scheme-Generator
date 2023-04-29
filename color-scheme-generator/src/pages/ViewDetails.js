@@ -6,7 +6,7 @@
 import React from 'react';
 import {useState, useEffect} from "react"
 import {useHistory, useLocation} from "react-router-dom"
-import { getDetails } from '../helpers/requests';
+import retrieve from '../helpers/requests';
 import { convertHex } from './Results';
 
 function ViewDetails () {
@@ -14,27 +14,43 @@ function ViewDetails () {
     const history = useHistory()
     const location = useLocation()
 
-    const mainColors = location.state.colors
-    const rgbs = location.state.rgbs
-    const text = location.state.text
+    const mainColors = location.state.colors        //      array of generated hex colors
+    const rgbs = location.state.rgbs                //      array of generated rgb colors (for passing use)
+    const text = location.state.text                //      array of determined text colors (black or white)
 
+    // A set of arrays for each color category - each array holds all pixels in that category
     const [allPixels, setPixels] = useState([[], [], [], [], [], []])
 
-    const read = async () => {
-        let colorString = await getDetails()
+    const getPixels = async () => {
+        // sends retreive details request to Python Server
+        // defined in requests.js, sends HTTP request to back end which sends ZMQ request
+        let colorString = await retrieve("null", "1952")
 
+        // response is in format "category1*,* category2*,* ...*,* category6"
         const catList = colorString.split("*,* ")
+        // creates an array of arrays for all categories
         const catPixs = []
+
+        // iterates over each category
         for (let category of catList){
+            // cuts off the unnecessary first and last chars
             category = category.slice(1, category.length - 3)
+
+            // category is in format "pixel], [pixel], [pixel"
             const pixelArray = category.split("], [")
+
             const pixels = []
+            // iterates over each pixel in the category
             for (let pixel of pixelArray){
-                // splits the pixel's string and makes it an array of rgb vals
+                // pixel is in format "r, g, b"
                 pixel = pixel.split(", ")
+
+                // converts the pixel to hexadecimal form
                 let hex = "#"
+                // iterates over r, g, and b in pixel
                 for (let i in pixel.slice(0, 3)){
                     pixel[i] = Number(pixel[i])
+
                     // converts number to hex and adds to hex val
                     const hex2 = pixel[i] % 16
                     const hex1 = (pixel[i] - hex2) / 16
@@ -42,15 +58,17 @@ function ViewDetails () {
                     hex = hex.concat(convertHex(hex2))
                 }
                 hex = hex.concat(" " + pixel[3])
+                // adds the new hex val to array of pixels for that category
                 pixels.push(hex)
             }
+            // adds each category's array of pixels to array
             catPixs.push(pixels)
         }
         setPixels(catPixs)
     }
 
     useEffect(() => {
-        read()
+        getPixels()
     }, [])
 
     return (

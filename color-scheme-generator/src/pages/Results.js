@@ -45,13 +45,14 @@ function ResultsPage () {
             hex = hex.concat(convertHex(hex2))
         }
         hexvals.push(hex)
+        // if color is too dark, uses white text instead of black
         if (blk) text.push("black")
         else text.push("white")
     }
 
+    // When upload again button is pressed, sends back to select page
     const newUpload = () => {
         history.push({pathname: "/"})
-        window.location.reload()
     }
 
     return(

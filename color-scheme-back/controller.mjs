@@ -1,42 +1,47 @@
+// The controller of the back end
+// Uses a Port to receive HTTP requests from the front end
+// Uses ZeroMQ to send and receive data from the Python server files
+
+// Some code based on the ZeroMQ get started webpage for Node.js
+// Other code based on source material from CS290 - Web Development
+
 import 'dotenv/config';
 import express from 'express';
-import fs from "fs"
+import zmq from 'zeromq'
 
+// Express and Port set up for HTTP requests
 const app = express()
+app.use(express.json());
 
 const PORT = process.env.PORT;
 
-app.use(express.json());
 
-function write(path, data) {
-    fs.writeFile(path, data, (err,) => {if (err) return console.log(err)})
+
+// takes data and a ZMQ port, sends the data over the port and awaits response
+async function retrieve(data, port) {
+    console.log(`Connecting to server ${port}…`);
+
+    //  Creates a socket to talk to server
+    const sock = new zmq.Request();
+    sock.connect(`tcp://localhost:${port}`);
+
+    console.log(`Sending Data ${data}`);
+    // Sends the data to the server (Python files)
+    await sock.send(data);
+    // Retrieves the response from the server
+    const [result] = await sock.receive();
+    console.log('Received ', result.toString());
+    // Returns the response
+    return result.toString()
 }
 
-function read(path) {
-    const data = fs.readFileSync(path, "utf-8")
-    return(data)
-}
 
-
-
-app.post('/reset', function (req, res) {
-  // Resets the given text file with write
-  write(req.body.path, "")
-  res.type("application/json").status(201)
-})
-
-app.post('/write', function (req, res) {
-  // Runs the write function
-  write(req.body.path, req.body.text)
-  res.type("application/json").status(201)
-})
-
-app.post('/read', function (req, res) {
-  // Runs the read function and returns the results
-  const data = read(req.body.path)
+// HTTP post request takes data and the ZMQ port, calls the retrieve function
+app.post('/retrieve', async function (req, res) {
+  const data = await retrieve(req.body.request, req.body.port)
+  // sends back the data returned from the retrieve function
   res.type("application/json").status(201).send(data)
 })
-
 
 
 

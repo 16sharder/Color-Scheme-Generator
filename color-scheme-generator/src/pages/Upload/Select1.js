@@ -5,61 +5,79 @@
 // Sends them to the Upload Page if they select a file
 
 import React from 'react';
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import {useHistory, useLocation} from "react-router-dom"
 
-import { readDirectory, resetFile } from '../../helpers/requests';
-import { getDirectory } from '../../helpers/zmq';
-import { sendMessage } from '../../helpers/rabbitmq';
+import retrieve from '../../helpers/requests';
 
 function Select1Page () {
 
     const history = useHistory()
     const location = useLocation()
 
-    const [path, setPath] = useState(location.state.path)
-    const [curdir, setDir] = useState([])
-    const [images, setImgs] = useState([])
+    const char = location.state.char            //      "/" or "\\" for Mac vs Windows paths
 
-    const string = getDirectory(path)
-    const pd = string.split("*,* ")
-
-    setPath(pd[0])
-    const folders = pd[1]
-    const imges = pd[2]
-
-    const directory = folders.split(",* ")
+    const [path, setPath] = useState(location.state.path)   //      current path in user directory
+    const [folders, setFldr] = useState([])                 //      array of folders in current directory
+    const [images, setImgs] = useState([])                  //      array of images in current directory
     
-    const imgs = imges.split(",* ")
+    const getDirectory = async () => {
+        // sends retreive directory request to Python Server
+        // defined in requests.js, sends HTTP request to back end which sends ZMQ request
+        const string = await retrieve(path, "1951")
+        
+        if (string == "Permission denied") {
+            setFldr(["Permission denied"])
+            setImgs(["Permission denied"])
+        } else {
+            // response is in format "path*,* folders*,* images"
+            const pd = string.split("*,* ")
 
-    setDir(directory.slice(0, directory.length - 1))
-    setImgs(imgs.slice(0, imgs.length - 1))
+            setPath(pd[0])
+            const fldrs = pd[1]
+            const imges = pd[2]
 
+            // folders is in format "folder1,* folder2,*"
+            const directory = fldrs.split(",* ")
 
-    const send = (filepath) => {
-        history.push({pathname: "/select2", state: {path: filepath}})
-        window.location.reload()
+            // images is in format "image1,* image2,*"
+            const imgs = imges.split(",* ")
+
+            // sets folders and images arrays without empty last elem
+            setFldr(directory.slice(0, directory.length - 1))
+            setImgs(imgs.slice(0, imgs.length - 1))
+        }
     }
 
+    useEffect(() => {
+        getDirectory()
+    }, [])
+
+
+    // When a folder is selected, sends to next page to enter that directory
+    const send = (filepath) => {
+        history.push({pathname: "/select2", state: {path: filepath, char: char}})
+    }
+
+    // When an image is selected, sends to upload page
     const imgSelect = (filepath) => {
-        history.push({pathname: "/upload", state: {path: filepath}})
-        window.location.reload()
+        history.push({pathname: "/upload", state: {path: filepath, char: char}})
     }
 
     return(
         <>
             <h2>Upload an image to generate a color scheme</h2>
             <div className='folderpath'>
-                {path.split("/").slice(1, 9).map((folder, i) => 
-                <a onClick={() => send(path.slice(0, path.indexOf(folder)) + folder)} key={i}>/{folder}</a>
+                {path.split(char).slice(1, 9).map((folder, i) => 
+                <a onClick={() => send(path.slice(0, path.indexOf(folder)) + folder)} key={i}>{char}{folder}</a>
                 )}
                 <br/>
-                {path.split("/").slice(9, 17).map((folder, i) => 
-                <a onClick={() => send(path.slice(0, path.indexOf(folder)) + folder)} key={i}>/{folder}</a>
+                {path.split(char).slice(9, 17).map((folder, i) => 
+                <a onClick={() => send(path.slice(0, path.indexOf(folder)) + folder)} key={i}>{char}{folder}</a>
                 )}
                 <br/>
-                {path.split("/").slice(18, 26).map((folder, i) => 
-                <a onClick={() => send(path.slice(0, path.indexOf(folder)) + folder)} key={i}>/{folder}</a>
+                {path.split(char).slice(18, 26).map((folder, i) => 
+                <a onClick={() => send(path.slice(0, path.indexOf(folder)) + folder)} key={i}>{char}{folder}</a>
                 )}
             </div>
             <table>
@@ -67,14 +85,14 @@ function Select1Page () {
                     <tr>
                         <td className='folder'>
                             Folders: <br/>
-                            {curdir.map((item, i) => 
-                            <div className='folder' onClick={() => send(path + "/" + item)} key={i}>{item}</div>
+                            {folders.map((item, i) => 
+                            <div className='folder' onClick={() => send(path + char + item)} key={i}>{item}</div>
                             )}
                         </td>
                         <td className='folder'>
                             Images: <br/>
                             {images.map((item, i) => 
-                            <div className='folder' onClick={() => imgSelect(path + "/" + item)} key={i}>{item}</div>
+                            <div className='folder' onClick={() => imgSelect(path + char + item)} key={i}>{item}</div>
                             )}
                         </td>
                     </tr>

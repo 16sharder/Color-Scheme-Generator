@@ -4,15 +4,22 @@
 // Sends the user to the results page once colors are retrieved
 
 import React from 'react';
-import {useHistory} from "react-router-dom"
+import { useEffect } from 'react';
+import { useHistory, useLocation } from "react-router-dom"
+import retrieve from '../helpers/requests';
 
-import { getColors, resetFile } from '../helpers/requests';
 
-function LoadingPage () {const history = useHistory()
+function LoadingPage () {
+    const history = useHistory()
+    const location = useLocation()
 
-    const send = async () => {
-        let colorString = await getColors()
-        resetFile("../textfiles/colors.txt")
+    const path = location.state.path        //      selected image path in user directory
+
+    const getColors = async () => {
+        // sends retreive colors request to Python Server
+        // defined in requests.js, sends HTTP request to back end which sends ZMQ request
+        let colorString = await retrieve(path, '1952')
+
 
         // if there was an error with the file path, asks the user to try again
         if (colorString == "File not found"){
@@ -23,38 +30,47 @@ function LoadingPage () {const history = useHistory()
             alert("A folder is not a valid image - Please try again")
             history.push({pathname: "/"})
         }
-        // if there was no error, continues to the results page
+        else if (colorString == "Permission denied"){
+            alert("You do not have permission to access that image - Please try again")
+            history.push({pathname: "/"})
+        }
+
+
+        // if there was no error, retreives the rgb number vals from string
         else{
             // cuts off the unnecessary first and last chars
             colorString = colorString.slice(1, colorString.length - 1)
 
-            // splits the string to retrieve 6 single strings, one for each color
+            // string is in format "color1), (color2), (... ), (color6"
             const colorList = colorString.split("), (")
             const colors = []
+            
             for (let color of colorList){
-                // splits the color's string and makes it an array of rgb vals
+                // each color is in format "r, g, b"
                 color = color.split(", ")
+
+                // iterates over r, g, and b in color
                 for (let i in color){
                     color[i] = Number(color[i])
                 }
+                // adds the array of rgb numbers to the array of all colors
                 colors.push(color)
             }
 
-
+            // automatically sends the user on to colors page when ready
             history.push({pathname: "/results", state: {colors: colors}})
         }
-
-        // reloads the page to allow user to input again successfully
-        window.location.reload()
     }
 
-    // timer causes the send function to wait 15 seconds before execution
-    setTimeout(send, 15000)
+    useEffect(() => {
+        getColors()
+    }, [])
+
 
     return(
         <>
-            <h1>Currently generating your colors...</h1>
-            <h4>This will take about 15 seconds</h4>
+            <h1>Examining your image and generating your colors...</h1>
+            <h4>This will take about 10 seconds</h4>
         </>
     )
 }

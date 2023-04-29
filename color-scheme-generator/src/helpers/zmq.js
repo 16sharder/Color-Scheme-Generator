@@ -1,4 +1,4 @@
-const zmq = "require('0mq')";
+const zmq = require('zeromq');
 
 async function getDirectory(path) {
     console.log('Connecting to server 1951…');
