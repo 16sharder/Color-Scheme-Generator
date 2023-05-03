@@ -30,8 +30,16 @@ async function retrieve(data, port) {
     await sock.send(data);
     // Retrieves the response from the server
     const [result] = await sock.receive();
-    const res = JSON.parse(result.toString())
-    console.log('Received ', res);
+
+    // Determines if req successful or if error string returned
+    let res;
+    try{
+      res = JSON.parse(result.toString())
+    }
+    catch{
+      res = result.toString()
+    }
+
     // Returns the response
     return res
 }
@@ -40,8 +48,16 @@ async function retrieve(data, port) {
 // HTTP post request takes data and the ZMQ port, calls the retrieve function
 app.post('/retrieve', async function (req, res) {
   const data = await retrieve(req.body.request, req.body.port)
-  // sends back the data returned from the retrieve function
-  res.type("application/json").status(201).send(data)
+
+  // sends back error or data returned from the retrieve function
+  if (typeof data == "string") {
+    console.log("Returning error")
+    res.type("application/json").status(419).send(data)
+  }
+  else {
+    console.log("Returning data")
+    res.type("application/json").status(201).send(data)
+  }
 })
 
 

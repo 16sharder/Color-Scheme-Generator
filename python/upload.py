@@ -105,11 +105,9 @@ while end:
                     maxi = cat[pixel]
             colors.append(color)
 
-        res = {"colors": colors}
-
         # sends back the main color results
-        print(f"Sending reply: {res}")
-        socket.send_json(res)
+        print(f"Sending reply: {colors}")
+        socket.send_json(colors)
 
     # image path is null when requesting the details of the image
     # this section will always only be called after the previous section has executed

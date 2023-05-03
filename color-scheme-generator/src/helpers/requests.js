@@ -9,8 +9,13 @@ async function retrieve (data, port) {
         body: JSON.stringify({request: data, port: port}),
         headers: {"Content-type": "application/json"}
     })
+    // Returns error if manual error thrown
+    if (response.status == 419){
+        const msg = await response.text()
+        return msg
+    }
     // Sends error alert if the request failed
-    if (response.status !== 201){
+    else if (response.status !== 201){
         alert(`Request failed. Status code = ${response.status}`)
     // Returns the retreived data if request successful
     } else {

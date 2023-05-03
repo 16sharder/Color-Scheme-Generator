@@ -18,30 +18,24 @@ function LoadingPage () {
     const getColors = async () => {
         // sends retreive colors request to Python Server
         // defined in requests.js, sends HTTP request to back end which sends ZMQ request
-        let res = await retrieve(path, '1952')
-
+        let colors = await retrieve(path, '1952')
 
         // if there was an error with the file path, asks the user to try again
-        if (res == "File not found"){
+        if (colors == "File not found"){
             alert("File not found - Please try again")
             history.push({pathname: "/"})
         }
-        else if (res == "Directory"){
+        else if (colors == "Directory"){
             alert("A folder is not a valid image - Please try again")
             history.push({pathname: "/"})
         }
-        else if (res == "Permission denied"){
+        else if (colors == "Permission denied"){
             alert("You do not have permission to access that image - Please try again")
             history.push({pathname: "/"})
         }
 
-
-        // if there was no error, retreives the rgb number vals from string
+        // if no error, sends the user on to colors page when ready
         else{
-            const colors = res["colors"]
-            console.log(colors)
-
-            // automatically sends the user on to colors page when ready
             history.push({pathname: "/results", state: {colors: colors}})
         }
     }
