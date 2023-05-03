@@ -1,6 +1,9 @@
+# Upload (python server) is used to retrieve the colors from the provided path's image
+
 from PIL import Image
 import zmq
 
+# creates a socket to receive from the client
 context = zmq.Context()
 socket = context.socket(zmq.REP)
 socket.bind("tcp://*:1952")
@@ -8,17 +11,19 @@ socket.bind("tcp://*:1952")
 end = True
 
 while end:
-    # if the file isn't empty, proceeds to read the path
+    # once a message has been received, decodes it
     image_path = socket.recv()
     image_path = image_path.decode("utf-8")
-    if image_path != "null":
 
+    # image_path is not null when requesting the main colors of the image
+    if image_path != "null":
         print(f"Received path request: {image_path}")
 
         # attempts to open the file
         try:
             image = Image.open(image_path)
-        # if the attempt fails, writes file not found before continuing loop
+
+        # if the attempt fails, sends error message
         except FileNotFoundError:
             print(f"Sending reply: File not found")
             socket.send(bytes("File not found", encoding='utf-8'))
@@ -107,43 +112,53 @@ while end:
             if color != colors[5]:
                 string += ", "
 
-        # writes the string to the colors text file
+        # sends back the main color results
         print(f"Sending reply: {string}")
         socket.send(bytes(string, encoding='utf-8'))
 
+    # image path is null when requesting the details of the image
+    # this section will always only be called after the previous section has executed
     else:
         print(f"Received request for details")
 
         details = ""
+
+        # iterates over each color category
         for cat in cats:
             highest = []
+            # iterates over each pixel in the category and appends its frequency
             for pixel in cat:
                 if pixel == "count":
                     continue
-                percent = 100 * cat[pixel] / (width*height)
                 highest.append(cat[pixel])
 
+            # sorts the frequency list and cuts it at 100
             highest.sort(reverse=True)
             if len(highest) > 100:
-                highest = highest[0:100]
+                highest = highest[:100]
 
+            # for each pixel in the category, determines if its frequency is in highest
             for pixel in cat:
                 if pixel == "count":
                     continue
                 try:
                     idx = highest.index(cat[pixel])
                     lest = list(pixel)
+                    # appends the frequency to the rgb vals [r, g, b, frequency]
                     lest.append(cat[pixel])
                     highest[idx] = lest
                 except ValueError:
                     continue
 
+            # adds each pixel with high frequency to the results string
             for val in highest:
                 if type(val) != list:
                     continue
                 details += str(val) + ", "
+
             details += "*,* "
 
+        # sends on the resulting list of categories with highest pixels
         print(f"Sending details")
         socket.send(bytes(details, encoding='utf-8'))
 
