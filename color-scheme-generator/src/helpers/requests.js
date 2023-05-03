@@ -14,7 +14,7 @@ async function retrieve (data, port) {
         alert(`Request failed. Status code = ${response.status}`)
     // Returns the retreived data if request successful
     } else {
-        const data = await response.text()
+        const data = await response.json()
         return data
     }
 }

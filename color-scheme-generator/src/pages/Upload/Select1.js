@@ -24,28 +24,15 @@ function Select1Page () {
     const getDirectory = async () => {
         // sends retreive directory request to Python Server
         // defined in requests.js, sends HTTP request to back end which sends ZMQ request
-        const string = await retrieve(path, "1951")
+        const res = await retrieve(path, "1951")
         
-        if (string == "Permission denied") {
+        if (res == "Permission denied") {
             setFldr(["Permission denied"])
             setImgs(["Permission denied"])
         } else {
-            // response is in format "path*,* folders*,* images"
-            const pd = string.split("*,* ")
-
-            setPath(pd[0])
-            const fldrs = pd[1]
-            const imges = pd[2]
-
-            // folders is in format "folder1,* folder2,*"
-            const directory = fldrs.split(",* ")
-
-            // images is in format "image1,* image2,*"
-            const imgs = imges.split(",* ")
-
-            // sets folders and images arrays without empty last elem
-            setFldr(directory.slice(0, directory.length - 1))
-            setImgs(imgs.slice(0, imgs.length - 1))
+            setPath(res["path"])
+            setFldr(res["folders"])
+            setImgs(res["images"])
         }
     }
 

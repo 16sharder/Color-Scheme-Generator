@@ -42,27 +42,28 @@ while end:
 
         # sorts the contents in alphabetical order
         directory.sort()
-        string = path + "*,* "
 
-        dirstring = ""
-        imgstring = "*,* "
+        res = {"path": path}
+        folders = []
+        images = []
 
         # iterates over each item to determine if it is a directory or an image
         for item in directory:
             try:
                 if item[0] != ".":
                     if os.path.isdir(path + char + item):
-                        dirstring += item + ",* "
+                        folders.append(item)
                     elif imghdr.what(path + char + item) is not None:
-                        imgstring += item + ",* "
+                        images.append(item)
             except PermissionError:
                 continue
 
-        string += dirstring + imgstring
+        res["folders"] = folders
+        res["images"] = images
 
         # sends on the resulting list of folders and images
-        print(f"Sending reply: {string}")
-        socket.send(bytes(string, encoding='utf-8'))
+        print(f"Sending reply: {res}")
+        socket.send_json(res)
 
     # if the path is not a directory, sends error message
     else:

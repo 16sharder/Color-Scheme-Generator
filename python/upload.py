@@ -105,23 +105,19 @@ while end:
                     maxi = cat[pixel]
             colors.append(color)
 
-        # converts each color to one long string
-        string = ""
-        for color in colors:
-            string += str(color)
-            if color != colors[5]:
-                string += ", "
+        res = {"colors": colors}
 
         # sends back the main color results
-        print(f"Sending reply: {string}")
-        socket.send(bytes(string, encoding='utf-8'))
+        print(f"Sending reply: {res}")
+        socket.send_json(res)
 
     # image path is null when requesting the details of the image
     # this section will always only be called after the previous section has executed
     else:
         print(f"Received request for details")
 
-        details = ""
+        details = dict()
+        i = 1
 
         # iterates over each color category
         for cat in cats:
@@ -150,15 +146,10 @@ while end:
                 except ValueError:
                     continue
 
-            # adds each pixel with high frequency to the results string
-            for val in highest:
-                if type(val) != list:
-                    continue
-                details += str(val) + ", "
-
-            details += "*,* "
+            details[f"cat{i}"] = highest
+            i += 1
 
         # sends on the resulting list of categories with highest pixels
-        print(f"Sending details")
-        socket.send(bytes(details, encoding='utf-8'))
+        print("Sending details")
+        socket.send_json(details)
 

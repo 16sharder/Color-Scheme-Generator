@@ -24,47 +24,29 @@ function ViewDetails () {
     const getPixels = async () => {
         // sends retreive details request to Python Server
         // defined in requests.js, sends HTTP request to back end which sends ZMQ request
-        let colorString = await retrieve("null", "1952")
+        const details = await retrieve("null", "1952")
+        const cats = []
 
-        // response is in format "category1*,* category2*,* ...*,* category6"
-        const catList = colorString.split("*,* ")
-        // creates an array of arrays for all categories
-        const catPixs = []
-
-        // iterates over each category
-        for (let category of catList){
-            // cuts off the unnecessary first and last chars
-            category = category.slice(1, category.length - 3)
-
-            // category is in format "pixel], [pixel], [pixel"
-            const pixelArray = category.split("], [")
-
+        // iterates over each of 6 color categories
+        for (let i=1; i<7; i++) {
+            const category = details[`cat${i}`]
             const pixels = []
-            // iterates over each pixel in the category
-            for (let pixel of pixelArray){
-                // pixel is in format "r, g, b"
-                pixel = pixel.split(", ")
 
-                // converts the pixel to hexadecimal form
+            // iterates over each pixel in the category and converts it to hex
+            for (let pixel of category) {
                 let hex = "#"
-                // iterates over r, g, and b in pixel
-                for (let i in pixel.slice(0, 3)){
-                    pixel[i] = Number(pixel[i])
-
-                    // converts number to hex and adds to hex val
-                    const hex2 = pixel[i] % 16
-                    const hex1 = (pixel[i] - hex2) / 16
+                for (let p of pixel.slice(0, 3)) {
+                    const hex2 = p % 16
+                    const hex1 = (p - hex2) / 16
                     hex = hex.concat(convertHex(hex1))
                     hex = hex.concat(convertHex(hex2))
                 }
                 hex = hex.concat(" " + pixel[3])
-                // adds the new hex val to array of pixels for that category
                 pixels.push(hex)
             }
-            // adds each category's array of pixels to array
-            catPixs.push(pixels)
+            cats.push(pixels)
         }
-        setPixels(catPixs)
+        setPixels(cats)
     }
 
     useEffect(() => {

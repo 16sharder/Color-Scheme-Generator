@@ -18,19 +18,19 @@ function LoadingPage () {
     const getColors = async () => {
         // sends retreive colors request to Python Server
         // defined in requests.js, sends HTTP request to back end which sends ZMQ request
-        let colorString = await retrieve(path, '1952')
+        let res = await retrieve(path, '1952')
 
 
         // if there was an error with the file path, asks the user to try again
-        if (colorString == "File not found"){
+        if (res == "File not found"){
             alert("File not found - Please try again")
             history.push({pathname: "/"})
         }
-        else if (colorString == "Directory"){
+        else if (res == "Directory"){
             alert("A folder is not a valid image - Please try again")
             history.push({pathname: "/"})
         }
-        else if (colorString == "Permission denied"){
+        else if (res == "Permission denied"){
             alert("You do not have permission to access that image - Please try again")
             history.push({pathname: "/"})
         }
@@ -38,24 +38,8 @@ function LoadingPage () {
 
         // if there was no error, retreives the rgb number vals from string
         else{
-            // cuts off the unnecessary first and last chars
-            colorString = colorString.slice(1, colorString.length - 1)
-
-            // string is in format "color1), (color2), (... ), (color6"
-            const colorList = colorString.split("), (")
-            const colors = []
-            
-            for (let color of colorList){
-                // each color is in format "r, g, b"
-                color = color.split(", ")
-
-                // iterates over r, g, and b in color
-                for (let i in color){
-                    color[i] = Number(color[i])
-                }
-                // adds the array of rgb numbers to the array of all colors
-                colors.push(color)
-            }
+            const colors = res["colors"]
+            console.log(colors)
 
             // automatically sends the user on to colors page when ready
             history.push({pathname: "/results", state: {colors: colors}})

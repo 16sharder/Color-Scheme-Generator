@@ -30,9 +30,10 @@ async function retrieve(data, port) {
     await sock.send(data);
     // Retrieves the response from the server
     const [result] = await sock.receive();
-    console.log('Received ', result.toString());
+    const res = JSON.parse(result.toString())
+    console.log('Received ', res);
     // Returns the response
-    return result.toString()
+    return res
 }
 
 
