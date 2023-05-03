@@ -4,57 +4,51 @@
 // Sends the user to the results page once colors are retrieved
 
 import React from 'react';
-import {useHistory} from "react-router-dom"
+import { useEffect } from 'react';
+import { useHistory, useLocation } from "react-router-dom"
+import retrieve from '../helpers/requests';
 
-import { getColors, resetFile } from '../helpers/requests';
 
-function LoadingPage () {const history = useHistory()
+function LoadingPage () {
+    const history = useHistory()
+    const location = useLocation()
 
-    const send = async () => {
-        let colorString = await getColors()
-        resetFile("../textfiles/colors.txt")
+    const path = location.state.path        //      selected image path in user directory
+
+    const getColors = async () => {
+        // sends retreive colors request to Python Server
+        // defined in requests.js, sends HTTP request to back end which sends ZMQ request
+        let colors = await retrieve(path, '1952')
 
         // if there was an error with the file path, asks the user to try again
-        if (colorString == "File not found"){
+        if (colors == "File not found"){
             alert("File not found - Please try again")
             history.push({pathname: "/"})
         }
-        else if (colorString == "Directory"){
+        else if (colors == "Directory"){
             alert("A folder is not a valid image - Please try again")
             history.push({pathname: "/"})
         }
-        // if there was no error, continues to the results page
-        else{
-            // cuts off the unnecessary first and last chars
-            colorString = colorString.slice(1, colorString.length - 1)
-
-            // splits the string to retrieve 6 single strings, one for each color
-            const colorList = colorString.split("), (")
-            const colors = []
-            for (let color of colorList){
-                // splits the color's string and makes it an array of rgb vals
-                color = color.split(", ")
-                for (let i in color){
-                    color[i] = Number(color[i])
-                }
-                colors.push(color)
-            }
-
-
-            history.push({pathname: "/results", state: {colors: colors}})
+        else if (colors == "Permission denied"){
+            alert("You do not have permission to access that image - Please try again")
+            history.push({pathname: "/"})
         }
 
-        // reloads the page to allow user to input again successfully
-        window.location.reload()
+        // if no error, sends the user on to colors page when ready
+        else{
+            history.push({pathname: "/results", state: {colors: colors}})
+        }
     }
 
-    // timer causes the send function to wait 15 seconds before execution
-    setTimeout(send, 15000)
+    useEffect(() => {
+        getColors()
+    }, [])
+
 
     return(
         <>
-            <h1>Currently generating your colors...</h1>
-            <h4>This will take about 15 seconds</h4>
+            <h1>Examining your image and generating your colors...</h1>
+            <h4>This will take about 10 seconds</h4>
         </>
     )
 }

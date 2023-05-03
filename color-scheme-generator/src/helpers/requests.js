@@ -1,87 +1,27 @@
-// File that includes all requests to the back end
+// Front end file that sends to and receives from the back end controller
+// Uses a proxy to connect to Port 1980 to send HTTP requests to the back end
 
-// resets any given file to empty (given file path)
-async function resetFile (path) {
-    const response = await fetch("/reset", {
+// Takes data and a ZeroMQ port, returns the data from HTTP request
+async function retrieve (data, port) {
+    // sends the data and ZMQ port as part of HTTP Post request
+    const response = await fetch("/retrieve", {
         method: "POST", 
-        body: JSON.stringify({path: path}),
+        body: JSON.stringify({request: data, port: port}),
         headers: {"Content-type": "application/json"}
     })
-    if (response.status !== 201){
-        alert(`Reset file failed. Status code = ${response.status}`)
+    // Returns error if manual error thrown
+    if (response.status == 419){
+        const msg = await response.text()
+        return msg
     }
-    return
-}
-
-// places the directory path on getdir.txt, then reads from directory.txt for files in dir
-async function getDirectory (path) {
-    const response = await fetch("/write", {
-        method: "POST", 
-        body: JSON.stringify({path: "../textfiles/getdir.txt", text: path}),
-        headers: {"Content-type": "application/json"}
-    })
-    if (response.status !== 201){
-        alert(`Request directory failed. Status code = ${response.status}`)
-    }
-    return
-}
-
-async function readDirectory () {
-    const res = await fetch("/read", {
-        method: "POST", 
-        body: JSON.stringify({path: "../textfiles/directory.txt"}),
-        headers: {"Content-type": "application/json"}
-    })
-    if (res.status !== 201){
-        alert(`Retrieve directory failed. Status code = ${res.status}`)
+    // Sends error alert if the request failed
+    else if (response.status !== 201){
+        alert(`Request failed. Status code = ${response.status}`)
+    // Returns the retreived data if request successful
     } else {
-        const data = await res.text()
+        const data = await response.json()
         return data
     }
 }
 
-// places the path for the image on path.txt (for colors)
-async function postPath (filepath) {
-    const response = await fetch("/write", {
-        method: "POST", 
-        body: JSON.stringify({path: "../textfiles/path.txt", text: filepath}),
-        headers: {"Content-type": "application/json"}
-    })
-    if (response.status !== 201){
-        alert(`Upload image failed. Status code = ${response.status}`)
-    }
-    return
-}
-
-// retrieves the rgb values placed on colors.txt
-async function getColors () {
-    const response = await fetch("/read", {
-        method: "POST", 
-        body: JSON.stringify({path: "../textfiles/colors.txt"}),
-        headers: {"Content-type": "application/json"}
-    })
-    if (response.status !== 201){
-        alert(`Color retrieval failed. Status code = ${response.status}`)
-    } else {
-        const data = await response.text()
-        return data
-    }
-}
-
-
-async function getDetails () {
-    const response = await fetch("/read", {
-        method: "POST", 
-        body: JSON.stringify({path: "../textfiles/details.txt"}),
-        headers: {"Content-type": "application/json"}
-    })
-    if (response.status !== 201){
-        alert(`Detail retrieval failed. Status code = ${response.status}`)
-    } else {
-        const data = await response.text()
-        return data
-    }
-}
-
-
-export {resetFile, getDirectory, readDirectory, postPath, getColors, getDetails}
+export default retrieve
