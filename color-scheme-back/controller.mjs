@@ -55,7 +55,7 @@ app.post('/retrieve', async function (req, res) {
     res.type("application/json").status(419).send(data)
   }
   else {
-    console.log("Returning data")
+    console.log("Returning response")
     res.type("application/json").status(201).send(data)
   }
 })

@@ -34,9 +34,16 @@ function LoadingPage () {
             history.push({pathname: "/"})
         }
 
-        // if no error, sends the user on to colors page when ready
+        // if no error, retrieves the hsv vals and sends the user on to colors page when ready
         else{
-            history.push({pathname: "/results", state: {colors: colors}})
+            const HSV = []
+            for (let color of colors) {
+                const rgb = color.slice()
+                rgb.push("r")
+                const hsv = await retrieve(JSON.stringify(rgb), 7170)
+                HSV.push(hsv)
+            }
+            history.push({pathname: "/results", state: {rgbs: colors, hsvs: HSV}})
         }
     }
 
