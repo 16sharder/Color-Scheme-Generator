@@ -121,6 +121,26 @@ td.color {
   font-size: x-small;
 }
 
+.addon {
+  height: 50px;
+  width: 50px;
+}
+
+.slider > *{
+  font-size: smaller;
+  margin: 10px;
+}
+
+.numinp {
+  max-width: fit-content;
+  font-size: medium;
+}
+
+.sld {
+  background-color: gray;
+  color: green;
+}
+
 
 
 

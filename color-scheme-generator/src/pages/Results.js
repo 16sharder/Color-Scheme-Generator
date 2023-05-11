@@ -5,10 +5,8 @@
 // Includes an upload button to generate a new scheme
 
 import React from 'react';
-import {useState, useEffect} from "react"
+import {useState} from "react"
 import {useHistory, useLocation} from "react-router-dom"
-
-import retrieve from '../helpers/requests';
 
 function convertHex (num) {
     // converts a number from 0 to 15 to hex string
@@ -86,7 +84,7 @@ function ResultsPage () {
 
                         {hexvals.slice(0, 3).map((color, i) => 
                         <td className="color" style={{"backgroundColor": color, "color": text[i]}} 
-                            onClick={() => history.push({pathname: "/edit", state: {rgbs: rgbs, hsvs: hsvs}})} key={i}>
+                            onClick={() => history.push({pathname: "/edit", state: {colors: hexvals, rgbs: rgbs, hsvs: hsvs, i: i}})} key={i}>
 
                             <div className='stats'>{color}
                             <br/>rgb({rgbs[i][0]}, {rgbs[i][1]}, {rgbs[i][2]})
@@ -100,14 +98,14 @@ function ResultsPage () {
 
                         {hexvals.slice(3, 6).map((color, i) => 
                         <td className="color" style={{"backgroundColor": color, "color": text[i+3]}} 
-                            onClick={() => history.push({pathname: "/edit", state: {rgbs: rgbs, hsvs: hsvs}})} key={i}>
+                            onClick={() => history.push({pathname: "/edit", state: {colors: hexvals, rgbs: rgbs, hsvs: hsvs, i: i+3}})} key={i}>
 
                             <div className='stats'>{color}
                             <br/>rgb({rgbs[i+3][0]}, {rgbs[i+3][1]}, {rgbs[i+3][2]})
                             <br/>hsv({hsvs[i+3][0]}, {hsvs[i+3][1]}%, {hsvs[i+3][2]}%)</div>
                         </td>)}
 
-                        <td><button onClick={() => history.push({pathname: "/details", state: {colors: hexvals, rgbs: rgbs, text: text}})}>
+                        <td><button onClick={() => history.push({pathname: "/details", state: {colors: hexvals, rgbs: rgbs, hsvs: hsvs, text: text}})}>
                             See Image Details <a className='small'>(i)</a></button></td>
                     </tr>
                     <tr>

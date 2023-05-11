@@ -16,6 +16,7 @@ function ViewDetails () {
 
     const mainColors = location.state.colors        //      array of generated hex colors
     const rgbs = location.state.rgbs                //      array of generated rgb colors (for passing use)
+    const hsvs = location.state.hsvs                //      array of generated rgb colors (for passing use)
     const text = location.state.text                //      array of determined text colors (black or white)
 
     // A set of arrays for each color category - each array holds all pixels in that category
@@ -64,7 +65,7 @@ function ViewDetails () {
                     the number of pixels of that color in your image.
                     </th>
                     <th>
-                        <button onClick={() => history.push({pathname: "/results", state: {colors: rgbs}})}>Return to Results</button>
+                        <button onClick={() => history.push({pathname: "/results", state: {rgbs: rgbs, hsvs: hsvs}})}>Return to Results</button>
                     </th>
                 </tr>
             </thead>
