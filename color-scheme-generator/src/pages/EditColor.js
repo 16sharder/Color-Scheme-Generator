@@ -19,19 +19,25 @@ function EditColor () {
 
     const idx = location.state.i
     
+    
+    // set color of addons to allow selected color to pop out
     const background = "bisque"
     const addons = [background, background, background, background, background, background]
     addons[idx] = colors[idx]
 
+    // sets width of selected color to be larger if in middle
     const bwidth = "250px"
     const widths = [bwidth, bwidth, bwidth]
     if (idx == 1 || idx == 4) widths[1] = "300px"
 
+
+    // each element of edited color
     const [hue, setHue] = useState(hsvs[idx][0])
     const [sat, setSat] = useState(hsvs[idx][1])
     const [bri, setBri] = useState(hsvs[idx][2])
 
 
+    // edits the color in real time
     const editColor = async () => {
         const hsv = [hue, sat, bri, "u"]
         const rgb = await retrieve(JSON.stringify(hsv), 7170)
@@ -40,6 +46,7 @@ function EditColor () {
         setColors(origColors)
     }
 
+    // saves the edits and sends back to results page
     const saveColor = async () => {
         hsvs[idx] = [hue, sat, bri]
 

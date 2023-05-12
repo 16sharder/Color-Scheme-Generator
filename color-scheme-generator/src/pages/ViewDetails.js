@@ -14,9 +14,10 @@ function ViewDetails () {
 
     const history = useHistory()
     const location = useLocation()
-    const text = location.state.text                //      array of determined text colors (black or white)
 
     const [mainColors, setColors] = useState([])
+
+    const [text, setText] = useState([])
 
     // A set of arrays for each color category - each array holds all pixels in that category
     const [allPixels, setPixels] = useState([[], [], [], [], [], []])
@@ -29,11 +30,18 @@ function ViewDetails () {
         const details = response[1]
 
         // converts the colors from rgb to hex
-        const hexs = []
+        const hexs = [], txt = []
         for (const rgb of originals){
             hexs.push(convertHex(rgb))
+
+            // determines if color's stat text should be white or black
+            rgb.push("r")
+            const hsv = await retrieve(JSON.stringify(rgb), 7170)
+            if (hsv[2] > 60) txt.push("black")
+            else txt.push("white")
         }
         setColors(hexs)
+        setText(txt)
 
         const cats = []
 

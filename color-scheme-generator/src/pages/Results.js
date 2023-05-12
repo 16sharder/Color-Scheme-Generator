@@ -42,6 +42,7 @@ function ResultsPage () {
             setHS("Show")
     }}
 
+    // retrieves the original colors produced and resets all val types
     const restore = async () => {
         const originals = await retrieve(JSON.stringify(["originals"]), 1952)
         current.rgbs = originals

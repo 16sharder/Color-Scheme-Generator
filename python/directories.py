@@ -69,4 +69,3 @@ while end:
     else:
         print(f"Sending reply: Not a directory")
         socket.send(bytes("Not a directory", encoding='utf-8'))
-

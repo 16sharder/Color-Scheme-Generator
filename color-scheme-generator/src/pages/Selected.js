@@ -20,9 +20,11 @@ function SelectedPage () {
 
     const hexvals = current.hexs
 
+    // sets border for selected color
     const borders = [undefined, undefined, undefined, undefined, undefined, undefined]
     borders[idx] = `3px solid ${border}`
 
+    // switches the selected with secondary selected and returns to results
     const swich = (num) => {
         let temp = current.hexs[idx]
         current.hexs[idx] = current.hexs[num]
@@ -39,6 +41,7 @@ function SelectedPage () {
         history.push({pathname: "/results", state: {current: current}})
     }
 
+    // deletes the selected color and replaces with next most common color in image
     const delet = async () => {
         let rgbs = await retrieve(JSON.stringify(["delete", idx]), 1952)
 
