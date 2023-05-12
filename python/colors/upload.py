@@ -108,6 +108,9 @@ while end:
             colors.append(color)
 
         # sends back the main color results
+        originals = colors.copy()
+        orig_cats = cats.copy()
+        orig_counts = counts.copy()
         print(f"Sending reply: {colors}")
         socket.send_json(colors)
 
@@ -151,10 +154,41 @@ while end:
 
         # sends on the resulting list of categories with highest pixels
         print("Sending details")
-        socket.send_json(details)
+        socket.send_json([colors, details])
 
     elif message[0] == "originals":
-        print(f"Sending originals: {colors}")
+        colors = originals.copy()
+        cats = orig_cats.copy()
+        counts = orig_counts.copy()
+        print(f"Sending originals: {originals}")
+        socket.send_json(originals)
+
+    elif message[0] == "delete":
+        idx = message[1]
+        print(f"Received delete request: {idx}")
+
+        a = max(counts)
+        counts.remove(a)
+
+        # identifies the 6 categories coordinating with those counts
+        for item in dictionary:
+            cat = dictionary[item]
+            if cat["count"] == a:
+                cats[idx] = cat
+
+        color = None
+        maxi = 0
+        cat = cats[idx]
+        for pixel in cat:
+            if pixel == "count":
+                continue
+            if cat[pixel] > maxi:
+                color = pixel
+                maxi = cat[pixel]
+        colors[idx] = color
+
+        # sends back the main color results
+        print(f"Sending reply: {colors}")
         socket.send_json(colors)
 
     else:
