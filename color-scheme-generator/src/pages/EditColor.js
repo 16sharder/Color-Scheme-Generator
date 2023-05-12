@@ -18,7 +18,7 @@ function EditColor () {
     const hsvs = current.hsvs
 
     const idx = location.state.i
-    
+
     
     // set color of addons to allow selected color to pop out
     const background = "bisque"
@@ -55,7 +55,7 @@ function EditColor () {
 
         origColors[idx] = convertHex(rgbs[idx])
 
-        const curr = {hexs: origColors, rgbs: rgbs, hsvs: hsvs}
+        const curr = {hexs: origColors, rgbs: rgbs, hsvs: hsvs, idxs: current.idxs}
         history.push({pathname: "/results", state: {current: curr}})
     }
 

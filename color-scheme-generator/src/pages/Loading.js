@@ -49,7 +49,7 @@ function LoadingPage () {
                 hexvals.push(hex)
             }
 
-            const current = {hexs: hexvals, rgbs: colors, hsvs: HSV}
+            const current = {hexs: hexvals, rgbs: colors, hsvs: HSV, idxs: [0, 1, 2, 3, 4, 5]}
             history.push({pathname: "/results", state: {current: current}})
         }
     }

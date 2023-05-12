@@ -38,13 +38,25 @@ function SelectedPage () {
         current.hsvs[idx] = current.hsvs[num]
         current.hsvs[num] = temp
 
+        console.log(current.idxs)
+        temp = current.idxs[idx]
+        current.idxs[idx] = current.idxs[num]
+        current.idxs[num] = temp
+
         history.push({pathname: "/results", state: {current: current}})
     }
 
     // deletes the selected color and replaces with next most common color in image
     const delet = async () => {
-        let rgbs = await retrieve(JSON.stringify(["delete", idx]), 1952)
+        const updated = await retrieve(JSON.stringify(["delete", current.idxs[idx]]), 1952)
+        
+        // moves the colors back to the correct indexes (according to switch)
+        let rgbs = []
+        for (let i in updated){
+            rgbs[i] = updated[current.idxs[i]]
+        }
 
+        // recreates the color arrays
         const hsvs = [], hexs = []
         for (let color of rgbs) {
             const rgb = color.slice()
@@ -57,7 +69,7 @@ function SelectedPage () {
             hexs.push(hex)
         }
 
-        const curr = {hexs: hexs, rgbs: rgbs, hsvs: hsvs}
+        const curr = {hexs: hexs, rgbs: rgbs, hsvs: hsvs, idxs: current.idxs}
 
         history.push({pathname: "/results", state: {current: curr}})
     }
