@@ -22,8 +22,11 @@ function ViewDetails () {
     const [allPixels, setPixels] = useState([[], [], [], [], [], []])
 
     const getPixels = async () => {
-        // retrieves the unedited colors from the scheme
-        const originals = await retrieve(JSON.stringify(["originals"]), 1952)
+        // sends retreive details request to Python Server
+        // defined in requests.js, sends HTTP request to back end which sends ZMQ request
+        const response = await retrieve(JSON.stringify(["details"]), 1952)
+        const originals = response[0]
+        const details = response[1]
 
         // converts the colors from rgb to hex
         const hexs = []
@@ -32,9 +35,6 @@ function ViewDetails () {
         }
         setColors(hexs)
 
-        // sends retreive details request to Python Server
-        // defined in requests.js, sends HTTP request to back end which sends ZMQ request
-        const details = await retrieve(JSON.stringify(["details"]), 1952)
         const cats = []
 
         // iterates over each of 6 color categories
@@ -50,7 +50,6 @@ function ViewDetails () {
             }
             cats.push(pixels)
         }
-        console.log(cats)
         setPixels(cats)
     }
 

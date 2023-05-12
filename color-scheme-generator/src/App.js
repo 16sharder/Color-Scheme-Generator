@@ -11,6 +11,7 @@ import LoadingPage from './pages/Loading';
 import ViewDetails from './pages/ViewDetails';
 import ModifyScheme from './pages/ModifyScheme';
 import EditColor from './pages/EditColor';
+import SelectedPage from './pages/Selected';
 
 
 function App() {
@@ -21,13 +22,13 @@ function App() {
           <Route path="/" exact>
             <StartPage />
           </Route>
-          <Route path="/select1" exact>
+          <Route path="/select1">
             <Select1Page />
           </Route>
-          <Route path="/select2" exact>
+          <Route path="/select2">
             <Select2Page />
           </Route>
-          <Route path="/upload" exact>
+          <Route path="/upload">
             <UploadPage />
           </Route>
           <Route path="/loading">
@@ -35,6 +36,9 @@ function App() {
           </Route>
           <Route path="/results">
             <ResultsPage />
+          </Route>
+          <Route path="/selected">
+            <SelectedPage />
           </Route>
           <Route path="/details">
             <ViewDetails />

@@ -50,7 +50,6 @@ function LoadingPage () {
             }
 
             const current = {hexs: hexvals, rgbs: colors, hsvs: HSV}
-            console.log(current)
             history.push({pathname: "/results", state: {current: current}})
         }
     }

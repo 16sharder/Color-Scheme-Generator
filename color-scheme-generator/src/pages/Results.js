@@ -16,7 +16,6 @@ function ResultsPage () {
 
     const current = location.state.current
 
-    // retrieves the string of rgb vals
     const rgbs = current.rgbs
     const hsvs = current.hsvs
     const hexvals = current.hexs
@@ -59,7 +58,7 @@ function ResultsPage () {
         }
         current.hexs = hexs
         current.hsvs = hsvs
-        
+
         history.push({pathname: "/results", state: {current: current}})
     }
 
@@ -71,7 +70,7 @@ function ResultsPage () {
     return(
         <>
             <h1>Here is your color scheme:</h1>
-            <h3>Select a color to edit or discard it</h3>
+            <h3>Select a color to move, edit, or discard it</h3>
             <table className="colors">
                 <tbody>
                     <tr>
@@ -80,7 +79,7 @@ function ResultsPage () {
 
                         {hexvals.slice(0, 3).map((color, i) => 
                         <td className="color" style={{"backgroundColor": color, "color": text[i]}} 
-                            onClick={() => history.push({pathname: "/edit", state: {current: current, i: i}})} key={i}>
+                            onClick={() => history.push({pathname: "/selected", state: {current: current, i: i, border: btext[i]}})} key={i}>
 
                             <div className='stats'>{color}
                             <br/>rgb({rgbs[i][0]}, {rgbs[i][1]}, {rgbs[i][2]})
@@ -94,7 +93,7 @@ function ResultsPage () {
 
                         {hexvals.slice(3, 6).map((color, i) => 
                         <td className="color" style={{"backgroundColor": color, "color": text[i+3]}} 
-                            onClick={() => history.push({pathname: "/edit", state: {current: current, i: i+3}})} key={i}>
+                            onClick={() => history.push({pathname: "/selected", state: {current: current, i: i+3, border: btext[i+3]}})} key={i}>
 
                             <div className='stats'>{color}
                             <br/>rgb({rgbs[i+3][0]}, {rgbs[i+3][1]}, {rgbs[i+3][2]})

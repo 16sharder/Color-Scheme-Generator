@@ -45,7 +45,7 @@ function EditColor () {
 
         const hsv = [hue, sat, bri, "u"]
         rgbs[idx] = await retrieve(JSON.stringify(hsv), 7170)
-        
+
         origColors[idx] = convertHex(rgbs[idx])
 
         const curr = {hexs: origColors, rgbs: rgbs, hsvs: hsvs}
@@ -160,14 +160,11 @@ function EditColor () {
                     <td className="addon" style={{"backgroundColor": color}} key={i}></td>)}
                     <td className="addon" style={{"backgroundColor": addons[5]}}></td>
                 </tr>
-            </tbody>
-        </table>
-        <table className='colors'>
-            <tbody>
                 <tr>
-                    <td><button className="delete" onClick={() => history.push({pathname: "/results", state: {current: location.state.current}})}>Delete Color</button></td>
                     <td></td>
                     <td><button onClick={() => history.push({pathname: "/results", state: {current: location.state.current}})}>Cancel</button></td>
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td><button onClick={() => saveColor()}>Save</button></td>
                 </tr>
