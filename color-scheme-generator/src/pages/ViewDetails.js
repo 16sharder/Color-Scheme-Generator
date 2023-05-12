@@ -6,26 +6,35 @@
 import React from 'react';
 import {useState, useEffect} from "react"
 import {useHistory, useLocation} from "react-router-dom"
+
 import retrieve from '../helpers/requests';
-import { convertHex } from './Results';
+import { convertHex } from '../helpers/converters';
 
 function ViewDetails () {
 
     const history = useHistory()
     const location = useLocation()
-
-    const mainColors = location.state.colors        //      array of generated hex colors
-    const rgbs = location.state.rgbs                //      array of generated rgb colors (for passing use)
-    const hsvs = location.state.hsvs                //      array of generated rgb colors (for passing use)
     const text = location.state.text                //      array of determined text colors (black or white)
+
+    const [mainColors, setColors] = useState([])
 
     // A set of arrays for each color category - each array holds all pixels in that category
     const [allPixels, setPixels] = useState([[], [], [], [], [], []])
 
     const getPixels = async () => {
+        // retrieves the unedited colors from the scheme
+        const originals = await retrieve(JSON.stringify(["originals"]), 1952)
+
+        // converts the colors from rgb to hex
+        const hexs = []
+        for (const rgb of originals){
+            hexs.push(convertHex(rgb))
+        }
+        setColors(hexs)
+
         // sends retreive details request to Python Server
         // defined in requests.js, sends HTTP request to back end which sends ZMQ request
-        const details = await retrieve("null", "1952")
+        const details = await retrieve(JSON.stringify(["details"]), 1952)
         const cats = []
 
         // iterates over each of 6 color categories
@@ -35,18 +44,13 @@ function ViewDetails () {
 
             // iterates over each pixel in the category and converts it to hex
             for (let pixel of category) {
-                let hex = "#"
-                for (let p of pixel.slice(0, 3)) {
-                    const hex2 = p % 16
-                    const hex1 = (p - hex2) / 16
-                    hex = hex.concat(convertHex(hex1))
-                    hex = hex.concat(convertHex(hex2))
-                }
+                let hex = convertHex(pixel.slice(0, 3))
                 hex = hex.concat(" " + pixel[3])
                 pixels.push(hex)
             }
             cats.push(pixels)
         }
+        console.log(cats)
         setPixels(cats)
     }
 
@@ -65,7 +69,7 @@ function ViewDetails () {
                     the number of pixels of that color in your image.
                     </th>
                     <th>
-                        <button onClick={() => history.push({pathname: "/results", state: {rgbs: rgbs, hsvs: hsvs}})}>Return to Results</button>
+                        <button onClick={() => history.push({pathname: "/results", state: {current: location.state.current}})}>Return to Results</button>
                     </th>
                 </tr>
             </thead>

@@ -7,6 +7,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useHistory, useLocation } from "react-router-dom"
 import retrieve from '../helpers/requests';
+import { convertHex } from '../helpers/converters';
 
 
 function LoadingPage () {
@@ -18,7 +19,7 @@ function LoadingPage () {
     const getColors = async () => {
         // sends retreive colors request to Python Server
         // defined in requests.js, sends HTTP request to back end which sends ZMQ request
-        let colors = await retrieve(path, '1952')
+        let colors = await retrieve(JSON.stringify(["path", path]), 1952)
 
         // if there was an error with the file path, asks the user to try again
         if (colors == "File not found"){
@@ -34,16 +35,23 @@ function LoadingPage () {
             history.push({pathname: "/"})
         }
 
-        // if no error, retrieves the hsv vals and sends the user on to colors page when ready
+        // if no error, retrieves the hsv and hex vals and sends the user on to colors page when ready
         else{
-            const HSV = []
+            const HSV = [], hexvals = []
             for (let color of colors) {
                 const rgb = color.slice()
                 rgb.push("r")
+                // retrieves the hsv vals from microservice
                 const hsv = await retrieve(JSON.stringify(rgb), 7170)
                 HSV.push(hsv)
+
+                let hex = convertHex(color)
+                hexvals.push(hex)
             }
-            history.push({pathname: "/results", state: {rgbs: colors, hsvs: HSV}})
+
+            const current = {hexs: hexvals, rgbs: colors, hsvs: HSV}
+            console.log(current)
+            history.push({pathname: "/results", state: {current: current}})
         }
     }
 

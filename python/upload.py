@@ -12,11 +12,13 @@ end = True
 
 while end:
     # once a message has been received, decodes it
-    image_path = socket.recv()
-    image_path = image_path.decode("utf-8")
+    message = socket.recv()
+    message = message.decode("utf-8")
+    message = eval(message)
 
     # image_path is not null when requesting the main colors of the image
-    if image_path != "null":
+    if message[0] == "path":
+        image_path = message[1]
         print(f"Received path request: {image_path}")
 
         # attempts to open the file
@@ -111,7 +113,7 @@ while end:
 
     # image path is null when requesting the details of the image
     # this section will always only be called after the previous section has executed
-    else:
+    elif message[0] == "details":
         print(f"Received request for details")
 
         details = dict()
@@ -150,4 +152,11 @@ while end:
         # sends on the resulting list of categories with highest pixels
         print("Sending details")
         socket.send_json(details)
+
+    elif message[0] == "originals":
+        print(f"Sending originals: {colors}")
+        socket.send_json(colors)
+
+    else:
+        socket.send_json(None)
 

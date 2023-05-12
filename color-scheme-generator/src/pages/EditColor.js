@@ -3,19 +3,19 @@ import {useState} from "react"
 import {useHistory, useLocation} from "react-router-dom"
 
 import retrieve from '../helpers/requests';
-import { convertHex } from './Results';
+import { convertHex } from '../helpers/converters';
 
 function EditColor () {
     const history = useHistory()
     const location = useLocation()
 
-    const origColors = location.state.colors
+    const current = location.state.current
+
+    const origColors = current.hexs.slice()
     const [colors, setColors] = useState(origColors)
 
-    const rgbs = location.state.rgbs
-    const origRSB = rgbs.slice()
-    const hsvs = location.state.hsvs
-    const origHSV = hsvs.slice()
+    const rgbs = current.rgbs
+    const hsvs = current.hsvs
 
     const idx = location.state.i
     
@@ -28,33 +28,28 @@ function EditColor () {
     if (idx == 1 || idx == 4) widths[1] = "300px"
 
     const [hue, setHue] = useState(hsvs[idx][0])
-    const [sat, setSat] = useState(hsvs[idx][1]*100)
-    const [bri, setBri] = useState(hsvs[idx][2]*100)
+    const [sat, setSat] = useState(hsvs[idx][1])
+    const [bri, setBri] = useState(hsvs[idx][2])
 
 
     const editColor = async () => {
-        const hsv = [hue, sat/100, bri/100, "u"]
+        const hsv = [hue, sat, bri, "u"]
         const rgb = await retrieve(JSON.stringify(hsv), 7170)
 
-        let hex = "#"
-        for (let val of rgb){
-            const hex2 = val % 16
-            const hex1 = (val - hex2) / 16
-            hex = hex.concat(convertHex(hex1))
-            hex = hex.concat(convertHex(hex2))
-        }
-
-        origColors[idx] = hex
+        origColors[idx] = convertHex(rgb)
         setColors(origColors)
     }
 
     const saveColor = async () => {
-        hsvs[idx] = [hue, sat/100, bri/100]
+        hsvs[idx] = [hue, sat, bri]
 
-        const hsv = [hue, sat/100, bri/100, "u"]
+        const hsv = [hue, sat, bri, "u"]
         rgbs[idx] = await retrieve(JSON.stringify(hsv), 7170)
+        
+        origColors[idx] = convertHex(rgbs[idx])
 
-        history.push({pathname: "/results", state: {rgbs: rgbs, hsvs: hsvs}})
+        const curr = {hexs: origColors, rgbs: rgbs, hsvs: hsvs}
+        history.push({pathname: "/results", state: {current: curr}})
     }
 
 
@@ -119,7 +114,7 @@ function EditColor () {
                             value={sat} 
                             className='sld'
                             onChange={newN => {
-                                setSat(newN.target.value)
+                                setSat(Number(newN.target.value))
                                 editColor()}}>
                         </input>
                         <label>100</label>
@@ -130,7 +125,7 @@ function EditColor () {
                             value={sat} 
                             className='numinp'
                             onChange={newN => {
-                                setSat(newN.target.value)
+                                setSat(Number(newN.target.value))
                                 editColor()}}>
                         </input>
                         <br/><br/>
@@ -143,7 +138,7 @@ function EditColor () {
                             value={bri} 
                             className='sld'
                             onChange={newN => {
-                                setBri(newN.target.value)
+                                setBri(Number(newN.target.value))
                                 editColor()}}>
                         </input>
                         <label>100</label>
@@ -154,7 +149,7 @@ function EditColor () {
                             value={bri} 
                             className='numinp'
                             onChange={newN => {
-                                setBri(newN.target.value)
+                                setBri(Number(newN.target.value))
                                 editColor()}}>
                         </input>
                     </td>
@@ -170,9 +165,9 @@ function EditColor () {
         <table className='colors'>
             <tbody>
                 <tr>
-                    <td><button className="delete" onClick={() => history.push({pathname: "/results", state: {rgbs: rgbs, hsvs: hsvs}})}>Delete Color</button></td>
+                    <td><button className="delete" onClick={() => history.push({pathname: "/results", state: {current: location.state.current}})}>Delete Color</button></td>
                     <td></td>
-                    <td><button onClick={() => history.push({pathname: "/results", state: {rgbs: origRSB, hsvs: origHSV}})}>Cancel</button></td>
+                    <td><button onClick={() => history.push({pathname: "/results", state: {current: location.state.current}})}>Cancel</button></td>
                     <td></td>
                     <td><button onClick={() => saveColor()}>Save</button></td>
                 </tr>
