@@ -5,49 +5,62 @@
 // Includes an upload button to generate a new scheme
 
 import React from 'react';
-// import {useState} from "react"
+import {useState} from "react"
 import {useHistory, useLocation} from "react-router-dom"
-
-function convertHex (num) {
-    // converts a number from 0 to 15 to hex string
-    let hex;
-    if (num == 10) hex = "A"
-    else if (num == 11) hex = "B"
-    else if (num == 12) hex = "C"
-    else if (num == 13) hex = "D"
-    else if (num == 14) hex = "E"
-    else if (num == 15) hex = "F"
-    else hex = String(num)
-    return hex
-}
+import retrieve from '../helpers/requests';
+import { convertHex } from '../helpers/converters';
 
 function ResultsPage () {
     const history = useHistory()
     const location = useLocation()
 
-    // retrieves the string of rgb vals
-    const rgbs = location.state.colors
+    const current = location.state.current
 
-    const hexvals = [], text = []
+    const rgbs = current.rgbs
+    const hsvs = current.hsvs
+    const hexvals = current.hexs
 
-    // for each color creates hex vals
-    for (let color of rgbs){
-        let hex = "#", blk = false
-        // for each number in the color, calculates hex
-        for (let i in color){
-            // blk variable used to determine if color is light or dark
-            if (color[i] > 175) blk = true
+    // determines if color's stat text should be white or black
+    const btext = []
+    for (let hsv of hsvs){
+        if (hsv[2] > 60) btext.push("black")
+        else btext.push("white")
+    }
 
-            // converts number to hex and adds to hex val
-            const hex2 = color[i] % 16
-            const hex1 = (color[i] - hex2) / 16
-            hex = hex.concat(convertHex(hex1))
-            hex = hex.concat(convertHex(hex2))
+    // text is the list of colors the stat text should be (black, white, or invisible)
+    const[text, setText] = useState(btext)
+    // hs stands for hide/show; used for toggling text display
+    const[hs, setHS] = useState("Hide")
+
+    // function to toggle color stat text between invis and not
+    const changeText = () => {
+        if (hs == "Show") {
+            setText(btext)
+            setHS("Hide")
+        } else if (hs == "Hide") {
+            setText(hexvals)
+            setHS("Show")
+    }}
+
+    // retrieves the original colors produced and resets all val types
+    const restore = async () => {
+        const originals = await retrieve(JSON.stringify(["originals"]), 1952)
+        current.rgbs = originals
+
+        const hexs = [], hsvs = []
+        for (const color of originals){
+            hexs.push(convertHex(color))
+
+            let rgb = color.slice()
+            rgb.push("r")
+            // retrieves the hsv vals from microservice
+            const hsv = await retrieve(JSON.stringify(rgb), 7170)
+            hsvs.push(hsv)
         }
-        hexvals.push(hex)
-        // if color is too dark, uses white text instead of black
-        if (blk) text.push("black")
-        else text.push("white")
+        current.hexs = hexs
+        current.hsvs = hsvs
+
+        history.push({pathname: "/results", state: {current: current}})
     }
 
     // When upload again button is pressed, sends back to select page
@@ -58,7 +71,7 @@ function ResultsPage () {
     return(
         <>
             <h1>Here is your color scheme:</h1>
-            <h3>Select a color to edit or discard it</h3>
+            <h3>Select a color to move, edit, or discard it</h3>
             <table className="colors">
                 <tbody>
                     <tr>
@@ -66,23 +79,29 @@ function ResultsPage () {
                             Modify Scheme <a className='small'>(i)</a></button></td>
 
                         {hexvals.slice(0, 3).map((color, i) => 
-                        <td className="color" style={{"backgroundColor": color, "color": text[i]}} onClick={() => history.push({pathname: "/edit", state: {colors: rgbs}})} key={i}>
+                        <td className="color" style={{"backgroundColor": color, "color": text[i]}} 
+                            onClick={() => history.push({pathname: "/selected", state: {current: current, i: i, border: btext[i]}})} key={i}>
+
                             <div className='stats'>{color}
-                            <br/>rgb({rgbs[i][0]}, {rgbs[i][1]}, {rgbs[i][2]})</div>
+                            <br/>rgb({rgbs[i][0]}, {rgbs[i][1]}, {rgbs[i][2]})
+                            <br/>hsv({hsvs[i][0]}, {hsvs[i][1]}%, {hsvs[i][2]}%)</div>
                         </td>)}
 
-                        <td><button>Hide Color Statistics</button></td>
+                        <td><button onClick={() => changeText()}>{hs} Color Statistics</button></td>
                     </tr>
                     <tr>
-                        <td><button>Restore Original Colors</button></td>
+                        <td><button onClick={() => restore()}>Restore Original Colors</button></td>
 
                         {hexvals.slice(3, 6).map((color, i) => 
-                        <td className="color" style={{"backgroundColor": color, "color": text[i+3]}} onClick={() => history.push({pathname: "/edit"})} key={i}>
+                        <td className="color" style={{"backgroundColor": color, "color": text[i+3]}} 
+                            onClick={() => history.push({pathname: "/selected", state: {current: current, i: i+3, border: btext[i+3]}})} key={i}>
+
                             <div className='stats'>{color}
-                            <br/>rgb({rgbs[i+3][0]}, {rgbs[i+3][1]}, {rgbs[i+3][2]})</div>
+                            <br/>rgb({rgbs[i+3][0]}, {rgbs[i+3][1]}, {rgbs[i+3][2]})
+                            <br/>hsv({hsvs[i+3][0]}, {hsvs[i+3][1]}%, {hsvs[i+3][2]}%)</div>
                         </td>)}
 
-                        <td><button onClick={() => history.push({pathname: "/details", state: {colors: hexvals, rgbs: rgbs, text: text}})}>
+                        <td><button onClick={() => history.push({pathname: "/details", state: {current: current, text: text}})}>
                             See Image Details <a className='small'>(i)</a></button></td>
                     </tr>
                     <tr>
@@ -99,4 +118,3 @@ function ResultsPage () {
 }
 
 export default ResultsPage
-export {convertHex}

@@ -19,6 +19,7 @@ const PORT = process.env.PORT;
 
 // takes data and a ZMQ port, sends the data over the port and awaits response
 async function retrieve(data, port) {
+    console.log(data)
     console.log(`Connecting to server ${port}…`);
 
     //  Creates a socket to talk to server
@@ -55,7 +56,7 @@ app.post('/retrieve', async function (req, res) {
     res.type("application/json").status(419).send(data)
   }
   else {
-    console.log("Returning data")
+    console.log("Returning response")
     res.type("application/json").status(201).send(data)
   }
 })
