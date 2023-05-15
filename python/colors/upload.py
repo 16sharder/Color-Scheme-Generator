@@ -1,6 +1,11 @@
 # Upload (python server) is used to retrieve the colors from the provided path's image
-
+import zmq
 from PIL import Image
+from main_color import calculate_color
+
+context = zmq.Context()
+socket = context.socket(zmq.REQ)
+socket.connect("tcp://localhost:7170")
 
 
 def upload(image_path):
@@ -22,69 +27,38 @@ def upload(image_path):
     pixels = image.load()
     width = image.size[0]
     height = image.size[1]
-    dictionary = dict()
+    all_pixels = dict()
 
-    # iterates over each pixel of the image
+    # iterates over each pixel of the image and adds its count to dict
     for w in range(width):
         for h in range(height):
             pixel = pixels[w, h]
             pixel = pixel[:3]
 
-            # puts the pixel's color into one of 27 categories
-            r = pixel[0] // 85  # 255/85 = 3 categories for red
-            g = pixel[1] // 85  # times 3 categories for green
-            b = pixel[2] // 85  # times 3 categories for blue
-
-            # if that category is already in the dictionary
-            if (r, g, b) in dictionary:
-                cat = dictionary[(r, g, b)]
-
-                # adds this pixel to the number of pixels found in that category
-                cat["count"] += 1
-
-                # adds one to the count for that specific pixel
-                if pixel in cat:
-                    cat[pixel] += 1
-                else:
-                    cat[pixel] = 1
-
-            # if the category is not in the dictionary, adds it in
+            if pixel in all_pixels:
+                all_pixels[pixel] += 1
             else:
-                dictionary[(r, g, b)] = {pixel: 1,
-                                         "count": 1}
+                all_pixels[pixel] = 1
 
-    # creates a set of num of pixels found in each category
-    counts = set()
-    for item in dictionary:
-        cat = dictionary[item]
-        counts.add(cat["count"])
+    # create a list of pixel counts, excluding minuscule ones
+    counts = []
+    keys = list(all_pixels)
+    for pixel in keys:
+        count = all_pixels[pixel]
+        if count > width * height * 0.00001:
+            counts.append(count)
+        else:
+            del all_pixels[pixel]
 
-    # finds the 6 highest pixel counts in the set
-    maxes = []
-    for i in range(6):
-        a = max(counts)
-        counts.remove(a)
-        maxes.append(a)
+    # list of main colors, list of color categories
+    colors, cats = [], []
 
-    # identifies the 6 categories coordinating with those counts
-    cats = []
-    for item in dictionary:
-        cat = dictionary[item]
-        for num in maxes:
-            if cat["count"] == num:
-                cats.append(cat)
+    # retrieves the 6 colors with most pixels
+    for num in range(0, 6):
+        res = calculate_color(counts, all_pixels)
 
-    # finds the pixel in each category with the highest indiv count
-    colors = []
-    for cat in cats:
-        color = None
-        maxi = 0
-        for pixel in cat:
-            if pixel == "count":
-                continue
-            if cat[pixel] > maxi:
-                color = pixel
-                maxi = cat[pixel]
-        colors.append(color)
+        colors.append(res[0])
+        cats.append(res[1])
+        all_pixels = res[2]
 
-    return [colors, counts, dictionary, cats]
+    return [colors, counts, all_pixels, cats]
