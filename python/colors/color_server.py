@@ -1,7 +1,6 @@
 import zmq
 from upload import upload
 from get_details import get_details
-from main_color import calculate_color
 
 # creates a socket to receive from the client
 context = zmq.Context()
@@ -9,12 +8,12 @@ socket = context.socket(zmq.REP)
 socket.bind("tcp://*:1952")
 
 # empty variable initialization
-colors, counts, all_pixels, cats = [], [], {}, []
-originals = [colors, counts, all_pixels, cats]
+colors, cats, indices = [], [], [0, 1, 2, 3, 4, 5]
+originals = [colors, cats]
 
 responses = {"path": 0,
              "originals": 1,
-             "details": 2,}
+             "details": 2}
 toggle = False
 
 while True:
@@ -37,23 +36,25 @@ while True:
 
         # if res is a string, it is an error message to be returned
         if type(res) == str:
+            print(f"Sending error reply")
             socket.send(bytes(res, encoding='utf-8'))
+            continue
 
-        else:
-            # establishes variables for use in next sections
-            colors, counts, all_pixels, cats = res
-            originals = [item.copy() for item in res]
+        # establishes variables for use in next sections
+        colors, cats = res
+        originals = [item.copy() for item in res]
 
-            # sends back the main color results
-            print(f"Sending reply: {colors}")
-            responses["path"] = colors
-            toggle = True
-            socket.send_json(colors)
+        # sends back the main color results
+        print(f"Sending reply: {colors}")
+        responses["path"] = colors
+        toggle = True
+        socket.send_json(colors)
 
     # received request for original colors
     elif message[0] == "originals":
         # resets all variables to original values
-        colors, counts, all_pixels, cats = [item.copy() for item in originals]
+        colors, cats = [item.copy() for item in originals]
+        indices = [0, 1, 2, 3, 4, 5]
 
         # sends back original colors
         print(f"Sending originals: {colors}")
@@ -65,7 +66,7 @@ while True:
     elif message[0] == "details":
         print(f"Received request for details")
 
-        details = get_details(cats)
+        details = get_details(cats, indices)
 
         # sends on the resulting list of categories with highest pixels
         print("Sending details")
@@ -78,8 +79,18 @@ while True:
         idx = message[1]
         print(f"Received delete request: {idx}")
 
-        # deletes the color from current list and retrieves next most common color
-        colors[idx], cats[idx], all_pixels = calculate_color(counts, all_pixels)
+        try:
+            colors[idx] = cats[6]["color"]
+            del cats[idx]
+            for i in range(0, 6):
+                if indices[i] > idx:
+                    indices[i] -= 1
+            indices[idx] = 5
+
+        except IndexError:
+            print(f"Sending error reply")
+            socket.send(bytes("no more", encoding='utf-8'))
+            continue
 
         # sends back the new main color results
         print(f"Sending reply: {colors}")

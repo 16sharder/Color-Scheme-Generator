@@ -1,13 +1,15 @@
-def get_details(cats):
+def get_details(cats, indices):
     details = dict()
     i = 1
 
     # iterates over each color category
-    for cat in cats:
+    for idx in indices:
+        cat = cats[idx]
         frequencies = []
         # iterates over each pixel in the category and appends its frequency
         for pixel in cat:
-            frequencies.append(cat[pixel])
+            if pixel != "color" and pixel != "count":
+                frequencies.append(cat[pixel])
 
         # sorts the frequency list and cuts it at 100
         frequencies.sort(reverse=True)
