@@ -1,17 +1,22 @@
-import zmq
-
-context = zmq.Context()
-socket = context.socket(zmq.REQ)
-socket.connect("tcp://localhost:7170")
+from microservice.color_conversion import *
 
 
 def convert_hsv(pixel):
-    """Given an rgb pixel, sends a request to partner's microservice to retrieve and return
-    hsv values"""
+    """Given an rgb pixel, directly calls partner's microservice to retrieve and return
+    hsv values; not done through zmq only because of the large quantity of pixels going through
+    this function, causing extended wait times"""
     rgb = list(pixel)
     rgb.append("r")
-    socket.send_json(rgb)
-    return eval(socket.recv())
+    return RGB_to_HSV(rgb)
+
+
+def convert_rgb(pixel):
+    """Given an hsv pixel, directly calls partner's microservice to retrieve and return
+    rgb values; not done through zmq only because of the large quantity of pixels going through
+    this function, causing extended wait times"""
+    hsv = list(pixel)
+    hsv.append("u")
+    return HSV_to_RGB(hsv)
 
 
 def find_highest(highest, all_pixels):

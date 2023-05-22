@@ -23,7 +23,7 @@ function ResultsPage () {
     // determines if color's stat text should be white or black
     const btext = []
     for (let hsv of hsvs){
-        if (hsv[2] > 60) btext.push("black")
+        if (hsv[2] > 65) btext.push("black")
         else btext.push("white")
     }
 

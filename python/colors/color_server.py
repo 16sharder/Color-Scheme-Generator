@@ -1,6 +1,7 @@
 import zmq
 from upload import upload
 from get_details import get_details
+from helper import *
 
 # creates a socket to receive from the client
 context = zmq.Context()
@@ -15,6 +16,7 @@ responses = {"path": 0,
              "originals": 1,
              "details": 2}
 toggle = False
+deleted = 0
 
 while True:
     # once a message has been received, decodes it
@@ -55,6 +57,7 @@ while True:
         # resets all variables to original values
         colors, cats = [item.copy() for item in originals]
         indices = [0, 1, 2, 3, 4, 5]
+        deleted = 0
 
         # sends back original colors
         print(f"Sending originals: {colors}")
@@ -80,12 +83,10 @@ while True:
         print(f"Received delete request: {idx}")
 
         try:
-            colors[idx] = cats[6]["color"]
-            del cats[idx]
-            for i in range(0, 6):
-                if indices[i] > idx:
-                    indices[i] -= 1
-            indices[idx] = 5
+            i = 6 + deleted
+            indices[idx] = i
+            colors[idx] = cats[i]["color"]
+            deleted += 1
 
         except IndexError:
             print(f"Sending error reply")

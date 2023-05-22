@@ -23,7 +23,7 @@ function LoadingPage () {
 
         // if there was an error with the file path, asks the user to try again
         if (colors == "File not found"){
-            alert("File not found - Please try again")
+            alert(`File ${path} not found - Please try again`)
             history.push({pathname: "/"})
         }
         else if (colors == "Directory"){
