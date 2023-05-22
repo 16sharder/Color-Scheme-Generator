@@ -62,7 +62,6 @@ while True:
         # sends back original colors
         print(f"Sending originals: {colors}")
         responses["originals"] = colors
-        toggle = True
         socket.send_json(colors)
 
     # received request for color details

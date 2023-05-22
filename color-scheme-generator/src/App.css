@@ -85,6 +85,7 @@ td.folder {
   padding: 10px;
   border: 2px black solid;
   background-color: white;
+  color: black;
   vertical-align: top;
 }
 
@@ -94,6 +95,7 @@ div.folder {
   padding: 10px;
   border: 1px black solid;
   background-color: white;
+  
 }
 
 .folderpath {
@@ -101,6 +103,7 @@ div.folder {
   font: large bold;
   border: 3px black solid;
   background-color: white;
+  color: black;
   padding: 20px;
 }
 
@@ -137,8 +140,16 @@ td.color {
 }
 
 .sld {
-  background-color: gray;
-  color: green;
+  -webkit-appearance: none;
+  height: 5px;
+}
+
+.sld::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background: white;
+  width: 5px;
+  height: 20px;
+  cursor: pointer;
 }
 
 

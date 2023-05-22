@@ -15,7 +15,7 @@ function SelectedPage () {
     const location = useLocation()
 
     const current = location.state.current
-    const idx = location.state.i
+    const idx = location.state.idx
     const border = location.state.border
 
     const hexvals = current.hexs
@@ -38,7 +38,6 @@ function SelectedPage () {
         current.hsvs[idx] = current.hsvs[num]
         current.hsvs[num] = temp
 
-        console.log(current.idxs)
         temp = current.idxs[idx]
         current.idxs[idx] = current.idxs[num]
         current.idxs[num] = temp

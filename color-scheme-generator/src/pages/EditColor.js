@@ -1,9 +1,18 @@
+// Source for slider css: https://www.w3schools.com/howto/howto_js_rangeslider.asp
+
 import React from 'react';
-import {useState} from "react"
+import {useState, useEffect} from "react"
 import {useHistory, useLocation} from "react-router-dom"
 
 import retrieve from '../helpers/requests';
 import { convertHex } from '../helpers/converters';
+
+async function toHex (h, s, b) {
+    const hsv = [h, s, b, "u"]
+    const rgb = await retrieve(JSON.stringify(hsv), 7170)
+    const hex = convertHex(rgb)
+    return hex
+}
 
 function EditColor () {
     const history = useHistory()
@@ -21,13 +30,11 @@ function EditColor () {
 
     
     // set color of addons to allow selected color to pop out
-    const background = "bisque"
-    const addons = [background, background, background, background, background, background]
+    const addons = new Array(6).fill("bisque")      //want to use #5a5a5a
     addons[idx] = colors[idx]
 
     // sets width of selected color to be larger if in middle
-    const bwidth = "250px"
-    const widths = [bwidth, bwidth, bwidth]
+    const widths = new Array(3).fill("250px")
     if (idx == 1 || idx == 4) widths[1] = "300px"
 
 
@@ -36,13 +43,20 @@ function EditColor () {
     const [sat, setSat] = useState(hsvs[idx][1])
     const [bri, setBri] = useState(hsvs[idx][2])
 
+    const hueSlider = ["#ff0000", "#ff8000", "#ffff00", "#80ff00", "#00ff00", "#00ff80", "#00ffff", "#0080ff", "#0000ff", "#8000ff", "#ff00ff", "#ff0080", "#ff0000"]
+
+    const [satSlider, setSSlider] = useState("#ff0000")
+
+    const stSlider = async () => {
+        setSSlider(await toHex(hue, 100, bri))
+    }
+
 
     // edits the color in real time
     const editColor = async () => {
-        const hsv = [hue, sat, bri, "u"]
-        const rgb = await retrieve(JSON.stringify(hsv), 7170)
+        stSlider()
 
-        origColors[idx] = convertHex(rgb)
+        origColors[idx] = await toHex(hue, sat, bri)
         setColors(origColors)
     }
 
@@ -58,6 +72,11 @@ function EditColor () {
         const curr = {hexs: origColors, rgbs: rgbs, hsvs: hsvs, idxs: current.idxs}
         history.push({pathname: "/results", state: {current: curr}})
     }
+
+    // updates the colors seen anytime the hue, sat, or brightness changes
+    useEffect(() => {
+        editColor()
+    }, [hue, sat, bri])
 
 
 
@@ -87,9 +106,9 @@ function EditColor () {
                             min="0" max="360" 
                             value={hue} 
                             className='sld'
+                            style={{"backgroundImage": `linear-gradient(to right, ${hueSlider.map((color) => color)})`}}
                             onChange={newN => {
-                                setHue(Number(newN.target.value))
-                                editColor()}}>
+                                setHue(Number(newN.target.value))}}>
                         </input>
                         <label>360</label>
                         <br/>
@@ -99,8 +118,7 @@ function EditColor () {
                             value={hue} 
                             className='numinp'
                             onChange={newN => {
-                                setHue(Number(newN.target.value))
-                                editColor()}}>
+                                setHue(Number(newN.target.value))}}>
                         </input>
 
                         <br/><br/>
@@ -120,9 +138,9 @@ function EditColor () {
                             min="0" max="100" 
                             value={sat} 
                             className='sld'
+                            style={{"backgroundImage": `linear-gradient(to right, white, ${satSlider})`}}
                             onChange={newN => {
-                                setSat(Number(newN.target.value))
-                                editColor()}}>
+                                setSat(Number(newN.target.value))}}>
                         </input>
                         <label>100</label>
                         <br/>
@@ -132,8 +150,7 @@ function EditColor () {
                             value={sat} 
                             className='numinp'
                             onChange={newN => {
-                                setSat(Number(newN.target.value))
-                                editColor()}}>
+                                setSat(Number(newN.target.value))}}>
                         </input>
                         <br/><br/>
 
@@ -144,9 +161,9 @@ function EditColor () {
                             min="0" max="100" 
                             value={bri} 
                             className='sld'
+                            style={{"backgroundImage": `linear-gradient(to right, black, white)`}}
                             onChange={newN => {
-                                setBri(Number(newN.target.value))
-                                editColor()}}>
+                                setBri(Number(newN.target.value))}}>
                         </input>
                         <label>100</label>
                         <br/>
@@ -156,8 +173,7 @@ function EditColor () {
                             value={bri} 
                             className='numinp'
                             onChange={newN => {
-                                setBri(Number(newN.target.value))
-                                editColor()}}>
+                                setBri(Number(newN.target.value))}}>
                         </input>
                     </td>
                 </tr>

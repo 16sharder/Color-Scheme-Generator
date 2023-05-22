@@ -59,6 +59,7 @@ function ResultsPage () {
         }
         current.hexs = hexs
         current.hsvs = hsvs
+        current.idxs = [0, 1, 2, 3, 4, 5]
 
         history.push({pathname: "/results", state: {current: current}})
     }
@@ -75,12 +76,12 @@ function ResultsPage () {
             <table className="colors">
                 <tbody>
                     <tr>
-                        <td><button onClick={() => history.push({pathname: "/modify", state: {colors: rgbs}})}>
+                        <td><button onClick={() => history.push({pathname: "/modify", state: {current: current}})}>
                             Modify Scheme <a className='small'>(i)</a></button></td>
 
                         {hexvals.slice(0, 3).map((color, i) => 
                         <td className="color" style={{"backgroundColor": color, "color": text[i]}} 
-                            onClick={() => history.push({pathname: "/selected", state: {current: current, i: i, border: btext[i]}})} key={i}>
+                            onClick={() => history.push({pathname: "/selected", state: {current: current, idx: i, border: btext[i]}})} key={i}>
 
                             <div className='stats'>{color}
                             <br/>rgb({rgbs[i][0]}, {rgbs[i][1]}, {rgbs[i][2]})
@@ -94,7 +95,7 @@ function ResultsPage () {
 
                         {hexvals.slice(3, 6).map((color, i) => 
                         <td className="color" style={{"backgroundColor": color, "color": text[i+3]}} 
-                            onClick={() => history.push({pathname: "/selected", state: {current: current, i: i+3, border: btext[i+3]}})} key={i}>
+                            onClick={() => history.push({pathname: "/selected", state: {current: current, idx: i+3, border: btext[i+3]}})} key={i}>
 
                             <div className='stats'>{color}
                             <br/>rgb({rgbs[i+3][0]}, {rgbs[i+3][1]}, {rgbs[i+3][2]})
