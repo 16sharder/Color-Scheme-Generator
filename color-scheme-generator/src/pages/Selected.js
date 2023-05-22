@@ -49,6 +49,10 @@ function SelectedPage () {
     // deletes the selected color and replaces with next most common color in image
     const delet = async () => {
         const updated = await retrieve(JSON.stringify(["delete", current.idxs[idx]]), 1952)
+        if (updated == "no more"){
+            alert("Color could not be deleted - there are no more distinct colors in your image")
+            return
+        }
         
         // moves the colors back to the correct indexes (according to switch)
         let rgbs = []

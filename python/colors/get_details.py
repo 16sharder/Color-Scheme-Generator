@@ -1,31 +1,33 @@
-def get_details(cats):
+def get_details(cats, indices):
     details = dict()
     i = 1
 
     # iterates over each color category
-    for cat in cats:
-        highest = []
+    for idx in indices:
+        cat = cats[idx]
+        frequencies = []
         # iterates over each pixel in the category and appends its frequency
         for pixel in cat:
-            if pixel == "count":
-                continue
-            highest.append(cat[pixel])
+            if pixel != "color" and pixel != "count":
+                frequencies.append(cat[pixel])
 
         # sorts the frequency list and cuts it at 100
-        highest.sort(reverse=True)
-        if len(highest) > 100:
-            highest = highest[:100]
+        frequencies.sort(reverse=True)
+        if len(frequencies) > 100:
+            highest = frequencies[:100]
+        else:
+            highest = frequencies
 
         # for each pixel in the category, determines if its frequency is in highest
         for pixel in cat:
-            if pixel == "count":
-                continue
+            count = cat[pixel]
             try:
-                idx = highest.index(cat[pixel])
-                lest = list(pixel)
+                idx = highest.index(count)
+                rgb = list(pixel)
+
                 # appends the frequency to the rgb vals [r, g, b, frequency]
-                lest.append(cat[pixel])
-                highest[idx] = lest
+                rgb.append(count)
+                highest[idx] = rgb
             except ValueError:
                 continue
 

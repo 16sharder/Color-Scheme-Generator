@@ -1,14 +1,15 @@
 # Upload (python server) is used to retrieve the colors from the provided path's image
-
 from PIL import Image
+from main_color import *
+from overlap_handler import *
 
 
 def upload(image_path):
-    # attempts to open the file
+    """Takes an image_path, opens the image and analyzes all of its pixels; determines
+    which 6 colors appear the most in the image, and returns them"""
     try:
         image = Image.open(image_path)
 
-    # if the attempt fails, sends error message
     except FileNotFoundError:
         print(f"Sending reply: File not found")
         return "File not found"
@@ -22,69 +23,76 @@ def upload(image_path):
     pixels = image.load()
     width = image.size[0]
     height = image.size[1]
-    dictionary = dict()
+    all_pixels = dict()
+    all_hsvs = dict()
 
-    # iterates over each pixel of the image
+    # iterates over each pixel of the image and adds its count to dict
     for w in range(width):
         for h in range(height):
             pixel = pixels[w, h]
             pixel = pixel[:3]
 
-            # puts the pixel's color into one of 27 categories
-            r = pixel[0] // 85  # 255/85 = 3 categories for red
-            g = pixel[1] // 85  # times 3 categories for green
-            b = pixel[2] // 85  # times 3 categories for blue
+            all_pixels[pixel] = 1 if pixel not in all_pixels else all_pixels[pixel] + 1
 
-            # if that category is already in the dictionary
-            if (r, g, b) in dictionary:
-                cat = dictionary[(r, g, b)]
+    # converts all the founds pixels to hsv and adds it to a new dict
+    for pixel in all_pixels:
+        count = all_pixels[pixel]
+        # excludes pixels with miniscule count
+        if count > width * height * 0.000001:
+            hsv = tuple(convert_hsv(pixel))
+            all_hsvs[hsv] = count if hsv not in all_hsvs else all_hsvs[hsv] + count
 
-                # adds this pixel to the number of pixels found in that category
-                cat["count"] += 1
+    all_pixels = all_hsvs
 
-                # adds one to the count for that specific pixel
-                if pixel in cat:
-                    cat[pixel] += 1
-                else:
-                    cat[pixel] = 1
+    # create a list of pixel totals
+    counts = []
+    for pixel in all_pixels:
+        counts.append(all_pixels[pixel])
 
-            # if the category is not in the dictionary, adds it in
-            else:
-                dictionary[(r, g, b)] = {pixel: 1,
-                                         "count": 1}
+    # algorithm numbers for determining similar colors
+    hue_factor = 30
+    sv_factor = 33
+    bw_factor = 21
+    factors = [hue_factor, sv_factor, bw_factor]
 
-    # creates a set of num of pixels found in each category
-    counts = set()
-    for item in dictionary:
-        cat = dictionary[item]
-        counts.add(cat["count"])
-
-    # finds the 6 highest pixel counts in the set
-    maxes = []
-    for i in range(6):
-        a = max(counts)
-        counts.remove(a)
-        maxes.append(a)
-
-    # identifies the 6 categories coordinating with those counts
+    # runs the main algorithm: finds main colors, adds pixels to their categories, counts totals
     cats = []
-    for item in dictionary:
-        cat = dictionary[item]
-        for num in maxes:
-            if cat["count"] == num:
-                cats.append(cat)
+    while len(counts) != 0:
+        cat = calculate_color(counts, all_pixels, factors)
+        cats.append(cat)
 
-    # finds the pixel in each category with the highest indiv count
-    colors = []
+    # creates a list of the main colors (in hsv)
+    all_colors = []
     for cat in cats:
-        color = None
-        maxi = 0
-        for pixel in cat:
-            if pixel == "count":
-                continue
-            if cat[pixel] > maxi:
-                color = pixel
-                maxi = cat[pixel]
-        colors.append(color)
+        all_colors.append(cat["color"])
 
-    return [colors, counts, dictionary, cats]
+    # analyzes whether any of the main colors could have overlapping pixels in their cats
+    evaluate = dict()
+    for idx in range(len(all_colors)):
+        color_1 = all_colors[idx]
+        # adds list of colors with potential overlap to dict for current color
+        evaluate[color_1] = check_overlap(color_1, all_colors[idx+1:], factors)
+
+    # moves any overlapping pixels to appropriate color category
+    for color_1 in evaluate:
+        for color_2 in evaluate[color_1]:
+            cat_1 = cats[all_colors.index(color_1)]
+            cat_2 = cats[all_colors.index(color_2)]
+
+            move_overlapping(color_1, color_2, cat_1, cat_2, factors)
+
+    for idx in range(len(cats)):
+        cat = cats[idx]
+        rgb_cat = {"color": convert_rgb(cat["color"]),
+                   "count": cat["count"]}
+        for pixel in cat:
+            if pixel != "color" and pixel != "count":
+                rgb = convert_rgb(pixel)
+                rgb_cat[tuple(rgb)] = cat[pixel]
+
+        cats[idx] = rgb_cat
+
+    # determines which 6 colors to use
+    colors, cats = determine_main(cats, width*height)
+
+    return colors, cats
