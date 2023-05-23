@@ -52,25 +52,21 @@ function SelectedPage () {
             alert("Color could not be deleted - there are no more distinct colors in your image")
             return
         }
+        console.log(updated)
         
         // moves the colors back to the correct indexes (according to switch)
-        let rgbs = []
-        for (let i in updated){
-            rgbs[i] = updated[current.idxs[i]]
-        }
 
-        // recreates the color arrays
-        const hsvs = [], hexs = []
-        for (let color of rgbs) {
-            const rgb = color.slice()
-            rgb.push("r")
-            // retrieves the hsv vals from microservice
-            const hsv = await retrieve(JSON.stringify(rgb), 7170)
-            hsvs.push(hsv)
+        let rgbs = current.rgbs
+        let hsvs = current.hsvs
+        let hexs = current.hexs
 
-            let hex = convertHex(color)
-            hexs.push(hex)
-        }
+        rgbs[idx] = updated
+        hexs[idx] = convertHex(updated)
+
+        let rgb = updated.slice()
+        rgb.push("r")
+        hsvs[idx] = await retrieve(JSON.stringify(rgb), 7170)
+
 
         const curr = {hexs: hexs, rgbs: rgbs, hsvs: hsvs, idxs: current.idxs}
 
