@@ -1,7 +1,6 @@
 import zmq
 from upload import upload
 from get_details import get_details
-from helper import *
 
 # creates a socket to receive from the client
 context = zmq.Context()
@@ -30,11 +29,10 @@ while True:
 
     # received a path for an image, MUST execute first
     elif message[0] == "path":
-        image_path = message[1]
-        print(f"Received path request: {image_path}")
+        print(f"Received image upload request")
 
         # retrieves the main colors from the image
-        res = upload(image_path)
+        res = upload()
 
         # if res is a string, it is an error message to be returned
         if type(res) == str:

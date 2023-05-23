@@ -78,33 +78,9 @@ table {
 
 
 
-
-td.folder {
-  width: 420px;
-  font: large bold;
-  padding: 10px;
-  border: 2px black solid;
-  background-color: white;
-  color: black;
-  vertical-align: top;
-}
-
-div.folder {
-  width: 400px;
-  font-size: small;
-  padding: 10px;
-  border: 1px black solid;
-  background-color: white;
-  
-}
-
-.folderpath {
-  min-width: 885px;
-  font: large bold;
-  border: 3px black solid;
-  background-color: white;
-  color: black;
-  padding: 20px;
+img {
+  max-width: 60%;
+  max-height: 60%;
 }
 
 
@@ -141,6 +117,7 @@ td.color {
 
 .sld {
   -webkit-appearance: none;
+  appearance: none;
   height: 5px;
 }
 

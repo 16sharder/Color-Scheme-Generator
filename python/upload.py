@@ -4,11 +4,11 @@ from main_color import *
 from overlap_handler import *
 
 
-def upload(image_path):
+def upload():
     """Takes an image_path, opens the image and analyzes all of its pixels; determines
     which 6 colors appear the most in the image, and returns them"""
     try:
-        image = Image.open(image_path)
+        image = Image.open("../image.jpg")
 
     except FileNotFoundError:
         print(f"Sending reply: File not found")

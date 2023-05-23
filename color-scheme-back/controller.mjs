@@ -8,13 +8,13 @@
 import 'dotenv/config';
 import express from 'express';
 import zmq from 'zeromq'
+import * as fs from 'fs'
 
 // Express and Port set up for HTTP requests
 const app = express()
-app.use(express.json());
+app.use(express.json({limit: '15mb'}));
 
 const PORT = process.env.PORT;
-
 
 
 // takes data and a ZMQ port, sends the data over the port and awaits response
@@ -59,6 +59,20 @@ app.post('/retrieve', async function (req, res) {
     console.log("Returning response")
     res.type("application/json").status(201).send(data)
   }
+})
+
+
+// HTTP post request takes data and the ZMQ port, calls the retrieve function
+app.post('/image', async function (req, res) {
+  const buf = Buffer.from(req.body.request, 'base64')
+  let response;
+  fs.writeFile('../image.jpg', buf, (err) => {
+    if (err) response = err;
+    else response = "success"
+  })
+
+  if (response == "success") res.type("application/json").status(201)
+  else res.type("application/json").status(419)
 })
 
 

@@ -12,18 +12,15 @@ import { convertHex } from '../helpers/converters';
 
 function LoadingPage () {
     const history = useHistory()
-    const location = useLocation()
-
-    const path = location.state.path        //      selected image path in user directory
 
     const getColors = async () => {
         // sends retreive colors request to Python Server
         // defined in requests.js, sends HTTP request to back end which sends ZMQ request
-        let colors = await retrieve(JSON.stringify(["path", path]), 1952)
+        let colors = await retrieve(JSON.stringify(["path"]), 1952)
 
         // if there was an error with the file path, asks the user to try again
         if (colors == "File not found"){
-            alert(`File ${path} not found - Please try again`)
+            alert(`File not found - Please try again`)
             history.push({pathname: "/"})
         }
         else if (colors == "Directory"){

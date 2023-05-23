@@ -24,4 +24,17 @@ async function retrieve (data, port) {
     }
 }
 
+async function postImage (data) {
+    const response = await fetch("/image", {
+        method: "POST", 
+        body: JSON.stringify({request: data}),
+        headers: {"Content-type": "application/json"}
+    })
+    console.log(response.status)
+    if (response.status == 419) return "failed"
+    else if (response.status == 413) return "large"
+    else return "success"
+}
+
 export default retrieve
+export {postImage}
