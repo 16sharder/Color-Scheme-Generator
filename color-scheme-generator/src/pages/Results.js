@@ -10,6 +10,17 @@ import {useHistory, useLocation} from "react-router-dom"
 import retrieve from '../helpers/requests';
 import { convertHex } from '../helpers/converters';
 
+function determineText (hsvs) {
+    // determines if color's stat text should be white or black
+    let btext = []
+    for (let hsv of hsvs){
+        if (210 < hsv[0] && hsv[0] < 290 && hsv[1] > 65) btext.push("white")
+        else if (hsv[2] > 65) btext.push("black")
+        else btext.push("white")
+    }
+    return btext
+}
+
 function ResultsPage () {
     const history = useHistory()
     const location = useLocation()
@@ -20,13 +31,7 @@ function ResultsPage () {
     const hsvs = current.hsvs
     const hexvals = current.hexs
 
-    // determines if color's stat text should be white or black
-    const btext = []
-    for (let hsv of hsvs){
-        if (210 < hsv[0] && hsv[0] < 290 && hsv[1] > 65) btext.push("white")
-        else if (hsv[2] > 65) btext.push("black")
-        else btext.push("white")
-    }
+    let btext = determineText(hsvs)
 
     // text is the list of colors the stat text should be (black, white, or invisible)
     const[text, setText] = useState(btext)
@@ -61,6 +66,9 @@ function ResultsPage () {
         current.hexs = hexs
         current.hsvs = hsvs
         current.idxs = [0, 1, 2, 3, 4, 5]
+
+        setText(determineText(hsvs))
+        setHS("Hide")
 
         history.push({pathname: "/results", state: {current: current}})
     }
