@@ -4,11 +4,12 @@ import {useHistory} from "react-router-dom"
 function Modify ({ current }) {
     const history = useHistory()
 
-    const [color, setColor] = useState("bisque")
+    const base = "bisque"
+    const [color, setColor] = useState(base)
 
     const displayMessage = () => {
-        if (color == "bisque") setColor("black")
-        else setColor("bisque")
+        if (color == base) setColor("black")
+        else setColor(base)
     }
 
     return (
@@ -24,9 +25,6 @@ function Modify ({ current }) {
                     Modify Scheme <a className='small' >(i)</a>
             
                 </button>
-
-                <br/><br/><br/><br/>
-
             </td>
         </>
     )

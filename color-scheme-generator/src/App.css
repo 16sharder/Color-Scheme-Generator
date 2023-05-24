@@ -65,6 +65,7 @@ button {
   width: 200px;
   height: 50px;
   margin-top: 30px;
+  cursor: pointer;
 }
 
 .delete {
@@ -88,7 +89,9 @@ img {
 div.message {
   max-width: 200px;
   text-align: left;
-  margin-left: 30px
+  margin-left: 30px;
+  position: absolute;
+  top: 20px;
 }
 
 
@@ -98,10 +101,15 @@ div.message {
 table.colors td{
   font-size: large;
   min-width: 250px;
+  position: relative;
 }
 
 td.color {
   height: 250px;
+}
+
+.pointer {
+  cursor: pointer;
 }
 
 .small {

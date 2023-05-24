@@ -12,7 +12,7 @@ function ColorBlock ({ i, current, txt }) {
 
     return (
         <>
-            <td className="color" 
+            <td className="color pointer" 
                 style={{"backgroundColor": current.hexs[i]}} 
                 onClick={() => history.push({pathname: "/selected", state: {current: current, idx: i, border: btext[i], vis: hs}})}>
 

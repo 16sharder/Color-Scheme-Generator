@@ -7,8 +7,7 @@
 import React from 'react';
 import {useHistory, useLocation} from "react-router-dom"
 
-import retrieve from '../helpers/requests';
-import { convertHex } from '../helpers/converters';
+import DeleteButton from '../components/SelectedPage/deleteButton';
 
 function SelectedPage () {
     const history = useHistory()
@@ -45,34 +44,6 @@ function SelectedPage () {
         history.push({pathname: "/results", state: {current: current, vis: location.state.vis}})
     }
 
-    // deletes the selected color and replaces with next most common color in image
-    const delet = async () => {
-        const updated = await retrieve(JSON.stringify(["delete", current.idxs[idx]]), 1952)
-        if (updated == "no more"){
-            alert("Color could not be deleted - there are no more distinct colors in your image")
-            return
-        }
-        console.log(updated)
-        
-        // moves the colors back to the correct indexes (according to switch)
-
-        let rgbs = current.rgbs
-        let hsvs = current.hsvs
-        let hexs = current.hexs
-
-        rgbs[idx] = updated
-        hexs[idx] = convertHex(updated)
-
-        let rgb = updated.slice()
-        rgb.push("r")
-        hsvs[idx] = await retrieve(JSON.stringify(rgb), 7170)
-
-
-        const curr = {hexs: hexs, rgbs: rgbs, hsvs: hsvs, idxs: current.idxs}
-
-        history.push({pathname: "/results", state: {current: curr, vis: location.state.vis}})
-    }
-
 
     return(
         <>
@@ -80,15 +51,16 @@ function SelectedPage () {
             <table className="colors">
                 <tbody>
                     <tr>
+
                         {hexvals.slice(0, 3).map((color, i) => 
-                        <td className="color" style={{"backgroundColor": color, "border": borders[i]}} 
+                        <td className="color pointer" style={{"backgroundColor": color, "border": borders[i]}} 
                             onClick={() => swich(i)} key={i}>
                         </td>)}
 
                     </tr>
                     <tr>
                         {hexvals.slice(3, 6).map((color, i) => 
-                        <td className="color" style={{"backgroundColor": color, "border": borders[i+3]}} 
+                        <td className="color pointer" style={{"backgroundColor": color, "border": borders[i+3]}} 
                             onClick={() => swich(i+3)} key={i}>
                         </td>)}
                     </tr>
@@ -99,7 +71,7 @@ function SelectedPage () {
                     </tr>
                     <tr>
                         <td></td>
-                        <td><button className='delete' onClick={() => delet()}>Delete Color</button></td>
+                        <DeleteButton current={current} idx={idx}/>
                     </tr>
                 </tbody>
             </table>

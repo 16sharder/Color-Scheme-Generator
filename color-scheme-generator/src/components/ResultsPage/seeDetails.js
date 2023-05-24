@@ -25,9 +25,6 @@ function SeeDetails ({ current, text }) {
                     See Image Details <a className='small'>(i)</a>
                 
                 </button>
-
-                <br/><br/><br/><br/>
-
             </td>
         </>
     )
