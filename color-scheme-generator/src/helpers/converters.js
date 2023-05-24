@@ -23,5 +23,27 @@ function nHex (num) {
     return hex
 }
 
-export {convertHex}
 
+function switchColors (num, idx, current) {
+    let temp = current.hexs[idx]
+    current.hexs[idx] = current.hexs[num]
+    current.hexs[num] = temp
+
+    temp = current.rgbs[idx]
+    current.rgbs[idx] = current.rgbs[num]
+    current.rgbs[num] = temp
+
+    temp = current.hsvs[idx]
+    current.hsvs[idx] = current.hsvs[num]
+    current.hsvs[num] = temp
+
+    temp = current.idxs[idx]
+    current.idxs[idx] = current.idxs[num]
+    current.idxs[num] = temp
+
+    return current
+}
+
+
+
+export {convertHex, switchColors}

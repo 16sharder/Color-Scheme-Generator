@@ -24,8 +24,6 @@ function DeleteButton ({ current, idx }) {
             alert("Color could not be deleted - there are no more distinct colors in your image")
             return
         }
-        console.log(updated)
-        
         current.rgbs[idx] = updated
         current.hexs[idx] = convertHex(updated)
 

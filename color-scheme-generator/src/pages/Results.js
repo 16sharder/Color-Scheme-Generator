@@ -10,11 +10,12 @@ import {useHistory, useLocation} from "react-router-dom"
 
 import { determineText, setTextType } from '../helpers/text_colors';
 
-import RestoreOriginals from '../components/ResultsPage/restoreOriginals';
+import Modify from '../components/ResultsPage/modify';
 import ColorBlock from '../components/ResultsPage/colorBlock';
 import ToggleText from '../components/ResultsPage/toggleText';
-import Modify from '../components/ResultsPage/modify';
+import RestoreOriginals from '../components/ResultsPage/restoreOriginals';
 import SeeDetails from '../components/ResultsPage/seeDetails';
+import createPDF from '../helpers/PDF';
 
 function ResultsPage () {
     const history = useHistory()
@@ -77,7 +78,7 @@ function ResultsPage () {
 
                     <tr>
                         <td></td>
-                        <td><button>Download Results</button></td>
+                        <td><button onClick={() => createPDF(current)}>Download Results</button></td>
                         <td></td>
                         <td><button onClick={() => history.push({pathname: "/"})}>Upload New Image</button></td>
                         <td></td>
