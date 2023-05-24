@@ -7,86 +7,43 @@
 import React from 'react';
 import {useState, useEffect} from "react"
 import {useHistory, useLocation} from "react-router-dom"
-import retrieve from '../helpers/requests';
-import { convertHex } from '../helpers/converters';
 
-function determineText (hsvs) {
-    // determines if color's stat text should be white or black
-    let btext = []
-    for (let hsv of hsvs){
-        if (210 < hsv[0] && hsv[0] < 290 && hsv[1] > 65) btext.push("white")
-        else if (hsv[2] > 65) btext.push("black")
-        else btext.push("white")
-    }
-    return btext
-}
+import { determineText, setTextType } from '../helpers/text_colors';
+
+import RestoreOriginals from '../components/ResultsPage/restoreOriginals';
+import ColorBlock from '../components/ResultsPage/colorBlock';
+import ToggleText from '../components/ResultsPage/toggleText';
 
 function ResultsPage () {
     const history = useHistory()
     const location = useLocation()
 
     const current = location.state.current
-    const vis = location.state.vis
+    let vis = location.state.vis
 
-    const rgbs = current.rgbs
     const hsvs = current.hsvs
-    const hexvals = current.hexs
+    const hexs = current.hexs
 
-    let btext = determineText(hsvs)
 
     // text is the list of colors the stat text should be (black, white, or invisible)
-    const[text, setText] = useState(hexvals)
+    const[text, setText] = useState(hexs)
+    let btext = determineText(hsvs)
+
     // hs stands for hide/show; used for toggling text display
     const[hs, setHS] = useState("Show")
 
+
+
+    // sets appropriate text type when first loaded
     useEffect (() => {
-        if (vis) {
-            if (vis == "Show") setText(hexvals)
-            else if (vis == "Hide") setText(btext)
-            setHS(vis)
-        }
-        else changeText()
+        if (!vis) vis = "Hide"
+        const res = setTextType(vis, hexs, btext)
+
+        setHS(res[0])
+        setText(res[1])
     }, [])
 
-    // function to toggle color stat text between invis and not
-    const changeText = () => {
-        if (hs == "Show") {
-            setText(btext)
-            setHS("Hide")
-        } else if (hs == "Hide") {
-            setText(hexvals)
-            setHS("Show")
-    }}
 
-    // retrieves the original colors produced and resets all val types
-    const restore = async () => {
-        const originals = await retrieve(JSON.stringify(["originals"]), 1952)
-        current.rgbs = originals
-
-        const hexs = [], hsvs = []
-        for (const color of originals){
-            hexs.push(convertHex(color))
-
-            let rgb = color.slice()
-            rgb.push("r")
-            // retrieves the hsv vals from microservice
-            const hsv = await retrieve(JSON.stringify(rgb), 7170)
-            hsvs.push(hsv)
-        }
-        current.hexs = hexs
-        current.hsvs = hsvs
-        current.idxs = [0, 1, 2, 3, 4, 5]
-
-        setText(determineText(hsvs))
-        setHS("Hide")
-
-        history.push({pathname: "/results", state: {current: current}})
-    }
-
-    // When upload again button is pressed, sends back to select page
-    const newUpload = () => {
-        history.push({pathname: "/"})
-    }
 
     return(
         <>
@@ -98,37 +55,31 @@ function ResultsPage () {
                         <td><button onClick={() => history.push({pathname: "/modify", state: {current: current}})}>
                             Modify Scheme <a className='small'>(i)</a></button></td>
 
-                        {hexvals.slice(0, 3).map((color, i) => 
-                        <td className="color" style={{"backgroundColor": color, "color": text[i]}} 
-                            onClick={() => history.push({pathname: "/selected", state: {current: current, idx: i, border: btext[i], vis: hs}})} key={i}>
+                        {hexs.slice(0, 3).map((color, i) => 
+                        <ColorBlock i={i} current={current} txt={[text, btext, hs]} key={i}/> )}
 
-                            <div className='stats'>{color}
-                            <br/>rgb({rgbs[i][0]}, {rgbs[i][1]}, {rgbs[i][2]})
-                            <br/>hsv({hsvs[i][0]}, {hsvs[i][1]}%, {hsvs[i][2]}%)</div>
-                        </td>)}
-
-                        <td><button onClick={() => changeText()}>{hs} Color Statistics</button></td>
+                        <ToggleText hs={hs} hexs={hexs} btext={btext} funcs={[setHS, setText]}/>
                     </tr>
+
+
+
                     <tr>
-                        <td><button onClick={() => restore()}>Restore Original Colors</button></td>
+                        <td><RestoreOriginals setText={setText} setHS={setHS} determineText={determineText}/></td>
 
-                        {hexvals.slice(3, 6).map((color, i) => 
-                        <td className="color" style={{"backgroundColor": color, "color": text[i+3]}} 
-                            onClick={() => history.push({pathname: "/selected", state: {current: current, idx: i+3, border: btext[i+3], vis: hs}})} key={i}>
-
-                            <div className='stats'>{color}
-                            <br/>rgb({rgbs[i+3][0]}, {rgbs[i+3][1]}, {rgbs[i+3][2]})
-                            <br/>hsv({hsvs[i+3][0]}, {hsvs[i+3][1]}%, {hsvs[i+3][2]}%)</div>
-                        </td>)}
+                        {hexs.slice(3, 6).map((color, i) => 
+                        <ColorBlock i={i+3} current={current} txt={[text, btext, hs]} key={i+3}/> )}
 
                         <td><button onClick={() => history.push({pathname: "/details", state: {current: current, text: text}})}>
                             See Image Details <a className='small'>(i)</a></button></td>
                     </tr>
+
+
+
                     <tr>
                         <td></td>
                         <td><button>Download Results</button></td>
                         <td></td>
-                        <td><button onClick={() => newUpload()}>Upload New Image</button></td>
+                        <td><button onClick={() => history.push({pathname: "/"})}>Upload New Image</button></td>
                         <td></td>
                     </tr>
                 </tbody>

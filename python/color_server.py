@@ -12,7 +12,9 @@ colors, cats, indices = [], [], [0, 1, 2, 3, 4, 5]
 originals = [colors, cats]
 
 responses = {"path": 0,
-             "details": 1}
+             "originals": 1,
+             "details": 2,
+             "delete": 3}
 toggle = False
 deleted = 0
 
@@ -58,6 +60,7 @@ while True:
 
         # sends back original colors
         print(f"Sending originals: {colors}")
+        responses["originals"] = colors
         socket.send_json(colors)
 
     # received request for color details
@@ -90,6 +93,7 @@ while True:
 
         # sends back the new main color results
         print(f"Sending reply: {colors[idx]}")
+        responses["delete"] = colors[idx]
         socket.send_json(colors[idx])
 
     else:
