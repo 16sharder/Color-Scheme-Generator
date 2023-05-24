@@ -80,7 +80,15 @@ table {
 
 img {
   max-width: 60%;
-  max-height: 60%;
+  max-height: 500px;
+}
+
+
+
+div.message {
+  max-width: 200px;
+  text-align: left;
+  margin-left: 30px
 }
 
 

@@ -13,6 +13,8 @@ import { determineText, setTextType } from '../helpers/text_colors';
 import RestoreOriginals from '../components/ResultsPage/restoreOriginals';
 import ColorBlock from '../components/ResultsPage/colorBlock';
 import ToggleText from '../components/ResultsPage/toggleText';
+import Modify from '../components/ResultsPage/modify';
+import SeeDetails from '../components/ResultsPage/seeDetails';
 
 function ResultsPage () {
     const history = useHistory()
@@ -52,10 +54,9 @@ function ResultsPage () {
             <table className="colors">
                 <tbody>
                     <tr>
-                        <td><button onClick={() => history.push({pathname: "/modify", state: {current: current}})}>
-                            Modify Scheme <a className='small'>(i)</a></button></td>
+                        <Modify current={current}/>
 
-                        {hexs.slice(0, 3).map((color, i) => 
+                        {[0, 1, 2].map((i) => 
                         <ColorBlock i={i} current={current} txt={[text, btext, hs]} key={i}/> )}
 
                         <ToggleText hs={hs} hexs={hexs} btext={btext} funcs={[setHS, setText]}/>
@@ -66,11 +67,10 @@ function ResultsPage () {
                     <tr>
                         <td><RestoreOriginals setText={setText} setHS={setHS} determineText={determineText}/></td>
 
-                        {hexs.slice(3, 6).map((color, i) => 
-                        <ColorBlock i={i+3} current={current} txt={[text, btext, hs]} key={i+3}/> )}
+                        {[3, 4, 5].map((i) => 
+                        <ColorBlock i={i} current={current} txt={[text, btext, hs]} key={i+3}/> )}
 
-                        <td><button onClick={() => history.push({pathname: "/details", state: {current: current, text: text}})}>
-                            See Image Details <a className='small'>(i)</a></button></td>
+                        <SeeDetails current={current} text={text}/>
                     </tr>
 
 
