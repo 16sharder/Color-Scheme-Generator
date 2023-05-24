@@ -76,7 +76,7 @@ function ViewDetails () {
                     the number of pixels of that color in your image.
                     </th>
                     <th>
-                        <button onClick={() => history.push({pathname: "/results", state: {current: location.state.current}})}>Return to Results</button>
+                        <button onClick={() => history.push({pathname: "/results", state: location.state})}>Return to Results</button>
                     </th>
                 </tr>
             </thead>

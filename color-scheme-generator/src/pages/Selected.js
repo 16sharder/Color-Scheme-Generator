@@ -42,7 +42,7 @@ function SelectedPage () {
         current.idxs[idx] = current.idxs[num]
         current.idxs[num] = temp
 
-        history.push({pathname: "/results", state: {current: current}})
+        history.push({pathname: "/results", state: {current: current, vis: location.state.vis}})
     }
 
     // deletes the selected color and replaces with next most common color in image
@@ -70,7 +70,7 @@ function SelectedPage () {
 
         const curr = {hexs: hexs, rgbs: rgbs, hsvs: hsvs, idxs: current.idxs}
 
-        history.push({pathname: "/results", state: {current: curr}})
+        history.push({pathname: "/results", state: {current: curr, vis: location.state.vis}})
     }
 
 
@@ -93,7 +93,7 @@ function SelectedPage () {
                         </td>)}
                     </tr>
                     <tr>
-                        <td><button onClick={() => history.push({pathname: "/results", state: {current: current}})}>Cancel</button></td>
+                        <td><button onClick={() => history.push({pathname: "/results", state: location.state})}>Cancel</button></td>
                         <td></td>
                         <td><button onClick={() => history.push({pathname: "/edit", state: {current: current, i: idx}})}>Edit Color</button></td>
                     </tr>

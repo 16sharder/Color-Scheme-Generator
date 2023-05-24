@@ -185,7 +185,7 @@ function EditColor () {
                 </tr>
                 <tr>
                     <td></td>
-                    <td><button onClick={() => history.push({pathname: "/results", state: {current: location.state.current}})}>Cancel</button></td>
+                    <td><button onClick={() => history.push({pathname: "/results", state: location.state})}>Cancel</button></td>
                     <td></td>
                     <td></td>
                     <td></td>

@@ -5,7 +5,7 @@
 // Includes an upload button to generate a new scheme
 
 import React from 'react';
-import {useState} from "react"
+import {useState, useEffect} from "react"
 import {useHistory, useLocation} from "react-router-dom"
 import retrieve from '../helpers/requests';
 import { convertHex } from '../helpers/converters';
@@ -26,6 +26,7 @@ function ResultsPage () {
     const location = useLocation()
 
     const current = location.state.current
+    const vis = location.state.vis
 
     const rgbs = current.rgbs
     const hsvs = current.hsvs
@@ -34,9 +35,18 @@ function ResultsPage () {
     let btext = determineText(hsvs)
 
     // text is the list of colors the stat text should be (black, white, or invisible)
-    const[text, setText] = useState(btext)
+    const[text, setText] = useState(hexvals)
     // hs stands for hide/show; used for toggling text display
-    const[hs, setHS] = useState("Hide")
+    const[hs, setHS] = useState("Show")
+
+    useEffect (() => {
+        if (vis) {
+            if (vis == "Show") setText(hexvals)
+            else if (vis == "Hide") setText(btext)
+            setHS(vis)
+        }
+        else changeText()
+    }, [])
 
     // function to toggle color stat text between invis and not
     const changeText = () => {
@@ -90,7 +100,7 @@ function ResultsPage () {
 
                         {hexvals.slice(0, 3).map((color, i) => 
                         <td className="color" style={{"backgroundColor": color, "color": text[i]}} 
-                            onClick={() => history.push({pathname: "/selected", state: {current: current, idx: i, border: btext[i]}})} key={i}>
+                            onClick={() => history.push({pathname: "/selected", state: {current: current, idx: i, border: btext[i], vis: hs}})} key={i}>
 
                             <div className='stats'>{color}
                             <br/>rgb({rgbs[i][0]}, {rgbs[i][1]}, {rgbs[i][2]})
@@ -104,7 +114,7 @@ function ResultsPage () {
 
                         {hexvals.slice(3, 6).map((color, i) => 
                         <td className="color" style={{"backgroundColor": color, "color": text[i+3]}} 
-                            onClick={() => history.push({pathname: "/selected", state: {current: current, idx: i+3, border: btext[i+3]}})} key={i}>
+                            onClick={() => history.push({pathname: "/selected", state: {current: current, idx: i+3, border: btext[i+3], vis: hs}})} key={i}>
 
                             <div className='stats'>{color}
                             <br/>rgb({rgbs[i+3][0]}, {rgbs[i+3][1]}, {rgbs[i+3][2]})
