@@ -22,27 +22,25 @@ function ResultsPage () {
     const location = useLocation()
 
     const current = location.state.current
-    let vis = location.state.vis
+    let visible = location.state.visible
 
     const hsvs = current.hsvs
     const hexs = current.hexs
 
 
-    // text is the list of colors the stat text should be (black, white, or invisible)
-    const[text, setText] = useState(hexs)
-    let btext = determineText(hsvs)
-
-    // hs stands for hide/show; used for toggling text display
-    const[hs, setHS] = useState("Show")
+    // text_arr is the list of colors the stat text should be (black, white, or invisible)
+    const[text_arr, setText] = useState(hexs)
+    let bw_text_arr = determineText(hsvs)
+    const[visibility, setVis] = useState("Show")
 
 
 
     // sets appropriate text type when first loaded
     useEffect (() => {
-        if (!vis) vis = "Hide"
-        const res = setTextType(vis, hexs, btext)
+        if (!visible) visible = "Hide"
+        const res = setTextType(visible, hexs, bw_text_arr)
 
-        setHS(res[0])
+        setVis(res[0])
         setText(res[1])
     }, [])
 
@@ -58,20 +56,20 @@ function ResultsPage () {
                         <Modify current={current}/>
 
                         {[0, 1, 2].map((i) => 
-                        <ColorBlock i={i} current={current} txt={[text, btext, hs]} key={i}/> )}
+                        <ColorBlock i={i} current={current} txt={[text_arr, bw_text_arr, visibility]} key={i}/> )}
 
-                        <ToggleText hs={hs} hexs={hexs} btext={btext} funcs={[setHS, setText]}/>
+                        <ToggleText visibility={visibility} hexs={hexs} bw_text_arr={bw_text_arr} funcs={[setVis, setText]}/>
                     </tr>
 
 
 
                     <tr>
-                        <td><RestoreOriginals setText={setText} setHS={setHS} determineText={determineText}/></td>
+                        <td><RestoreOriginals setText={setText} setVis={setVis} determineText={determineText}/></td>
 
                         {[3, 4, 5].map((i) => 
-                        <ColorBlock i={i} current={current} txt={[text, btext, hs]} key={i+3}/> )}
+                        <ColorBlock i={i} current={current} txt={[text_arr, bw_text_arr, visibility]} key={i+3}/> )}
 
-                        <SeeDetails current={current} text={text}/>
+                        <SeeDetails current={current} text_arr={text_arr}/>
                     </tr>
 
 

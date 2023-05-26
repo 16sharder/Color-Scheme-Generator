@@ -7,22 +7,22 @@ import React from 'react';
 
 import { setTextType } from '../../helpers/text_colors';
 
-function ToggleText ({ hs, hexs, btext, funcs }) {
+function ToggleText ({ visibility, hexs, bw_text_arr, funcs }) {
 
-    const setHS = funcs[0]
+    const setVis = funcs[0]
     const setText = funcs[1]
 
     // resets the text type as opposite to current text
     const changeText = () => {
-        const res = setTextType(hs, hexs, btext, true)
-        setHS(res[0])
+        const res = setTextType(visibility, hexs, bw_text_arr, true)
+        setVis(res[0])
         setText(res[1])
     }
 
     return (
         <>
             <td><button onClick={() => changeText()}>
-                {hs} Color Statistics</button></td>
+                {visibility} Color Statistics</button></td>
         </>
     )
 }

@@ -1,24 +1,24 @@
 function determineText (hsvs) {
     // determines if color's stat text should be white or black
-    let btext = []
+    let bw_text_arr = []
     for (let hsv of hsvs){
-        if (210 < hsv[0] && hsv[0] < 290 && hsv[1] > 65) btext.push("white")
-        else if (hsv[2] > 65) btext.push("black")
-        else btext.push("white")
+        if (210 < hsv[0] && hsv[0] < 290 && hsv[1] > 65) bw_text_arr.push("white")
+        else if (hsv[2] > 65) bw_text_arr.push("black")
+        else bw_text_arr.push("white")
     }
-    return btext
+    return bw_text_arr
 }
 
-function setTextType (vis, hexvals, btext, swtch=false) {
+function setTextType (visible, hexvals, bw_text_arr, swtch=false) {
     // sets the text to use on Results page as visible or invisible
     if (swtch) {
-        if (vis == "Show") return ["Hide", btext]
-        else if (vis == "Hide") return ["Show", hexvals]
+        if (visible == "Show") return ["Hide", bw_text_arr]
+        else if (visible == "Hide") return ["Show", hexvals]
     }
-    // if not switching, keeps vis the same but resets array used
+    // if not switching, keeps visible the same but resets array used
     else {
-        if (vis == "Show") return [vis, hexvals]
-        else if (vis == "Hide") return [vis, btext]
+        if (visible == "Show") return [visible, hexvals]
+        else if (visible == "Hide") return [visible, bw_text_arr]
     }
 }
 

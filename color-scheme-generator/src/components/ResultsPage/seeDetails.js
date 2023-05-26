@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import {useHistory} from "react-router-dom"
 
-function SeeDetails ({ current, text }) {
+function SeeDetails ({ current, text_arr }) {
     const history = useHistory()
 
     // Changes the informational message's coloring on mouse hover (from invisible to black)
@@ -24,7 +24,7 @@ function SeeDetails ({ current, text }) {
                 <div className='message' style={{"color": color}}>Goes to a list of pixels in the image</div>
 
                 <button 
-                    onClick={() => history.push({pathname: "/details", state: {current: current, text: text}})}
+                    onClick={() => history.push({pathname: "/details", state: {current: current, text_arr: text_arr}})}
                     onMouseOver={() => displayMessage()}
                     onMouseOut={() => displayMessage()}>
                             

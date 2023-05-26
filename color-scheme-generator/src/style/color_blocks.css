@@ -1,0 +1,16 @@
+table.colors td{
+    font-size: large;
+    min-width: 250px;
+    position: relative;
+}
+
+td.color {
+    height: 250px;
+}
+
+
+
+.addon {
+    height: 50px;
+    width: 50px;
+}

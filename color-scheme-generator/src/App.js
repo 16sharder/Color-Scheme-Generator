@@ -1,4 +1,9 @@
-import './App.css';
+import './style/app.css';
+import './style/upload.css';
+import './style/color_blocks.css';
+import './style/sliders.css';
+import './style/details.css';
+
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 

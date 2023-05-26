@@ -11,7 +11,7 @@ import { convertHex } from '../../helpers/converters';
 import { determineText } from '../../helpers/text_colors';
 
 
-function RestoreOriginals ({ setText, setHS }) {
+function RestoreOriginals ({ setText, setVis }) {
 
     const history = useHistory()
 
@@ -38,7 +38,7 @@ function RestoreOriginals ({ setText, setHS }) {
 
         // resets the text color to match new color values
         setText(determineText(hsvs))
-        setHS("Hide")
+        setVis("Hide")
 
         history.push({pathname: "/results", state: {current: curr}})
     }

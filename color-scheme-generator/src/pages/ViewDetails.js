@@ -11,14 +11,14 @@ import retrieve from '../helpers/requests';
 import { convertHex } from '../helpers/converters';
 import { determineText } from '../helpers/text_colors';
 
+
 function ViewDetails () {
 
     const history = useHistory()
     const location = useLocation()
 
     const [mainColors, setColors] = useState([])
-
-    const [text, setText] = useState([])
+    const [text_arr, setText] = useState([])
 
     // A set of arrays for each color category - each array holds top 100 pixels in that category
     const [allPixels, setPixels] = useState(new Array(6).fill([]))
@@ -39,6 +39,7 @@ function ViewDetails () {
             hsvs.push(hsv)
         }
 
+        // establishes main colors and text colors to display
         setColors(hexs)
         setText(determineText(hsvs))
 
@@ -82,7 +83,7 @@ function ViewDetails () {
         <table className='details'><tbody><tr>
 
                     {mainColors.map((color, i) => 
-                    <td style={{"backgroundColor": color, "color": text[i]}} key={i}>
+                    <td style={{"backgroundColor": color, "color": text_arr[i]}} key={i}>
                         <h4>{color}</h4>
 
                         <table><tbody>

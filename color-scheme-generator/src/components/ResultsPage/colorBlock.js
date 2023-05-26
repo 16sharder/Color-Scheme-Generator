@@ -12,17 +12,17 @@ function ColorBlock ({ i, current, txt }) {
     const history = useHistory()
 
     // text values determine the color of stat text
-    const text = txt[0]
-    const btext = txt[1]
-    const hs = txt[2]
+    const text_arr = txt[0]
+    const bw_text_arr = txt[1]
+    const visibility = txt[2]
 
     return (
         <>
             <td className="color pointer" 
                 style={{"backgroundColor": current.hexs[i]}} 
-                onClick={() => history.push({pathname: "/selected", state: {current: current, idx: i, border: btext[i], vis: hs}})}>
+                onClick={() => history.push({pathname: "/selected", state: {current: current, idx: i, border: bw_text_arr[i], visible: visibility}})}>
 
-                <StatText i={i} current={current} text={text}/>
+                <StatText i={i} current={current} text_arr={text_arr}/>
             </td>
         </>
     )

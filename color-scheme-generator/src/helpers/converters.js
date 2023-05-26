@@ -1,3 +1,5 @@
+import retrieve from "./requests"
+
 async function toHex (h, s, b) {
     // converts a value from HSV to hex
     const hsv = [h, s, b, "u"]

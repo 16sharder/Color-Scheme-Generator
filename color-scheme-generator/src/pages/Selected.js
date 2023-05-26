@@ -28,7 +28,7 @@ function SelectedPage () {
     const swich = (num) => {
         const curr = switchColors(num, idx, current)
 
-        history.push({pathname: "/results", state: {current: curr, vis: location.state.vis}})
+        history.push({pathname: "/results", state: {current: curr, visible: location.state.visible}})
     }
 
 

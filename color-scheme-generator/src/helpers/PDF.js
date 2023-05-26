@@ -33,9 +33,10 @@ function createPDF (colors) {
     }
 
     // the d's represent the differences (in mm) between text elements
-    let [d1, d2, d3, d4] = [45, 50, 5, 16]
-    // the x's represent the distance left (in mm) that text should be positioned
-    let [x1, x2, x3, x4] = [25, x1+d1, x1+d1*2, x3+d2]
+    let [d1, d2, d3] = [45, 5, 16]
+    // the x's represent the distance from left (in mm) that center text should be positioned (for each of 4 columns)
+    let x1 = 25
+    let [x2, x3, x4] = [x1+d1, x1+d1*2, x1+d1*3 + d2]
     // yt represents the height at which the text should be positioned
     let yt = 160
 
@@ -47,25 +48,25 @@ function createPDF (colors) {
     for (const idx in hexs) {
         yt += 10
 
-        // prints "Color i: hex"
+        // prints "Color i: hex" in columns 1 and 2
         pdf.text(`Color ${Number(idx)+1}:`,     x1, yt)
         pdf.text(`${hexs[idx]}`,                x2, yt,     {align: "center"})
 
         
-        // prints ( r, g, b )
-        pdf.text("(",                           x3-d4, yt,  {align: "center"})
-        pdf.text(`${rgbs[idx][0]}, `,           x3-d3, yt,  {align: "right"})
+        // prints ( r, g, b ) in column 3
+        pdf.text("(",                           x3-d3, yt,  {align: "center"})
+        pdf.text(`${rgbs[idx][0]}, `,           x3-d2, yt,  {align: "right"})
         pdf.text(`${rgbs[idx][1]}`,             x3, yt,     {align: "center"})
-        pdf.text(`, ${rgbs[idx][2]}`,           x3+d3, yt,  {align: "left"})
-        pdf.text(")",                           x3+d4, yt,  {align: "center"})
+        pdf.text(`, ${rgbs[idx][2]}`,           x3+d2, yt,  {align: "left"})
+        pdf.text(")",                           x3+d3, yt,  {align: "center"})
 
 
-        // prints ( h, s, v )
-        pdf.text("(",                           x4-d4, yt,  {align: "center"})
-        pdf.text(`${hsvs[idx][0]}, `,           x4-d3, yt,  {align: "right"})
+        // prints ( h, s, v ) in column 4
+        pdf.text("(",                           x4-d3, yt,  {align: "center"})
+        pdf.text(`${hsvs[idx][0]}, `,           x4-d2, yt,  {align: "right"})
         pdf.text(`${hsvs[idx][1]}%`,            x4, yt,     {align: "center"})
-        pdf.text(`, ${hsvs[idx][2]}%`,          x4+d3, yt,  {align: "left"})
-        pdf.text(")",                           x4+d4+2, yt, {align: "center"})
+        pdf.text(`, ${hsvs[idx][2]}%`,          x4+d2, yt,  {align: "left"})
+        pdf.text(")",                           x4+d3+2, yt, {align: "center"})
     }
 
     pdf.setFontSize(9)

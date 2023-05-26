@@ -3,14 +3,15 @@
 // This page allows the user to edit the selected color in hue, sat, and brightness
 // Includes a cancel and save button, which both return to the results page
 
-// Source for slider css: https://www.w3schools.com/howto/howto_js_rangeslider.asp
-
 import React from 'react';
 import {useState, useEffect} from "react"
 import {useHistory, useLocation} from "react-router-dom"
 
 import retrieve from '../helpers/requests';
 import { convertHex, toHex } from '../helpers/converters';
+import Slider from '../components/EditPage/slider';
+import ColorRow from '../components/EditPage/colorRow';
+
 
 function EditColor () {
     const history = useHistory()
@@ -18,8 +19,8 @@ function EditColor () {
 
     const current = location.state.current
 
-    const origColors = current.hexs.slice()
-    const [colors, setColors] = useState(origColors)
+    const hexs = current.hexs.slice()
+    const [colors, setColors] = useState(hexs)
 
     const rgbs = current.rgbs
     const hsvs = current.hsvs
@@ -44,19 +45,19 @@ function EditColor () {
     // slider values are used to determine the colors on the slider gradients
     const hueSlider = ["#ff0000", "#ff8000", "#ffff00", "#80ff00", "#00ff00", "#00ff80", "#00ffff", "#0080ff", "#0000ff", "#8000ff", "#ff00ff", "#ff0080", "#ff0000"]
 
-    const [satSlider, setSSlider] = useState("#ff0000")
+    const [satSlider, setSlider] = useState("#ff0000")
 
-    const stSlider = async () => {
-        setSSlider(await toHex(hue, 100, bri))
+    const setSlider2 = async () => {
+        setSlider(await toHex(hue, 100, bri))
     }
 
 
     // edits the color in real time
     const editColor = async () => {
-        stSlider()
+        setSlider2()
 
-        origColors[idx] = await toHex(hue, sat, bri)
-        setColors(origColors)
+        hexs[idx] = await toHex(hue, sat, bri)
+        setColors(hexs)
     }
 
     // saves the edits and sends back to results page
@@ -66,9 +67,9 @@ function EditColor () {
         const hsv = [hue, sat, bri, "u"]
         rgbs[idx] = await retrieve(JSON.stringify(hsv), 7170)
 
-        origColors[idx] = convertHex(rgbs[idx])
+        hexs[idx] = convertHex(rgbs[idx])
 
-        const curr = {hexs: origColors, rgbs: rgbs, hsvs: hsvs, idxs: current.idxs}
+        const curr = {hexs: hexs, rgbs: rgbs, hsvs: hsvs, idxs: current.idxs}
         history.push({pathname: "/results", state: {current: curr}})
     }
 
@@ -85,103 +86,43 @@ function EditColor () {
         <table>
             <tbody>
                 <tr>
-                    <td className="addon" style={{"backgroundColor": addons[0]}}></td>
-                    {addons.slice(0, 3).map((color, i) =>
-                    <td className="addon" style={{"backgroundColor": color, "minWidth": widths[i]}} key={i}></td>)}
-                    <td className="addon" style={{"backgroundColor": addons[2]}}></td>
+                    <ColorRow addons={addons.slice(0, 3)} widths={widths}/>
                     <td style={{"width": "500px"}}></td>
                 </tr>
                 <tr>
-                    <td className="addon" style={{"backgroundColor": addons[0]}}></td>
-                    {colors.slice(0, 3).map((color, i) => 
-                    <td className="color" style={{"backgroundColor": color}} key={i}></td>)}
-                    <td className="addon" style={{"backgroundColor": addons[2]}}></td>
+                    <ColorRow addons={addons.slice(0, 3)} filler={colors.slice(0, 3)}/>
 
                     <td className='slider'>
                         <h4>Hue</h4>
-                        <label>0</label>
-                        <input 
-                            type="range" 
-                            min="0" max="360" 
-                            value={hue} 
-                            className='sld'
-                            style={{"backgroundImage": `linear-gradient(to right, ${hueSlider.map((color) => color)})`}}
-                            onChange={newN => {
-                                setHue(Number(newN.target.value))}}>
-                        </input>
-                        <label>360</label>
-                        <br/>
-                        <input 
-                            type="number" 
-                            min="0" max="360" 
-                            value={hue} 
-                            className='numinp'
-                            onChange={newN => {
-                                setHue(Number(newN.target.value))}}>
-                        </input>
-
-                        <br/><br/>
-                        <h4>Saturation</h4>
+                        <Slider element={hue} func={setHue} gradient={hueSlider} max="360"/>
+                        <br/><br/><br/><br/>
                     </td>
                 </tr>
+
                 <tr>
-                    <td className="addon" style={{"backgroundColor": addons[3]}}></td>
-                    {colors.slice(3, 6).map((color, i) => 
-                    <td className="color" style={{"backgroundColor": color}} key={i}></td>)}
-                    <td className="addon" style={{"backgroundColor": addons[5]}}></td>
+                    <ColorRow addons={addons.slice(3, 6)} filler={colors.slice(3, 6)}/>
                     
                     <td className='slider'>
-                        <label>0</label>
-                        <input 
-                            type="range" 
-                            min="0" max="100" 
-                            value={sat} 
-                            className='sld'
-                            style={{"backgroundImage": `linear-gradient(to right, white, ${satSlider})`}}
-                            onChange={newN => {
-                                setSat(Number(newN.target.value))}}>
-                        </input>
-                        <label>100</label>
-                        <br/>
-                        <input 
-                            type="number" 
-                            min="0" max="100" 
-                            value={sat} 
-                            className='numinp'
-                            onChange={newN => {
-                                setSat(Number(newN.target.value))}}>
-                        </input>
-                        <br/><br/>
-
+                        <br/><br/><br/>
                         <h4>Brightness</h4>
-                        <label>0</label>
-                        <input 
-                            type="range" 
-                            min="0" max="100" 
-                            value={bri} 
-                            className='sld'
-                            style={{"backgroundImage": `linear-gradient(to right, black, white)`}}
-                            onChange={newN => {
-                                setBri(Number(newN.target.value))}}>
-                        </input>
-                        <label>100</label>
-                        <br/>
-                        <input 
-                            type="number" 
-                            min="0" max="100" 
-                            value={bri} 
-                            className='numinp'
-                            onChange={newN => {
-                                setBri(Number(newN.target.value))}}>
-                        </input>
+                        <Slider element={bri} func={setBri} gradient={["black", "white"]} max="100"/>
                     </td>
                 </tr>
                 <tr>
-                    <td className="addon" style={{"backgroundColor": addons[3]}}></td>
-                    {addons.slice(3, 6).map((color, i) =>
-                    <td className="addon" style={{"backgroundColor": color}} key={i}></td>)}
-                    <td className="addon" style={{"backgroundColor": addons[5]}}></td>
+                    <ColorRow addons={addons.slice(3, 6)}/>
                 </tr>
+
+                
+
+                <tr>
+                    <td></td><td></td><td></td><td></td><td></td>
+                    <td className='sat slider'>
+                        <h4>Saturation</h4>
+                        <Slider element={sat} func={setSat} gradient={["white", satSlider]} max="100"/>
+                    </td>
+                </tr>
+
+
                 <tr>
                     <td></td>
                     <td><button onClick={() => history.push({pathname: "/results", state: location.state})}>Cancel</button></td>
