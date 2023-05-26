@@ -10,10 +10,12 @@ function determineText (hsvs) {
 }
 
 function setTextType (vis, hexvals, btext, swtch=false) {
+    // sets the text to use on Results page as visible or invisible
     if (swtch) {
         if (vis == "Show") return ["Hide", btext]
         else if (vis == "Hide") return ["Show", hexvals]
     }
+    // if not switching, keeps vis the same but resets array used
     else {
         if (vis == "Show") return [vis, hexvals]
         else if (vis == "Hide") return [vis, btext]

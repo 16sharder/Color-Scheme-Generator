@@ -1,9 +1,8 @@
 import {jsPDF} from "jspdf"
 
-function addRectangle (x, y, color, pdf) {
-    let r = color[0]
-    let g = color[1]
-    let b = color[2]
+function addSquare (x, y, color, pdf) {
+    // adds a colored square to the pdf in x, y position
+    let [r, g, b] = color
 
     pdf.setFillColor(r, g, b)
     pdf.rect(x, y, 50, 50, 'F')
@@ -11,70 +10,62 @@ function addRectangle (x, y, color, pdf) {
 }
 
 function createPDF (colors) {
+    // generates a pdf with the colors and color info
     const rgbs = colors.rgbs
     const hexs = colors.hexs
     const hsvs = colors.hsvs
 
+    // create pdf and establish format
     const pdf = new jsPDF({unit: 'mm',
         format: 'a4'})
-
     pdf.setFontSize(12)
 
-    let x = 30
-    let y = 30
+    let [x, y] = [30, 30]
 
+    // adds a color square for each color
     for (const idx in rgbs) {
-        addRectangle(x, y, rgbs[idx], pdf)
+        addSquare(x, y, rgbs[idx], pdf)
         x += 50
 
         if (idx == 2) {
-            x = 30
-            y = 80
+            [x, y] = [30, 80]
         }
     }
 
-    let d1 = 45
-    let d2 = 50
-    let d3 = 5
-    let d4 = 16
+    // the d's represent the differences (in mm) between text elements
+    let [d1, d2, d3, d4] = [45, 50, 5, 16]
+    // the x's represent the distance left (in mm) that text should be positioned
+    let [x1, x2, x3, x4] = [25, x1+d1, x1+d1*2, x3+d2]
+    // yt represents the height at which the text should be positioned
+    let yt = 160
 
-    let text_x1 = 25
-    let text_x2 = text_x1 + d1
-
-    let text_x3 = text_x1 + d1 * 2
-    let text_x4 = text_x3 + d2
-
-    let text_y = 160
-
-    pdf.text("Hex", text_x2, text_y, {align: "center"})
-    pdf.text("RGB", text_x3, text_y, {align: "center"})
-    pdf.text("HSV", text_x4, text_y, {align: "center"})
+    // adds column labels for the color info
+    pdf.text("Hex", x2, yt, {align: "center"})
+    pdf.text("RGB", x3, yt, {align: "center"})
+    pdf.text("HSV", x4, yt, {align: "center"})
 
     for (const idx in hexs) {
-        text_y += 10
+        yt += 10
 
-        pdf.text(`Color ${Number(idx)+1}:`, text_x1, text_y)
-        pdf.text(`${hexs[idx]}`, text_x2, text_y, {align: "center"})
+        // prints "Color i: hex"
+        pdf.text(`Color ${Number(idx)+1}:`,     x1, yt)
+        pdf.text(`${hexs[idx]}`,                x2, yt,     {align: "center"})
 
         
         // prints ( r, g, b )
-        pdf.text("(", text_x3-d4, text_y, {align: "center"})
-
-        pdf.text(`${rgbs[idx][0]}, `, text_x3-d3, text_y, {align: "right"})
-        pdf.text(`${rgbs[idx][1]}`, text_x3, text_y, {align: "center"})
-        pdf.text(`, ${rgbs[idx][2]}`, text_x3+d3, text_y, {align: "left"})
-
-        pdf.text(")", text_x3+d4, text_y, {align: "center"})
+        pdf.text("(",                           x3-d4, yt,  {align: "center"})
+        pdf.text(`${rgbs[idx][0]}, `,           x3-d3, yt,  {align: "right"})
+        pdf.text(`${rgbs[idx][1]}`,             x3, yt,     {align: "center"})
+        pdf.text(`, ${rgbs[idx][2]}`,           x3+d3, yt,  {align: "left"})
+        pdf.text(")",                           x3+d4, yt,  {align: "center"})
 
 
         // prints ( h, s, v )
-        pdf.text("(", text_x4-d4, text_y, {align: "center"})
-
-        pdf.text(`${hsvs[idx][0]}, `, text_x4-d3, text_y, {align: "right"})
-        pdf.text(`${hsvs[idx][1]}%`, text_x4, text_y, {align: "center"})
-        pdf.text(`, ${hsvs[idx][2]}%`, text_x4+d3, text_y, {align: "left"})
-
-        pdf.text(")", text_x4+d4+2, text_y, {align: "center"})
+        pdf.text("(",                           x4-d4, yt,  {align: "center"})
+        pdf.text(`${hsvs[idx][0]}, `,           x4-d3, yt,  {align: "right"})
+        pdf.text(`${hsvs[idx][1]}%`,            x4, yt,     {align: "center"})
+        pdf.text(`, ${hsvs[idx][2]}%`,          x4+d3, yt,  {align: "left"})
+        pdf.text(")",                           x4+d4+2, yt, {align: "center"})
     }
 
     pdf.setFontSize(9)

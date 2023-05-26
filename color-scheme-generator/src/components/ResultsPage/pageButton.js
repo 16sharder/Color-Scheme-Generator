@@ -1,12 +1,12 @@
-// The See Details Button Component:
-// Used inside the Results Page
-// Displays a see details button that brings user to View Details page
+// The Page Button Component:
+// Used inside the Results Page, for modify and see details buttons
+// Displays a button that brings user to another page
 // When the user hovers over the button, displays information
 
 import React, { useState } from 'react';
 import {useHistory} from "react-router-dom"
 
-function SeeDetails ({ current, text }) {
+function PageButton ({ state, message, path, title }) {
     const history = useHistory()
 
     // Changes the informational message's coloring on mouse hover (from invisible to black)
@@ -21,14 +21,14 @@ function SeeDetails ({ current, text }) {
     return (
         <>
             <td>
-                <div className='message' style={{"color": color}}>Goes to a list of pixels in the image</div>
+                <div className='message' style={{"color": color}}>{message}</div>
 
                 <button 
-                    onClick={() => history.push({pathname: "/details", state: {current: current, text: text}})}
+                    onClick={() => history.push({pathname: path, state: state})}
                     onMouseOver={() => displayMessage()}
                     onMouseOut={() => displayMessage()}>
                             
-                    See Image Details <a className='small'>(i)</a>
+                    {title} <a className='small'>(i)</a>
                 
                 </button>
             </td>
@@ -36,4 +36,4 @@ function SeeDetails ({ current, text }) {
     )
 }
 
-export default SeeDetails
+export default PageButton

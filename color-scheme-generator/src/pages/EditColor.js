@@ -1,3 +1,8 @@
+// The Edit Color Page:
+// Shown after the user has pressed the edit button on the selected page
+// This page allows the user to edit the selected color in hue, sat, and brightness
+// Includes a cancel and save button, which both return to the results page
+
 // Source for slider css: https://www.w3schools.com/howto/howto_js_rangeslider.asp
 
 import React from 'react';
@@ -5,14 +10,7 @@ import {useState, useEffect} from "react"
 import {useHistory, useLocation} from "react-router-dom"
 
 import retrieve from '../helpers/requests';
-import { convertHex } from '../helpers/converters';
-
-async function toHex (h, s, b) {
-    const hsv = [h, s, b, "u"]
-    const rgb = await retrieve(JSON.stringify(hsv), 7170)
-    const hex = convertHex(rgb)
-    return hex
-}
+import { convertHex, toHex } from '../helpers/converters';
 
 function EditColor () {
     const history = useHistory()
@@ -43,6 +41,7 @@ function EditColor () {
     const [sat, setSat] = useState(hsvs[idx][1])
     const [bri, setBri] = useState(hsvs[idx][2])
 
+    // slider values are used to determine the colors on the slider gradients
     const hueSlider = ["#ff0000", "#ff8000", "#ffff00", "#80ff00", "#00ff00", "#00ff80", "#00ffff", "#0080ff", "#0000ff", "#8000ff", "#ff00ff", "#ff0080", "#ff0000"]
 
     const [satSlider, setSSlider] = useState("#ff0000")
@@ -73,7 +72,7 @@ function EditColor () {
         history.push({pathname: "/results", state: {current: curr}})
     }
 
-    // updates the colors seen anytime the hue, sat, or brightness changes
+    // updates the color anytime the hue, sat, or brightness changes
     useEffect(() => {
         editColor()
     }, [hue, sat, bri])

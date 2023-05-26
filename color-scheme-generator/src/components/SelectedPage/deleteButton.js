@@ -1,3 +1,9 @@
+// The Delete Button Component:
+// Used inside the Selected Page
+// Displays a delete button to delete a color
+// Button returns user to Results page
+// When the user hovers over the button, displays information
+
 import React, { useState } from 'react';
 import {useHistory} from "react-router-dom"
 import retrieve from '../../helpers/requests';
@@ -8,6 +14,7 @@ function DeleteButton ({ current, idx }) {
     const history = useHistory()
     const location = useLocation()
 
+    // Changes the informational message's coloring on mouse hover (from invisible to black)
     const base = "bisque"
     const [color, setColor] = useState(base)
 
@@ -24,6 +31,7 @@ function DeleteButton ({ current, idx }) {
             alert("Color could not be deleted - there are no more distinct colors in your image")
             return
         }
+        // updates the rgbs, hexs, and hsvs to reflect new color
         current.rgbs[idx] = updated
         current.hexs[idx] = convertHex(updated)
 

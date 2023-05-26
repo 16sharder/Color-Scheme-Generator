@@ -1,25 +1,25 @@
+// The Modify Scheme Page:
+// Shown after the user has pressed the modify scheme button on the results page
+// This page allows the user to edit the entire scheme at once in hue, sat, and brightness
+// Includes a cancel and save button, which both return to the results page
+
+// Source for slider css: https://www.w3schools.com/howto/howto_js_rangeslider.asp
+
 import React from 'react';
 import {useState, useEffect} from "react"
 import {useHistory, useLocation} from "react-router-dom"
 
 import retrieve from '../helpers/requests';
-import { convertHex } from '../helpers/converters';
-
-async function toHex (h, s, b) {
-    const hsv = [h, s, b, "u"]
-    const rgb = await retrieve(JSON.stringify(hsv), 7170)
-    const hex = convertHex(rgb)
-    return hex
-}
+import { toHex } from '../helpers/converters';
 
 function getBases (colors) {
+    // Sets initial vals for sliders based on the averages of the colors (and first color hue)
     let sat = 0
     let bri = 0
     for (let color of colors){
         sat += color[1]
         bri += color[2]
     }
-
     sat /= 6
     bri /= 6
 
@@ -48,6 +48,7 @@ function ModifyScheme () {
     const [sat, setSat] = useState(baseVals[1])
     const [bri, setBri] = useState(baseVals[2])
 
+    // slider values are used to determine the colors on the slider gradients
     const hueSlider = ["#ff0000", "#ff8000", "#ffff00", "#80ff00", "#00ff00", "#00ff80", "#00ffff", "#0080ff", "#0000ff", "#8000ff", "#ff00ff", "#ff0080", "#ff0000"]
 
     const [satSlider, setSSlider] = useState("#ff0000")
@@ -57,10 +58,11 @@ function ModifyScheme () {
     }
 
 
-    // edits the color in real time
+    // edits the scheme in real time
     const editColor = async () => {
         stSlider()
 
+        // determines by how much each value should change
         const hueDif = hue - baseVals[0]
         const satDif = sat - baseVals[1]
         const briDif = bri - baseVals[2]
@@ -69,10 +71,12 @@ function ModifyScheme () {
             let h, s, b = newHSVs[idx]
             let orig = hsvs[idx]
 
+            // adds the difference to each original value
             h = orig[0] + hueDif
             s = orig[1] + satDif
             b = orig[2] + briDif
 
+            // if new value is out of bounds, move back into the limits
             if (h > 360) h -= 360
             else if (h < 0) h += 360
 
@@ -82,6 +86,7 @@ function ModifyScheme () {
             if (b > 100) b = 100
             else if (b < 0) b = 0
 
+            // updates the hex and hsv values of the new colors
             origColors[idx] = await toHex(h, s, b)
             newHSVs[idx] = [h, s, b]
         }
@@ -94,6 +99,7 @@ function ModifyScheme () {
         const setHSVs = await editColor()
 
         for (let idx in setHSVs){
+            // retrieves the rgb vals from microservice
             let hsv = setHSVs[idx].slice()
             hsv.push("u")
             rgbs[idx] = await retrieve(JSON.stringify(hsv), 7170)
@@ -104,7 +110,7 @@ function ModifyScheme () {
     }
 
 
-    // updates the colors seen anytime the hue, sat, or brightness changes
+    // updates the colors anytime the hue, sat, or brightness changes
     useEffect(() => {
         editColor()
     }, [hue, sat, bri])

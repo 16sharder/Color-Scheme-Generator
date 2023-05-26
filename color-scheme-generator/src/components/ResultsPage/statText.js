@@ -1,5 +1,8 @@
-import React from 'react';
+// The Stat Text Component:
+// Used on the Results Page, within the Color Block Component
+// Displays the info about the specified color
 
+import React from 'react';
 
 function StatText ({ i, current, text }) {
     const rgbs = current.rgbs

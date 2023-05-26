@@ -1,11 +1,11 @@
 // The Loading Page:
 // Shown after the user has uploaded an image
-// This page displays for 15 seconds, allowing the program to analyze the colors
+// This page displays until the program has analyzed the image colors
 // Sends the user to the results page once colors are retrieved
 
 import React from 'react';
 import { useEffect } from 'react';
-import { useHistory, useLocation } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 import retrieve from '../helpers/requests';
 import { convertHex } from '../helpers/converters';
 
@@ -15,7 +15,6 @@ function LoadingPage () {
 
     const getColors = async () => {
         // sends retreive colors request to Python Server
-        // defined in requests.js, sends HTTP request to back end which sends ZMQ request
         let colors = await retrieve(JSON.stringify(["path"]), 1952)
 
         // if there was an error with the file path, asks the user to try again
@@ -36,9 +35,9 @@ function LoadingPage () {
         else{
             const HSV = [], hexvals = []
             for (let color of colors) {
+                // retrieves the hsv vals from microservice
                 const rgb = color.slice()
                 rgb.push("r")
-                // retrieves the hsv vals from microservice
                 const hsv = await retrieve(JSON.stringify(rgb), 7170)
                 HSV.push(hsv)
 

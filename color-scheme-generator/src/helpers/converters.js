@@ -1,4 +1,13 @@
+async function toHex (h, s, b) {
+    // converts a value from HSV to hex
+    const hsv = [h, s, b, "u"]
+    const rgb = await retrieve(JSON.stringify(hsv), 7170)
+    const hex = convertHex(rgb)
+    return hex
+}
+
 function convertHex (color) {
+    // converts a value from RGB to hex
     let hex = "#"
     for (let i in color){
         // converts number to hex and adds to hex val
@@ -11,7 +20,7 @@ function convertHex (color) {
 }
 
 function nHex (num) {
-    // converts a number from 0 to 15 to hex string
+    // converts a number from 0 to 15 to a hex string
     let hex;
     if (num == 10) hex = "A"
     else if (num == 11) hex = "B"
@@ -25,6 +34,8 @@ function nHex (num) {
 
 
 function switchColors (num, idx, current) {
+    // takes two color indexes, and switches the two colors
+    // performs the switch for the hexs, rgbs, hsvs, and indexes list
     let temp = current.hexs[idx]
     current.hexs[idx] = current.hexs[num]
     current.hexs[num] = temp
@@ -46,4 +57,4 @@ function switchColors (num, idx, current) {
 
 
 
-export {convertHex, switchColors}
+export {convertHex, switchColors, toHex}

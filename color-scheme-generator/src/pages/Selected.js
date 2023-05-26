@@ -1,8 +1,8 @@
-// The Results Page:
-// Shown once the user has uploaded an image
-// This page shows the user their generated color scheme
-// Includes buttons to other pages for playing with the scheme
-// Includes an upload button to generate a new scheme
+// The Selected Color Page:
+// Shown once the user has selected a color in their scheme
+// This page allows the user to switch, edit, or delete the selected color
+// Returns to the results page once cancel button, delete button, or second color to switch is selected
+// Moves to the edit page if the edit button is pressed
 
 import React from 'react';
 import {useHistory, useLocation} from "react-router-dom"
@@ -15,21 +15,20 @@ function SelectedPage () {
     const history = useHistory()
     const location = useLocation()
 
-    let current = location.state.current
+    const current = location.state.current
     const idx = location.state.idx
-    const border = location.state.border
-
     const hexs = current.hexs
 
-    // sets border for selected color
+    // border is used to surround/highlight the currently selected color
+    const border = location.state.border
     const borders = new Array(6).fill(undefined)
     borders[idx] = `3px solid ${border}`
 
-    // switches the selected with secondary selected and returns to results
+    // switches the selected color with second selected color and returns to results
     const swich = (num) => {
-        current = switchColors(num, idx, current)
+        const curr = switchColors(num, idx, current)
 
-        history.push({pathname: "/results", state: {current: current, vis: location.state.vis}})
+        history.push({pathname: "/results", state: {current: curr, vis: location.state.vis}})
     }
 
 
