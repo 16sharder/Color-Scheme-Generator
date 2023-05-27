@@ -9,8 +9,8 @@ async function retrieve (data, port) {
         body: JSON.stringify({request: data, port: port}),
         headers: {"Content-type": "application/json"}
     })
-    // Returns error if manual error thrown
-    if (response.status == 419){
+    // Handles if response is a string
+    if (response.status == 200){
         const msg = await response.text()
         return msg
     }

@@ -5,7 +5,7 @@
 
 // Source for file managing code: https://w3collective.com/preview-selected-img-file-input-js/
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {useHistory} from "react-router-dom"
 
 import { postImage } from '../helpers/requests';
@@ -17,6 +17,7 @@ function Upload() {
     // source used to display a preview of the image
     const [source, setSource] = useState("")
 
+    const [size, setSize] = useState(0)
 
     // executed when an image is chosen; retrieves the data from the image
     const getImgData = async () => {
@@ -32,6 +33,11 @@ function Upload() {
             const fileReader = new FileReader();
             fileReader.readAsDataURL(files);
             fileReader.onload = async function () {
+                const img = new Image;
+                img.src = fileReader.result
+                img.onload = function() {
+                    setSize(img.width*img.height)
+                }
 
                 // sets the preview
                 setSource(this.result)
@@ -57,7 +63,11 @@ function Upload() {
 
     const upload = async () => {
         if (buttonFade == "40%") alert("Please select an image")
-        else history.push({pathname: "/loading"})
+        else {
+            let seconds = size/10000 * .004
+            if (seconds < 5) seconds = 5
+            history.push({pathname: "/loading1", state: {seconds: Math.ceil(seconds)}})
+    }
     }
 
 
@@ -74,7 +84,7 @@ function Upload() {
                     <button id="cf-button">Choose File</button>
                 </td>
                 <td>
-                <input type="file" id="choose-file" name="choose-file" accept="image/*" 
+                <input type="file" id="choose-file" name="choose-file" accept=".jpg" 
                     onChange={() => getImgData()}/>
                 </td>
                 <td>

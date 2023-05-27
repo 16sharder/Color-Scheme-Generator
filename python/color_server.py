@@ -1,5 +1,6 @@
 import zmq
-from upload import upload
+from upload1 import upload1
+from upload2 import upload2
 from get_details import get_details
 
 # creates a socket to receive from the client
@@ -8,13 +9,14 @@ socket = context.socket(zmq.REP)
 socket.bind("tcp://*:1952")
 
 # empty variable initialization
-colors, cats, indices = [], [], [0, 1, 2, 3, 4, 5]
+all_colors, colors, cats, indices = {}, [], [], [0, 1, 2, 3, 4, 5]
 originals = [colors, cats]
 
 responses = {"path": 0,
-             "originals": 1,
-             "details": 2,
-             "delete": 3}
+             "colors": 1,
+             "originals": 2,
+             "details": 3,
+             "delete": 4}
 toggle = False
 deleted = 0
 
@@ -33,7 +35,7 @@ while True:
         print(f"Received image upload request")
 
         # retrieves the main colors from the image
-        res = upload()
+        res = upload1()
 
         # if res is a string, it is an error message to be returned
         if type(res) == str:
@@ -42,12 +44,29 @@ while True:
             continue
 
         # establishes variables for use in next sections
+        all_colors, seconds = res
+
+        # sends back the number of seconds estimated for second part
+        print(f"Sending reply: {seconds}")
+        responses["path"] = seconds
+        toggle = True
+        socket.send_json([seconds])
+
+    elif message[0] == "colors":
+        print(f"Received retrieve colors request")
+
+        # retrieves the main colors from the image
+        res = upload2(all_colors)
+
+        # establishes variables for use in next sections
         colors, cats = res
+        while len(colors) != 6:
+            colors.append([90, 90, 90])
         originals = [item.copy() for item in res]
 
         # sends back the main color results
         print(f"Sending reply: {colors}")
-        responses["path"] = colors
+        responses["colors"] = colors
         toggle = True
         socket.send_json(colors)
 

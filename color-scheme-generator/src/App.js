@@ -8,7 +8,8 @@ import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 
 import Upload from './pages/Upload';
-import LoadingPage from './pages/Loading';
+import Loading1Page from './pages/Loading1';
+import Loading2Page from './pages/Loading2';
 import ResultsPage from './pages/Results';
 import ViewDetails from './pages/ViewDetails';
 import ModifyScheme from './pages/ModifyScheme';
@@ -24,8 +25,11 @@ function App() {
           <Route path="/" exact>
             <Upload />
           </Route>
-          <Route path="/loading">
-            <LoadingPage />
+          <Route path="/loading1">
+            <Loading1Page />
+          </Route>
+          <Route path="/loading2">
+            <Loading2Page />
           </Route>
           <Route path="/results">
             <ResultsPage />

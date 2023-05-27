@@ -53,7 +53,11 @@ app.post('/retrieve', async function (req, res) {
   // sends back error or data returned from the retrieve function
   if (typeof data == "string") {
     console.log("Returning error")
-    res.type("application/json").status(419).send(data)
+    res.type("application/json").status(200).send(data)
+  }
+  else if (typeof data == "number") {
+    console.log("Returning response")
+    res.type("application/json").status(201).send([data])
   }
   else {
     console.log("Returning response")
@@ -62,7 +66,7 @@ app.post('/retrieve', async function (req, res) {
 })
 
 
-// HTTP post request takes data and the ZMQ port, calls the retrieve function
+// HTTP post request takes data and writes it to an image file
 app.post('/image', async function (req, res) {
   const buf = Buffer.from(req.body.request, 'base64')
   let response;
@@ -72,7 +76,7 @@ app.post('/image', async function (req, res) {
   })
 
   if (response == "success") res.type("application/json").status(201)
-  else res.type("application/json").status(419)
+  else res.type("application/json").status(200)
 })
 
 

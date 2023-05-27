@@ -2,6 +2,9 @@ def get_details(cats, indices):
     details = dict()
     i = 1
 
+    while len(cats) < 6:
+        cats.append({(90, 90, 90): 0})
+
     # iterates over each color category
     for idx in indices:
         cat = cats[idx]
@@ -20,6 +23,8 @@ def get_details(cats, indices):
 
         # for each pixel in the category, determines if its frequency is in highest
         for pixel in cat:
+            if pixel == "color" or pixel == "count":
+                continue
             count = cat[pixel]
             try:
                 idx = highest.index(count)

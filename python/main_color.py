@@ -36,15 +36,14 @@ def calculate_color(counts, all_pixels, factors):
     return cat
 
 
-def determine_main(cats, size):
+def determine_main(cats):
     """Takes an array of categories; determines which categories have the highest num
     of pixels in them; returns the main colors of those categories and the sorted array
     of categories"""
     # creates and sorts an array of all of the category totals
     totals = []
     for cat in cats:
-        if cat["count"] > size * 0.00001:
-            totals.append(cat["count"])
+        totals.append(cat["count"])
 
     totals.sort(reverse=True)
 
