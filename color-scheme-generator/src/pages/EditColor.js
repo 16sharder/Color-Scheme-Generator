@@ -29,7 +29,7 @@ function EditColor () {
 
     
     // set color of addons to allow selected color to pop out
-    const addons = new Array(6).fill("bisque")      //want to use #5a5a5a
+    const addons = new Array(6).fill("#5a5a5a")
     addons[idx] = colors[idx]
 
     // sets width of selected color to be larger if in middle

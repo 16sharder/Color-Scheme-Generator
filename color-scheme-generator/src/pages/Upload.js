@@ -14,23 +14,25 @@ import { postImage } from '../helpers/requests';
 function Upload() {
     const history = useHistory()
 
-    // creates a variable for the choose file input button
-    let chooseFile;
-    useEffect(() => {
-        chooseFile = document.getElementById("choose-file");
-    }, [document.getElementById("choose-file")])
-
     // source used to display a preview of the image
     const [source, setSource] = useState("")
 
 
     // executed when an image is chosen; retrieves the data from the image
     const getImgData = async () => {
+        setButton("100%")
+        setPointer("pointer")
+
+        // retrieves the files from the chooseFile input button
+        const chooseFile = document.getElementById("choose-file");
         const files = chooseFile.files[0];
+
         if (files) {
+            // creates a file reader for extracting the file data
             const fileReader = new FileReader();
             fileReader.readAsDataURL(files);
             fileReader.onload = async function () {
+
                 // sets the preview
                 setSource(this.result)
 
@@ -50,8 +52,12 @@ function Upload() {
         }
     }
 
+    const [buttonFade, setButton] = useState("40%")
+    const [pointer, setPointer] = useState("initial")
+
     const upload = async () => {
-        history.push({pathname: "/loading"})
+        if (buttonFade == "40%") alert("Please select an image")
+        else history.push({pathname: "/loading"})
     }
 
 
@@ -59,12 +65,22 @@ function Upload() {
         <>
             <h2>Upload an image to generate a color scheme</h2>
 
-            <input type="file" id="choose-file" name="choose-file" accept="image/*" 
-                onChange={() => getImgData()}/>
+            <div className="image">
+                <img src={source} alt="image"></img>
+            </div>
 
-            <img src={`${source}`}></img>
-
-            <button className='upload' onClick={() => upload()}>Upload</button>
+            <table className='upload'><tbody><tr>
+                <td>
+                    <button id="cf-button">Choose File</button>
+                </td>
+                <td>
+                <input type="file" id="choose-file" name="choose-file" accept="image/*" 
+                    onChange={() => getImgData()}/>
+                </td>
+                <td>
+                    <button style={{"opacity": buttonFade, "cursor": pointer}} onClick={() => upload()}>Upload</button>
+                </td>
+            </tr></tbody></table>
         </>
     )
 }

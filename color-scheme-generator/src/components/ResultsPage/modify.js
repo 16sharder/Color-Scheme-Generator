@@ -10,18 +10,18 @@ function Modify ({ current }) {
     const history = useHistory()
 
     // Changes the informational message's coloring on mouse hover (from invisible to black)
-    const base = "bisque"
+    const base = "#5a5a5a"
     const [color, setColor] = useState(base)
 
     const displayMessage = () => {
-        if (color == base) setColor("black")
+        if (color == base) setColor("white")
         else setColor(base)
     }
 
     return (
         <>
-            <td>
-                <div className='message' style={{"color": color}}>Adjust the entire scheme by hue, saturation, and/or brightness</div>
+            <td className='side-button'>
+                <div className='message' style={{"color": color}}>Adjust each color's values together</div>
 
                 <button 
                     onClick={() => history.push({pathname: "/modify", state: {current: current}})}

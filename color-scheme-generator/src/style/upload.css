@@ -1,8 +1,32 @@
-.upload {
+.upload td{
     font-size: xx-large;
+    width: 250px;
 }
 
 img {
-    max-width: 60%;
-    max-height: 500px;
+    max-width: 97%;
+    max-height: 97%;
+    margin: auto;
+
+}
+
+.image {
+    color: #838383;
+    width: 55%;
+    height: 540px;
+    border: 2px dashed;
+    display: flex;
+    align-items: center;
+}
+
+#choose-file {
+    position: relative;
+    right: 253px;
+    bottom: 2px;
+
+    width: 200px;
+    height: 50px;
+
+    cursor: pointer;
+    opacity: 0%;
 }

@@ -19,6 +19,7 @@ function createPDF (colors) {
     const pdf = new jsPDF({unit: 'mm',
         format: 'a4'})
     pdf.setFontSize(12)
+    pdf.setFont("Lucida Sans")
 
     let [x, y] = [30, 30]
 

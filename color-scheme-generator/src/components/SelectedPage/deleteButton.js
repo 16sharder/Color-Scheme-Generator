@@ -10,16 +10,16 @@ import retrieve from '../../helpers/requests';
 import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import { convertHex } from '../../helpers/converters';
 
-function DeleteButton ({ current, idx }) {
+function DeleteButton ({ current, idx, visible }) {
     const history = useHistory()
     const location = useLocation()
 
     // Changes the informational message's coloring on mouse hover (from invisible to black)
-    const base = "bisque"
+    const base = "#5a5a5a"
     const [color, setColor] = useState(base)
 
     const displayMessage = () => {
-        if (color == base) setColor("black")
+        if (color == base) setColor("white")
         else setColor(base)
     }
 
@@ -40,13 +40,16 @@ function DeleteButton ({ current, idx }) {
         current.hsvs[idx] = await retrieve(JSON.stringify(rgb), 7170)
 
 
-        history.push({pathname: "/results", state: {current: current, vis: location.state.vis}})
+        history.push({pathname: "/results", state: {current: current, visible: visible}})
     }
 
     return (
         <>
             <td>
+                <div className='message' style={{"color": color}}>This color will be replaced by the next color from your image</div>
+            </td>
 
+            <td>
                 <button className='delete' 
                     onClick={() => delet()}
                     onMouseOver={() => displayMessage()}
@@ -56,11 +59,6 @@ function DeleteButton ({ current, idx }) {
                 
                 </button>
 
-                <br/><br/><br/><br/>
-
-            </td>
-            <td>
-                <div className='message' style={{"color": color}}>This color will be replaced by the next color from your image</div>
             </td>
         </>
     )

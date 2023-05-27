@@ -76,9 +76,9 @@ function ResultsPage () {
 
                     <tr>
                         <td></td>
-                        <td><button onClick={() => createPDF(current)}>Download Results</button></td>
+                        <td className='bottom-button'><button onClick={() => createPDF(current)}>Download Results</button></td>
                         <td></td>
-                        <td><button onClick={() => history.push({pathname: "/"})}>Upload New Image</button></td>
+                        <td className='bottom-button'><button onClick={() => history.push({pathname: "/"})}>Upload New Image</button></td>
                         <td></td>
                     </tr>
                 </tbody>

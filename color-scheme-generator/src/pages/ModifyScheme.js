@@ -123,6 +123,7 @@ function ModifyScheme () {
         <>
         <table>
             <tbody>
+                <tr><td className='addon'></td></tr>
                 <tr>
                     {colors.slice(0, 3).map((color, i) => 
                     <td className="color" style={{"backgroundColor": color, "minWidth": "250px"}} key={i}></td>)}
@@ -155,7 +156,7 @@ function ModifyScheme () {
                     </td>
                 </tr>
 
-                
+                <tr><td className='addon'></td></tr>
                 <tr>
                     <td><button onClick={() => history.push({pathname: "/results", state: location.state})}>Cancel</button></td>
                     <td></td>

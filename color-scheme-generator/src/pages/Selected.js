@@ -34,10 +34,12 @@ function SelectedPage () {
 
     return(
         <>
+            <h1 className='filler'>Filler</h1>
             <h3>Click on another color to switch positions</h3>
             <table className="colors">
                 <tbody>
                     <tr>
+                        <td></td>
 
                         {hexs.slice(0, 3).map((color, i) => 
                         <td className="color pointer" style={{"backgroundColor": color, "border": borders[i]}} 
@@ -46,6 +48,8 @@ function SelectedPage () {
 
                     </tr>
                     <tr>
+                        <td></td>
+
                         {hexs.slice(3, 6).map((color, i) => 
                         <td className="color pointer" style={{"backgroundColor": color, "border": borders[i+3]}} 
                             onClick={() => swich(i+3)} key={i}>
@@ -54,13 +58,13 @@ function SelectedPage () {
                     <tr>
                         <td><button onClick={() => history.push({pathname: "/results", state: location.state})}>
                             Cancel</button></td>
+
                         <td></td>
+
                         <td><button onClick={() => history.push({pathname: "/edit", state: {current: current, i: idx}})}>
                             Edit Color</button></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <DeleteButton current={current} idx={idx}/>
+                            
+                        <DeleteButton current={current} idx={idx} visible={location.state.visible}/>
                     </tr>
                 </tbody>
             </table>

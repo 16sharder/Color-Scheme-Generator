@@ -58,7 +58,7 @@ function LoadingPage () {
     return(
         <>
             <h1>Examining your image and generating your colors...</h1>
-            <h4>This will take about 10 seconds</h4>
+            <h4>This may take between 10 and 20 seconds</h4>
         </>
     )
 }
