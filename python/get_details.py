@@ -1,7 +1,15 @@
+# Get Details (used in color_server) is used to retrieve the categories of the current 6
+# main colors, and sort their pixels
+
 def get_details(cats, indices):
+    """Takes a list of categories and a list of indices; takes the 6 categories
+    in the positions indicated by indices and sorts their pixels; returns a dictionary
+    where the keys are the string cat[i] and the value is a list of pixel in rgb with
+    their frequency appended"""
     details = dict()
     i = 1
 
+    # if there aren't enough categories, adds empty cats equal to background color
     while len(cats) < 6:
         cats.append({(90, 90, 90): 0})
 

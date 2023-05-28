@@ -23,7 +23,7 @@ function EditColor () {
     const [colors, setColors] = useState(hexs)
 
     const rgbs = current.rgbs
-    const hsvs = current.hsvs
+    const hsbs = current.hsbs
 
     const idx = location.state.i
 
@@ -38,9 +38,9 @@ function EditColor () {
 
 
     // each element of edited color
-    const [hue, setHue] = useState(hsvs[idx][0])
-    const [sat, setSat] = useState(hsvs[idx][1])
-    const [bri, setBri] = useState(hsvs[idx][2])
+    const [hue, setHue] = useState(hsbs[idx][0])
+    const [sat, setSat] = useState(hsbs[idx][1])
+    const [bri, setBri] = useState(hsbs[idx][2])
 
     // slider values are used to determine the colors on the slider gradients
     const hueSlider = ["#ff0000", "#ff8000", "#ffff00", "#80ff00", "#00ff00", "#00ff80", "#00ffff", "#0080ff", "#0000ff", "#8000ff", "#ff00ff", "#ff0080", "#ff0000"]
@@ -62,14 +62,14 @@ function EditColor () {
 
     // saves the edits and sends back to results page
     const saveColor = async () => {
-        hsvs[idx] = [hue, sat, bri]
+        hsbs[idx] = [hue, sat, bri]
 
-        const hsv = [hue, sat, bri, "u"]
-        rgbs[idx] = await retrieve(JSON.stringify(hsv), 7170)
+        const hsb = [hue, sat, bri, "u"]
+        rgbs[idx] = await retrieve(JSON.stringify(hsb), 7170)
 
         hexs[idx] = convertHex(rgbs[idx])
 
-        const curr = {hexs: hexs, rgbs: rgbs, hsvs: hsvs, idxs: current.idxs}
+        const curr = {hexs: hexs, rgbs: rgbs, hsbs: hsbs, idxs: current.idxs}
         history.push({pathname: "/results", state: {current: curr}})
     }
 

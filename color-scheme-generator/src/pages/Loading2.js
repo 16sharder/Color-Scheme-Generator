@@ -18,20 +18,20 @@ function Loading2Page () {
         // sends retreive colors request to Python Server
         let colors = await retrieve(JSON.stringify(["colors"]), 1952)
 
-        // if no error, retrieves the hsv and hex vals and sends the user on to colors page when ready
-        const HSV = [], hexvals = []
+        // if no error, retrieves the hsb and hex vals and sends the user on to colors page when ready
+        const hsbs = [], hexvals = []
         for (let color of colors) {
-            // retrieves the hsv vals from microservice
+            // retrieves the hsb vals from microservice
             const rgb = color.slice()
             rgb.push("r")
-            const hsv = await retrieve(JSON.stringify(rgb), 7170)
-            HSV.push(hsv)
+            const hsb = await retrieve(JSON.stringify(rgb), 7170)
+            hsbs.push(hsb)
 
             let hex = convertHex(color)
             hexvals.push(hex)
         }
 
-        const current = {hexs: hexvals, rgbs: colors, hsvs: HSV, idxs: [0, 1, 2, 3, 4, 5]}
+        const current = {hexs: hexvals, rgbs: colors, hsbs: hsbs, idxs: [0, 1, 2, 3, 4, 5]}
         history.push({pathname: "/results", state: {current: current}})
     }
 
@@ -43,7 +43,7 @@ function Loading2Page () {
     return(
         <>
             <h1>Calculating color frequency...</h1>
-            <h4>This part should take about {location.state.seconds} seconds</h4>
+            <h4>This part should take another {location.state.seconds} seconds</h4>
         </>
     )
 }

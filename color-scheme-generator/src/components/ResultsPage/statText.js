@@ -6,7 +6,7 @@ import React from 'react';
 
 function StatText ({ i, current, text_arr }) {
     const rgbs = current.rgbs
-    const hsvs = current.hsvs
+    const hsbs = current.hsbs
     const hexs = current.hexs
 
     return (
@@ -14,7 +14,7 @@ function StatText ({ i, current, text_arr }) {
             <div className='stats' style={{"color": text_arr[i]}} >
                 {hexs[i]}<br/>
                 rgb({rgbs[i][0]}, {rgbs[i][1]}, {rgbs[i][2]})<br/>
-                hsv({hsvs[i][0]}, {hsvs[i][1]}%, {hsvs[i][2]}%)
+                hsb({hsbs[i][0]}, {hsbs[i][1]}%, {hsbs[i][2]}%)
             </div>
         </>
     )

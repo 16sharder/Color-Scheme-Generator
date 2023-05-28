@@ -1,3 +1,4 @@
+# A series of small functions used across upload2, overlap_handler, and main_color
 from microservice.color_conversion import *
 
 
@@ -80,7 +81,7 @@ def boundaries(hue, sat, val, hue_factor, sv_factor):
 
 
 def close_color(hsv, bgw, rng, bw_factor):
-    """Takes an hsv pixel [list], a list of 3 bools (see greyscale()), and a list of
+    """Takes an hsv pixel [list], a string indicating if on greyscale, and a list of
     ranges (see boundaries()); determines if the given pixel should be kept or discarded
     depending on how close it is to the current chosen color  (to which bgw and rng apply);
     returns 1 if color is to be deleted, 2 if color is to be kept"""
@@ -95,7 +96,6 @@ def close_color(hsv, bgw, rng, bw_factor):
 
     # pixels similar to chosen color are removed based on hue, sat, and value similarity
     hrl, hrh, sr, vr = rng
-
     if (h in hrl or h in hrh) and s in sr and v in vr: return True
 
     else: return False

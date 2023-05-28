@@ -19,25 +19,25 @@ function RestoreOriginals ({ setText, setVis }) {
         // retrieves the original colors produced
         const originals = await retrieve(JSON.stringify(["originals"]), 1952)
 
-        // resets all val types: rgb, hex, hsv, and indexes
+        // resets all val types: rgb, hex, hsb, and indexes
         const rgbs = originals
 
-        const hexs = [], hsvs = []
+        const hexs = [], hsbs = []
         for (const color of originals){
             hexs.push(convertHex(color))
 
-            // retrieves the hsv vals from microservice
+            // retrieves the hsb vals from microservice
             let rgb = color.slice()
             rgb.push("r")
-            const hsv = await retrieve(JSON.stringify(rgb), 7170)
-            hsvs.push(hsv)
+            const hsb = await retrieve(JSON.stringify(rgb), 7170)
+            hsbs.push(hsb)
         }
         const idxs = [0, 1, 2, 3, 4, 5]
 
-        const curr = {rgbs: rgbs, hexs: hexs, hsvs: hsvs, idxs: idxs}
+        const curr = {rgbs: rgbs, hexs: hexs, hsbs: hsbs, idxs: idxs}
 
         // resets the text color to match new color values
-        setText(determineText(hsvs))
+        setText(determineText(hsbs))
         setVis("Hide")
 
         history.push({pathname: "/results", state: {current: curr}})

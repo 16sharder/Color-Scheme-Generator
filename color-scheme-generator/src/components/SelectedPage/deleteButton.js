@@ -31,13 +31,13 @@ function DeleteButton ({ current, idx, visible }) {
             alert("Color could not be deleted - there are no more distinct colors in your image")
             return
         }
-        // updates the rgbs, hexs, and hsvs to reflect new color
+        // updates the rgbs, hexs, and hsbs to reflect new color
         current.rgbs[idx] = newColor
         current.hexs[idx] = convertHex(newColor)
 
         let rgb = newColor.slice()
         rgb.push("r")
-        current.hsvs[idx] = await retrieve(JSON.stringify(rgb), 7170)
+        current.hsbs[idx] = await retrieve(JSON.stringify(rgb), 7170)
 
 
         history.push({pathname: "/results", state: {current: current, visible: visible}})

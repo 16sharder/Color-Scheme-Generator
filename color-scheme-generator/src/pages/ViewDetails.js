@@ -29,19 +29,19 @@ function ViewDetails () {
         const originals = response[0]
         const details = response[1]
 
-        // converts the colors from rgb to hex and hsv
-        const hexs = [], hsvs = []
+        // converts the colors from rgb to hex and hsb
+        const hexs = [], hsbs = []
         for (const rgb of originals){
             hexs.push(convertHex(rgb))
 
             rgb.push("r")
-            const hsv = await retrieve(JSON.stringify(rgb), 7170)
-            hsvs.push(hsv)
+            const hsb = await retrieve(JSON.stringify(rgb), 7170)
+            hsbs.push(hsb)
         }
 
         // establishes main colors and text colors to display
         setColors(hexs)
-        setText(determineText(hsvs))
+        setText(determineText(hsbs))
 
         const cats = []
 

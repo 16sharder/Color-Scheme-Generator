@@ -24,13 +24,13 @@ function ResultsPage () {
     const current = location.state.current
     let visible = location.state.visible
 
-    const hsvs = current.hsvs
+    const hsbs = current.hsbs
     const hexs = current.hexs
 
 
     // text_arr is the list of colors the stat text should be (black, white, or invisible)
     const[text_arr, setText] = useState(hexs)
-    let bw_text_arr = determineText(hsvs)
+    let bw_text_arr = determineText(hsbs)
     const[visibility, setVis] = useState("Show")
 
 

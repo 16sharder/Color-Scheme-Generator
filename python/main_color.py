@@ -1,3 +1,5 @@
+# Main Color Determiner (used in upload2) is used to determine each of the main color categories.
+# It then also determines which 6 of the categories are main
 from helper import *
 
 
@@ -54,6 +56,7 @@ def determine_main(cats):
             idx = totals.index(cat["count"])
             categories[idx] = cat
 
+    # creates the list of main colors
     colors = [cat["color"] for cat in categories[:6]]
 
     return colors, categories

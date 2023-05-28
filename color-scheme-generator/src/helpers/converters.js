@@ -1,9 +1,9 @@
 import retrieve from "./requests"
 
 async function toHex (h, s, b) {
-    // converts a value from HSV to hex
-    const hsv = [h, s, b, "u"]
-    const rgb = await retrieve(JSON.stringify(hsv), 7170)
+    // converts a value from HSB to hex
+    const hsb = [h, s, b, "u"]
+    const rgb = await retrieve(JSON.stringify(hsb), 7170)
     const hex = convertHex(rgb)
     return hex
 }
@@ -37,7 +37,7 @@ function nHex (num) {
 
 function switchColors (num, idx, current) {
     // takes two color indexes, and switches the two colors
-    // performs the switch for the hexs, rgbs, hsvs, and indexes list
+    // performs the switch for the hexs, rgbs, hsbs, and indexes list
     let temp = current.hexs[idx]
     current.hexs[idx] = current.hexs[num]
     current.hexs[num] = temp
@@ -46,9 +46,9 @@ function switchColors (num, idx, current) {
     current.rgbs[idx] = current.rgbs[num]
     current.rgbs[num] = temp
 
-    temp = current.hsvs[idx]
-    current.hsvs[idx] = current.hsvs[num]
-    current.hsvs[num] = temp
+    temp = current.hsbs[idx]
+    current.hsbs[idx] = current.hsbs[num]
+    current.hsbs[num] = temp
 
     temp = current.idxs[idx]
     current.idxs[idx] = current.idxs[num]

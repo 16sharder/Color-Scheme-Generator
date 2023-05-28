@@ -13,7 +13,7 @@ function createPDF (colors) {
     // generates a pdf with the colors and color info
     const rgbs = colors.rgbs
     const hexs = colors.hexs
-    const hsvs = colors.hsvs
+    const hsbs = colors.hsbs
 
     // create pdf and establish format
     const pdf = new jsPDF({unit: 'mm',
@@ -44,7 +44,7 @@ function createPDF (colors) {
     // adds column labels for the color info
     pdf.text("Hex", x2, yt, {align: "center"})
     pdf.text("RGB", x3, yt, {align: "center"})
-    pdf.text("HSV", x4, yt, {align: "center"})
+    pdf.text("HSB", x4, yt, {align: "center"})
 
     for (const idx in hexs) {
         yt += 10
@@ -64,9 +64,9 @@ function createPDF (colors) {
 
         // prints ( h, s, v ) in column 4
         pdf.text("(",                           x4-d3, yt,  {align: "center"})
-        pdf.text(`${hsvs[idx][0]}, `,           x4-d2, yt,  {align: "right"})
-        pdf.text(`${hsvs[idx][1]}%`,            x4, yt,     {align: "center"})
-        pdf.text(`, ${hsvs[idx][2]}%`,          x4+d2, yt,  {align: "left"})
+        pdf.text(`${hsbs[idx][0]}, `,           x4-d2, yt,  {align: "right"})
+        pdf.text(`${hsbs[idx][1]}%`,            x4, yt,     {align: "center"})
+        pdf.text(`, ${hsbs[idx][2]}%`,          x4+d2, yt,  {align: "left"})
         pdf.text(")",                           x4+d3+2, yt, {align: "center"})
     }
 

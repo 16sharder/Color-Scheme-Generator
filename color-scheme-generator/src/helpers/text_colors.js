@@ -1,9 +1,9 @@
-function determineText (hsvs) {
+function determineText (hsbs) {
     // determines if color's stat text should be white or black
     let bw_text_arr = []
-    for (let hsv of hsvs){
-        if (210 < hsv[0] && hsv[0] < 290 && hsv[1] > 65) bw_text_arr.push("white")
-        else if (hsv[2] > 65) bw_text_arr.push("black")
+    for (let hsb of hsbs){
+        if (210 < hsb[0] && hsb[0] < 290 && hsb[1] > 65) bw_text_arr.push("white")
+        else if (hsb[2] > 65) bw_text_arr.push("black")
         else bw_text_arr.push("white")
     }
     return bw_text_arr

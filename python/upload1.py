@@ -1,4 +1,4 @@
-# Upload (python server) is used to retrieve the colors from the provided path's image
+# Upload1 (used in color_server) is used to retrieve and count all pixels in image.jpg
 import PIL
 from PIL import Image
 from overlap_handler import *
@@ -6,8 +6,8 @@ from math import ceil
 
 
 def upload1():
-    """Takes an image_path, opens the image and analyzes all of its pixels; determines
-    which 6 colors appear the most in the image, and returns them"""
+    """Opens image.jpg and analyzes all of its pixels; counts them
+    and converts them to hsv,then returns a dict of the pixels"""
     try:
         image = Image.open("../image.jpg")
 
@@ -46,6 +46,7 @@ def upload1():
             hsv = tuple(convert_hsv(pixel))
             all_hsvs[hsv] = count if hsv not in all_hsvs else all_hsvs[hsv] + count
 
+    # determines the approximate amount of time that upload2 will take
     seconds = (len(all_hsvs)/1000)**2 * 0.0011 + 3
     if seconds < 5: seconds = 5
 

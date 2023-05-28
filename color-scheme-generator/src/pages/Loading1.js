@@ -35,7 +35,7 @@ function Loading1Page () {
             history.push({pathname: "/"})
         }
 
-        // if no error, retrieves the hsv and hex vals and sends the user on to colors page when ready
+        // if no error, retrieves the hsb and hex vals and sends the user on to colors page when ready
         else history.push({pathname: "/loading2", state: {seconds: seconds}})
     }
 

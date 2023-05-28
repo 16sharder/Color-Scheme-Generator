@@ -1,3 +1,6 @@
+# The python color_server is used to connect to zmq, and uses the data to perform/call
+# the appropriate function
+
 import zmq
 from upload1 import upload1
 from upload2 import upload2
@@ -26,15 +29,16 @@ while True:
     message = message.decode("utf-8")
     message = eval(message)
 
+    # prevents the code from calculating things twice because of double message from server
     if toggle:
         toggle = False
         socket.send_json(responses[message[0]])
 
-    # received a path for an image, MUST execute first
+    # received a request to read image, MUST execute first
     elif message[0] == "path":
         print(f"Received image upload request")
 
-        # retrieves the main colors from the image
+        # retrieves the pixels from the image
         res = upload1()
 
         # if res is a string, it is an error message to be returned
@@ -52,10 +56,11 @@ while True:
         toggle = True
         socket.send_json([seconds])
 
+    # received a request to analyze pixels, MUST execute second
     elif message[0] == "colors":
         print(f"Received retrieve colors request")
 
-        # retrieves the main colors from the image
+        # retrieves the main colors from the pixels
         res = upload2(all_colors)
 
         # establishes variables for use in next sections
@@ -99,12 +104,14 @@ while True:
         idx = message[1]
         print(f"Received delete request: {idx}")
 
+        # attempt to delete by shifting category and changing index
         try:
             i = 6 + deleted
             colors[idx] = cats[i]["color"]
             indices[idx] = i
             deleted += 1
 
+        # if failed because out of bounds, there are no more cats to shift
         except IndexError:
             print(f"Sending error reply")
             socket.send(bytes("no more", encoding='utf-8'))

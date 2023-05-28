@@ -1,10 +1,10 @@
-# Upload (python server) is used to retrieve the colors from the provided path's image
+# Upload2 (used in color_server) is used to retrieve the main colors of image.jpg
 from main_color import *
 from overlap_handler import *
 
 
 def upload2(all_pixels):
-    """Takes an image_path, opens the image and analyzes all of its pixels; determines
+    """Takes a dictionary of hsv pixels, and determines
     which 6 colors appear the most in the image, and returns them"""
     # create a list of pixel totals
     counts = []
@@ -43,6 +43,7 @@ def upload2(all_pixels):
 
             move_overlapping(color_1, color_2, cat_1, cat_2, factors)
 
+    # converts each pixel back to rgb
     for idx in range(len(cats)):
         cat = cats[idx]
         rgb_cat = {"color": convert_rgb(cat["color"]),

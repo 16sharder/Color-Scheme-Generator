@@ -37,11 +37,11 @@ function ModifyScheme () {
     const [colors, setColors] = useState(hexs)
 
     const rgbs = current.rgbs
-    const hsvs = current.hsvs
+    const hsbs = current.hsbs
 
-    const newHSVs = hsvs.slice()
+    const newHSBs = hsbs.slice()
 
-    const baseVals = getBases(hsvs)
+    const baseVals = getBases(hsbs)
 
 
     // each element of edited color
@@ -68,9 +68,9 @@ function ModifyScheme () {
         const satDif = sat - baseVals[1]
         const briDif = bri - baseVals[2]
 
-        for (let idx in newHSVs){
-            let h, s, b = newHSVs[idx]
-            let orig = hsvs[idx]
+        for (let idx in newHSBs){
+            let h, s, b = newHSBs[idx]
+            let orig = hsbs[idx]
 
             // adds the difference to each original value
             h = orig[0] + hueDif
@@ -87,26 +87,26 @@ function ModifyScheme () {
             if (b > 100) b = 100
             else if (b < 0) b = 0
 
-            // updates the hex and hsv values of the new colors
+            // updates the hex and hsb values of the new colors
             hexs[idx] = await toHex(h, s, b)
-            newHSVs[idx] = [h, s, b]
+            newHSBs[idx] = [h, s, b]
         }
         setColors(hexs)
-        return newHSVs
+        return newHSBs
     }
 
     // saves the edits and sends back to results page
     const saveColor = async () => {
-        const setHSVs = await editColor()
+        const setHSBs = await editColor()
 
-        for (let idx in setHSVs){
+        for (let idx in setHSBs){
             // retrieves the rgb vals from microservice
-            let hsv = setHSVs[idx].slice()
-            hsv.push("u")
-            rgbs[idx] = await retrieve(JSON.stringify(hsv), 7170)
+            let hsb = setHSBs[idx].slice()
+            hsb.push("u")
+            rgbs[idx] = await retrieve(JSON.stringify(hsb), 7170)
         }
 
-        const curr = {hexs: colors, rgbs: rgbs, hsvs: setHSVs, idxs: current.idxs}
+        const curr = {hexs: colors, rgbs: rgbs, hsbs: setHSBs, idxs: current.idxs}
         history.push({pathname: "/results", state: {current: curr}})
     }
 
