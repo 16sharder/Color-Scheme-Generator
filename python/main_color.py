@@ -15,8 +15,8 @@ def calculate_color(counts, all_pixels, factors):
     h, s, v = color
     total = highest
 
-    # determines if color is on the greyscale
-    bgw = greyscale(s, v, factors[2])
+    # determines if color is on the greyscale or brown
+    bgw = greyscale(h, s, v, factors[2])
 
     # establishes range for colors similar to chosen color
     rng = boundaries(h, s, v, factors[0], factors[1])
@@ -26,7 +26,7 @@ def calculate_color(counts, all_pixels, factors):
         count = all_pixels[pixel]
 
         # performs comparison with chosen color
-        if close_color(pixel, bgw, rng, factors[0], factors[2]):
+        if close_color(pixel, bgw, rng, factors[2]):
             rm_pixel(pixel, count, all_pixels, counts, cat)
             total += count
 

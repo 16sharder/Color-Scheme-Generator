@@ -101,8 +101,8 @@ while True:
 
         try:
             i = 6 + deleted
-            indices[idx] = i
             colors[idx] = cats[i]["color"]
+            indices[idx] = i
             deleted += 1
 
         except IndexError:

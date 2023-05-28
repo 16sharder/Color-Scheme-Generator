@@ -46,7 +46,7 @@ def upload1():
             hsv = tuple(convert_hsv(pixel))
             all_hsvs[hsv] = count if hsv not in all_hsvs else all_hsvs[hsv] + count
 
-    seconds = (len(all_hsvs)/1000)**2 * 0.0011 + 2
+    seconds = (len(all_hsvs)/1000)**2 * 0.0011 + 3
     if seconds < 5: seconds = 5
 
     return all_hsvs, ceil(seconds)

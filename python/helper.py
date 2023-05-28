@@ -39,17 +39,21 @@ def rm_pixel(pixel, count, all_pixels, counts, cat):
     cat[pixel] = count
 
 
-def greyscale(sat, val, bw_factor):
-    """Evaluates if given color leans towards black, grey, white, or not on greyscale;
-    returns a tuple of bools indicating if result is black, grey, or white"""
-    if val < bw_factor: return True, False, False
+def greyscale(hue, sat, val, bw_factor):
+    """Evaluates if given color leans towards black, grey, white, brown, or not on greyscale;
+    returns a tuple of bools indicating if result is black, pure grey, white, dark grey, or brown"""
+    if val < bw_factor: return "black"
 
     elif sat < bw_factor:
-        if val < 34: return True, False, False
-        elif val < 67: return False, True, False
-        else: return False, False, True
+        if val < 34: return "black"
+        elif val < 67: return "pgrey"
+        else: return "white"
 
-    else: return False, False, False
+    elif val < 34 and sat < 50: return "dgrey"
+
+    elif val < 34 and (hue in range(355, 361) or hue in range(0, 45)): return "brown"
+
+    else: return False
 
 
 def boundaries(hue, sat, val, hue_factor, sv_factor):
@@ -58,38 +62,40 @@ def boundaries(hue, sat, val, hue_factor, sv_factor):
     when the range is around 0 or 360; returns a list of 4 hue bounds, sat upper and lower bounds,
     and value upper and lower bounds"""
     # determines the range of the boundaries
-    sat_range = range(sat - sv_factor, sat + sv_factor)
-    val_range = range(val - sv_factor, val + sv_factor)
+    sat_range = range(sat - sv_factor, sat + sv_factor + 1)
+    val_range = range(val - sv_factor, val + sv_factor + 1)
 
-    hue_range_low = range(hue - hue_factor, hue + hue_factor)
+    hue_range_low = range(hue - hue_factor, hue + hue_factor + 1)
     hue_range_high = hue_range_low
 
     # accommodates for changes in range around 0 and 360
     if hue < hue_factor:
-        hue_range_low = range(0, hue + hue_factor)
-        hue_range_high = range(hue - hue_factor + 360, 360)
+        hue_range_low = range(0, hue + hue_factor + 1)
+        hue_range_high = range(hue - hue_factor + 360, 361)
     elif hue >= 360-hue_factor:
-        hue_range_low = range(0, hue + hue_factor - 360)
-        hue_range_high = range(hue - hue_factor, 360)
+        hue_range_low = range(0, hue + hue_factor - 360 + 1)
+        hue_range_high = range(hue - hue_factor, 361)
 
     return hue_range_low, hue_range_high, sat_range, val_range
 
 
-def close_color(hsv, bgw, rng, hue_factor, bw_factor):
+def close_color(hsv, bgw, rng, bw_factor):
     """Takes an hsv pixel [list], a list of 3 bools (see greyscale()), and a list of
     ranges (see boundaries()); determines if the given pixel should be kept or discarded
     depending on how close it is to the current chosen color  (to which bgw and rng apply);
     returns 1 if color is to be deleted, 2 if color is to be kept"""
     h, s, v = hsv
-    black, grey, white = bgw
 
     # if chosen color is close to black, grey, or white, removes similar pixels regardless of hue
-    if black and (v < 34 and s < bw_factor or v < bw_factor): return True
-    if grey and 33 < v < 67 and s < bw_factor: return True
-    if white and 66 < v and s < bw_factor: return True
+    if bgw == "black" and (v < 34 and s < bw_factor or v < bw_factor): return True
+    if bgw == "pgrey" and 33 < v < 67 and s < bw_factor: return True
+    if bgw == "white" and 66 < v and s < bw_factor: return True
+    if bgw == "dgrey" and v < 34 and s < 50: return True
+    if bgw == "brown" and v < 34 and (h in range(355, 361) or h in range(0, 45)): return True
 
     # pixels similar to chosen color are removed based on hue, sat, and value similarity
     hrl, hrh, sr, vr = rng
-    hr = hrh if h >= 360-hue_factor else hrl
 
-    if h in hr and s in sr and v in vr: return True
+    if (h in hrl or h in hrh) and s in sr and v in vr: return True
+
+    else: return False
