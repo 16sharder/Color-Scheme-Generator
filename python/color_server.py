@@ -29,7 +29,7 @@ while True:
     message = message.decode("utf-8")
     message = eval(message)
 
-    # prevents the code from calculating things twice because of double message from server
+    # prevents the code from calculating things twice
     if toggle:
         toggle = False
         socket.send_json(responses[message[0]])
