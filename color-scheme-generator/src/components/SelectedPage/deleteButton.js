@@ -7,12 +7,10 @@
 import React, { useState } from 'react';
 import {useHistory} from "react-router-dom"
 import retrieve from '../../helpers/requests';
-import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import { convertHex } from '../../helpers/converters';
 
 function DeleteButton ({ current, idx, visible }) {
     const history = useHistory()
-    const location = useLocation()
 
     // Changes the informational message's coloring on mouse hover (from invisible to black)
     const base = "#5a5a5a"
