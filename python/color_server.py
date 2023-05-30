@@ -1,7 +1,10 @@
+# The python color_server is used to connect to zmq, and uses the data to perform/call
+# the appropriate function
+
 import zmq
-from upload import upload
+from upload1 import upload1
+from upload2 import upload2
 from get_details import get_details
-from helper import *
 
 # creates a socket to receive from the client
 context = zmq.Context()
@@ -9,12 +12,14 @@ socket = context.socket(zmq.REP)
 socket.bind("tcp://*:1952")
 
 # empty variable initialization
-colors, cats, indices = [], [], [0, 1, 2, 3, 4, 5]
+all_colors, colors, cats, indices = {}, [], [], [0, 1, 2, 3, 4, 5]
 originals = [colors, cats]
 
 responses = {"path": 0,
-             "originals": 1,
-             "details": 2}
+             "colors": 1,
+             "originals": 2,
+             "details": 3,
+             "delete": 4}
 toggle = False
 deleted = 0
 
@@ -24,17 +29,17 @@ while True:
     message = message.decode("utf-8")
     message = eval(message)
 
+    # prevents the code from calculating things twice
     if toggle:
         toggle = False
         socket.send_json(responses[message[0]])
 
-    # received a path for an image, MUST execute first
+    # received a request to read image, MUST execute first
     elif message[0] == "path":
-        image_path = message[1]
-        print(f"Received path request: {image_path}")
+        print(f"Received image upload request")
 
-        # retrieves the main colors from the image
-        res = upload(image_path)
+        # retrieves the pixels from the image
+        res = upload1()
 
         # if res is a string, it is an error message to be returned
         if type(res) == str:
@@ -43,12 +48,30 @@ while True:
             continue
 
         # establishes variables for use in next sections
+        all_colors, seconds = res
+
+        # sends back the number of seconds estimated for second part
+        print(f"Sending reply: {seconds}")
+        responses["path"] = seconds
+        toggle = True
+        socket.send_json([seconds])
+
+    # received a request to analyze pixels, MUST execute second
+    elif message[0] == "colors":
+        print(f"Received retrieve colors request")
+
+        # retrieves the main colors from the pixels
+        res = upload2(all_colors)
+
+        # establishes variables for use in next sections
         colors, cats = res
+        while len(colors) != 6:
+            colors.append([90, 90, 90])
         originals = [item.copy() for item in res]
 
         # sends back the main color results
         print(f"Sending reply: {colors}")
-        responses["path"] = colors
+        responses["colors"] = colors
         toggle = True
         socket.send_json(colors)
 
@@ -62,7 +85,6 @@ while True:
         # sends back original colors
         print(f"Sending originals: {colors}")
         responses["originals"] = colors
-        toggle = True
         socket.send_json(colors)
 
     # received request for color details
@@ -82,21 +104,23 @@ while True:
         idx = message[1]
         print(f"Received delete request: {idx}")
 
+        # attempt to delete by shifting category and changing index
         try:
             i = 6 + deleted
-            indices[idx] = i
             colors[idx] = cats[i]["color"]
+            indices[idx] = i
             deleted += 1
 
+        # if failed because out of bounds, there are no more cats to shift
         except IndexError:
             print(f"Sending error reply")
             socket.send(bytes("no more", encoding='utf-8'))
             continue
 
         # sends back the new main color results
-        print(f"Sending reply: {colors}")
-        responses["delete"] = colors
-        socket.send_json(colors)
+        print(f"Sending reply: {colors[idx]}")
+        responses["delete"] = colors[idx]
+        socket.send_json(colors[idx])
 
     else:
         socket.send_json(None)

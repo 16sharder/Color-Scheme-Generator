@@ -1,3 +1,5 @@
+# Main Color Determiner (used in upload2) is used to determine each of the main color categories.
+# It then also determines which 6 of the categories are main
 from helper import *
 
 
@@ -15,8 +17,8 @@ def calculate_color(counts, all_pixels, factors):
     h, s, v = color
     total = highest
 
-    # determines if color is on the greyscale
-    bgw = greyscale(s, v, factors[2])
+    # determines if color is on the greyscale or brown
+    bgw = greyscale(h, s, v, factors[2])
 
     # establishes range for colors similar to chosen color
     rng = boundaries(h, s, v, factors[0], factors[1])
@@ -26,7 +28,7 @@ def calculate_color(counts, all_pixels, factors):
         count = all_pixels[pixel]
 
         # performs comparison with chosen color
-        if close_color(pixel, bgw, rng, factors[0], factors[2]):
+        if close_color(pixel, bgw, rng, factors[2]):
             rm_pixel(pixel, count, all_pixels, counts, cat)
             total += count
 
@@ -36,15 +38,14 @@ def calculate_color(counts, all_pixels, factors):
     return cat
 
 
-def determine_main(cats, size):
+def determine_main(cats):
     """Takes an array of categories; determines which categories have the highest num
     of pixels in them; returns the main colors of those categories and the sorted array
     of categories"""
     # creates and sorts an array of all of the category totals
     totals = []
     for cat in cats:
-        if cat["count"] > size * 0.00001:
-            totals.append(cat["count"])
+        totals.append(cat["count"])
 
     totals.sort(reverse=True)
 
@@ -55,6 +56,7 @@ def determine_main(cats, size):
             idx = totals.index(cat["count"])
             categories[idx] = cat
 
+    # creates the list of main colors
     colors = [cat["color"] for cat in categories[:6]]
 
     return colors, categories

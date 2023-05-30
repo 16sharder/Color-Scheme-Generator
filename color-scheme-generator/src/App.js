@@ -1,13 +1,16 @@
-import './App.css';
+import './style/app.css';
+import './style/upload.css';
+import './style/color_blocks.css';
+import './style/sliders.css';
+import './style/details.css';
+
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 
-import StartPage from './pages/Upload/Start';
-import Select1Page from './pages/Upload/Select1';
-import Select2Page from './pages/Upload/Select2';
-import UploadPage from './pages/Upload/Upload';
+import Upload from './pages/Upload';
+import Loading1Page from './pages/Loading1';
+import Loading2Page from './pages/Loading2';
 import ResultsPage from './pages/Results';
-import LoadingPage from './pages/Loading';
 import ViewDetails from './pages/ViewDetails';
 import ModifyScheme from './pages/ModifyScheme';
 import EditColor from './pages/EditColor';
@@ -20,19 +23,13 @@ function App() {
       <Router>
         <header className="App-header">
           <Route path="/" exact>
-            <StartPage />
+            <Upload />
           </Route>
-          <Route path="/select1">
-            <Select1Page />
+          <Route path="/loading1">
+            <Loading1Page />
           </Route>
-          <Route path="/select2">
-            <Select2Page />
-          </Route>
-          <Route path="/upload">
-            <UploadPage />
-          </Route>
-          <Route path="/loading">
-            <LoadingPage />
+          <Route path="/loading2">
+            <Loading2Page />
           </Route>
           <Route path="/results">
             <ResultsPage />

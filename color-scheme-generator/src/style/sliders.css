@@ -1,0 +1,36 @@
+
+input {
+    width: 50%
+}
+
+
+.slider > *{
+    font-size: smaller;
+    margin: 10px;
+}
+
+
+.numinp {
+    max-width: fit-content;
+    font-size: medium;
+}
+
+.sld {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 5px;
+}
+
+.sld::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background: white;
+    width: 5px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.sat {
+    position: fixed;
+    width: 500px;
+    top: 325px;
+}

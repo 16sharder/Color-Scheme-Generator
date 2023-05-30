@@ -1,0 +1,12 @@
+th {
+    padding: 100px;
+  }
+  
+  table.details {
+    width: 100%;
+  }
+  
+  table.details td{
+    width: 16.65%;
+    vertical-align: top;
+  }

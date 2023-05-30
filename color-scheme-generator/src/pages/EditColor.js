@@ -1,9 +1,17 @@
+// The Edit Color Page:
+// Shown after the user has pressed the edit button on the selected page
+// This page allows the user to edit the selected color in hue, sat, and brightness
+// Includes a cancel and save button, which both return to the results page
+
 import React from 'react';
-import {useState} from "react"
+import {useState, useEffect} from "react"
 import {useHistory, useLocation} from "react-router-dom"
 
 import retrieve from '../helpers/requests';
-import { convertHex } from '../helpers/converters';
+import { convertHex, toHex } from '../helpers/converters';
+import Slider from '../components/EditPage/slider';
+import ColorRow from '../components/EditPage/colorRow';
+
 
 function EditColor () {
     const history = useHistory()
@@ -11,53 +19,64 @@ function EditColor () {
 
     const current = location.state.current
 
-    const origColors = current.hexs.slice()
-    const [colors, setColors] = useState(origColors)
+    const hexs = current.hexs.slice()
+    const [colors, setColors] = useState(hexs)
 
     const rgbs = current.rgbs
-    const hsvs = current.hsvs
+    const hsbs = current.hsbs
 
     const idx = location.state.i
 
     
     // set color of addons to allow selected color to pop out
-    const background = "bisque"
-    const addons = [background, background, background, background, background, background]
+    const addons = new Array(6).fill("#5a5a5a")
     addons[idx] = colors[idx]
 
     // sets width of selected color to be larger if in middle
-    const bwidth = "250px"
-    const widths = [bwidth, bwidth, bwidth]
+    const widths = new Array(3).fill("250px")
     if (idx == 1 || idx == 4) widths[1] = "300px"
 
 
     // each element of edited color
-    const [hue, setHue] = useState(hsvs[idx][0])
-    const [sat, setSat] = useState(hsvs[idx][1])
-    const [bri, setBri] = useState(hsvs[idx][2])
+    const [hue, setHue] = useState(hsbs[idx][0])
+    const [sat, setSat] = useState(hsbs[idx][1])
+    const [bri, setBri] = useState(hsbs[idx][2])
+
+    // slider values are used to determine the colors on the slider gradients
+    const hueSlider = ["#ff0000", "#ff8000", "#ffff00", "#80ff00", "#00ff00", "#00ff80", "#00ffff", "#0080ff", "#0000ff", "#8000ff", "#ff00ff", "#ff0080", "#ff0000"]
+
+    const [satSlider, setSlider] = useState("#ff0000")
+
+    const setSlider2 = async () => {
+        setSlider(await toHex(hue, 100, bri))
+    }
 
 
     // edits the color in real time
     const editColor = async () => {
-        const hsv = [hue, sat, bri, "u"]
-        const rgb = await retrieve(JSON.stringify(hsv), 7170)
+        setSlider2()
 
-        origColors[idx] = convertHex(rgb)
-        setColors(origColors)
+        hexs[idx] = await toHex(hue, sat, bri)
+        setColors(hexs)
     }
 
     // saves the edits and sends back to results page
     const saveColor = async () => {
-        hsvs[idx] = [hue, sat, bri]
+        hsbs[idx] = [hue, sat, bri]
 
-        const hsv = [hue, sat, bri, "u"]
-        rgbs[idx] = await retrieve(JSON.stringify(hsv), 7170)
+        const hsb = [hue, sat, bri, "u"]
+        rgbs[idx] = await retrieve(JSON.stringify(hsb), 7170)
 
-        origColors[idx] = convertHex(rgbs[idx])
+        hexs[idx] = convertHex(rgbs[idx])
 
-        const curr = {hexs: origColors, rgbs: rgbs, hsvs: hsvs, idxs: current.idxs}
+        const curr = {hexs: hexs, rgbs: rgbs, hsbs: hsbs, idxs: current.idxs}
         history.push({pathname: "/results", state: {current: curr}})
     }
+
+    // updates the color anytime the hue, sat, or brightness changes
+    useEffect(() => {
+        editColor()
+    }, [hue, sat, bri])
 
 
 
@@ -67,109 +86,46 @@ function EditColor () {
         <table>
             <tbody>
                 <tr>
-                    <td className="addon" style={{"backgroundColor": addons[0]}}></td>
-                    {addons.slice(0, 3).map((color, i) =>
-                    <td className="addon" style={{"backgroundColor": color, "minWidth": widths[i]}} key={i}></td>)}
-                    <td className="addon" style={{"backgroundColor": addons[2]}}></td>
+                    <ColorRow addons={addons.slice(0, 3)} widths={widths}/>
                     <td style={{"width": "500px"}}></td>
                 </tr>
                 <tr>
-                    <td className="addon" style={{"backgroundColor": addons[0]}}></td>
-                    {colors.slice(0, 3).map((color, i) => 
-                    <td className="color" style={{"backgroundColor": color}} key={i}></td>)}
-                    <td className="addon" style={{"backgroundColor": addons[2]}}></td>
+                    <ColorRow addons={addons.slice(0, 3)} filler={colors.slice(0, 3)}/>
 
                     <td className='slider'>
                         <h4>Hue</h4>
-                        <label>0</label>
-                        <input 
-                            type="range" 
-                            min="0" max="360" 
-                            value={hue} 
-                            className='sld'
-                            onChange={newN => {
-                                setHue(Number(newN.target.value))
-                                editColor()}}>
-                        </input>
-                        <label>360</label>
-                        <br/>
-                        <input 
-                            type="number" 
-                            min="0" max="360" 
-                            value={hue} 
-                            className='numinp'
-                            onChange={newN => {
-                                setHue(Number(newN.target.value))
-                                editColor()}}>
-                        </input>
-
-                        <br/><br/>
-                        <h4>Saturation</h4>
+                        <Slider element={hue} func={setHue} gradient={hueSlider} max="360"/>
+                        <br/><br/><br/><br/>
                     </td>
                 </tr>
+
                 <tr>
-                    <td className="addon" style={{"backgroundColor": addons[3]}}></td>
-                    {colors.slice(3, 6).map((color, i) => 
-                    <td className="color" style={{"backgroundColor": color}} key={i}></td>)}
-                    <td className="addon" style={{"backgroundColor": addons[5]}}></td>
+                    <ColorRow addons={addons.slice(3, 6)} filler={colors.slice(3, 6)}/>
                     
                     <td className='slider'>
-                        <label>0</label>
-                        <input 
-                            type="range" 
-                            min="0" max="100" 
-                            value={sat} 
-                            className='sld'
-                            onChange={newN => {
-                                setSat(Number(newN.target.value))
-                                editColor()}}>
-                        </input>
-                        <label>100</label>
-                        <br/>
-                        <input 
-                            type="number" 
-                            min="0" max="100" 
-                            value={sat} 
-                            className='numinp'
-                            onChange={newN => {
-                                setSat(Number(newN.target.value))
-                                editColor()}}>
-                        </input>
-                        <br/><br/>
-
+                        <br/><br/><br/>
                         <h4>Brightness</h4>
-                        <label>0</label>
-                        <input 
-                            type="range" 
-                            min="0" max="100" 
-                            value={bri} 
-                            className='sld'
-                            onChange={newN => {
-                                setBri(Number(newN.target.value))
-                                editColor()}}>
-                        </input>
-                        <label>100</label>
-                        <br/>
-                        <input 
-                            type="number" 
-                            min="0" max="100" 
-                            value={bri} 
-                            className='numinp'
-                            onChange={newN => {
-                                setBri(Number(newN.target.value))
-                                editColor()}}>
-                        </input>
+                        <Slider element={bri} func={setBri} gradient={["black", "white"]} max="100"/>
                     </td>
                 </tr>
                 <tr>
-                    <td className="addon" style={{"backgroundColor": addons[3]}}></td>
-                    {addons.slice(3, 6).map((color, i) =>
-                    <td className="addon" style={{"backgroundColor": color}} key={i}></td>)}
-                    <td className="addon" style={{"backgroundColor": addons[5]}}></td>
+                    <ColorRow addons={addons.slice(3, 6)}/>
                 </tr>
+
+                
+
+                <tr>
+                    <td></td><td></td><td></td><td></td><td></td>
+                    <td className='sat slider'>
+                        <h4>Saturation</h4>
+                        <Slider element={sat} func={setSat} gradient={["white", satSlider]} max="100"/>
+                    </td>
+                </tr>
+
+
                 <tr>
                     <td></td>
-                    <td><button onClick={() => history.push({pathname: "/results", state: {current: location.state.current}})}>Cancel</button></td>
+                    <td><button onClick={() => history.push({pathname: "/results", state: location.state})}>Cancel</button></td>
                     <td></td>
                     <td></td>
                     <td></td>

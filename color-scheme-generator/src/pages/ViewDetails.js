@@ -9,6 +9,8 @@ import {useHistory, useLocation} from "react-router-dom"
 
 import retrieve from '../helpers/requests';
 import { convertHex } from '../helpers/converters';
+import { determineText } from '../helpers/text_colors';
+
 
 function ViewDetails () {
 
@@ -16,32 +18,30 @@ function ViewDetails () {
     const location = useLocation()
 
     const [mainColors, setColors] = useState([])
+    const [text_arr, setText] = useState([])
 
-    const [text, setText] = useState([])
-
-    // A set of arrays for each color category - each array holds all pixels in that category
-    const [allPixels, setPixels] = useState([[], [], [], [], [], []])
+    // A set of arrays for each color category - each array holds top 100 pixels in that category
+    const [allPixels, setPixels] = useState(new Array(6).fill([]))
 
     const getPixels = async () => {
         // sends retreive details request to Python Server
-        // defined in requests.js, sends HTTP request to back end which sends ZMQ request
         const response = await retrieve(JSON.stringify(["details"]), 1952)
         const originals = response[0]
         const details = response[1]
 
-        // converts the colors from rgb to hex
-        const hexs = [], txt = []
+        // converts the colors from rgb to hex and hsb
+        const hexs = [], hsbs = []
         for (const rgb of originals){
             hexs.push(convertHex(rgb))
 
-            // determines if color's stat text should be white or black
             rgb.push("r")
-            const hsv = await retrieve(JSON.stringify(rgb), 7170)
-            if (hsv[2] > 60) txt.push("black")
-            else txt.push("white")
+            const hsb = await retrieve(JSON.stringify(rgb), 7170)
+            hsbs.push(hsb)
         }
+
+        // establishes main colors and text colors to display
         setColors(hexs)
-        setText(txt)
+        setText(determineText(hsbs))
 
         const cats = []
 
@@ -53,6 +53,8 @@ function ViewDetails () {
             // iterates over each pixel in the category and converts it to hex
             for (let pixel of category) {
                 let hex = convertHex(pixel.slice(0, 3))
+
+                // adds that pixel's quantity to the end
                 hex = hex.concat(" " + pixel[3])
                 pixels.push(hex)
             }
@@ -67,40 +69,35 @@ function ViewDetails () {
 
     return (
         <>
-        <table>
-            <thead>
-                <tr>
+        <table><thead><tr>
                     <th>
                     Here is a list of 600 of the colors that appear in your
                     image. The numbers to the right of each hex value represent
                     the number of pixels of that color in your image.
                     </th>
                     <th>
-                        <button onClick={() => history.push({pathname: "/results", state: {current: location.state.current}})}>Return to Results</button>
+                        <button onClick={() => history.push({pathname: "/results", state: location.state})}>Return to Results</button>
                     </th>
-                </tr>
-            </thead>
-        </table>
-        <table className='details'>
-            <tbody>
-                <tr>
+        </tr></thead></table>
+
+        <table className='details'><tbody><tr>
+
                     {mainColors.map((color, i) => 
-                    <td style={{"backgroundColor": color, "color": text[i]}} key={i}>
+                    <td style={{"backgroundColor": color, "color": text_arr[i]}} key={i}>
                         <h4>{color}</h4>
-                        <table>
-                            <tbody>
+
+                        <table><tbody>
                             {allPixels[i].map((pixel, i) => 
                             <tr key={i}>
                                 <td>{pixel.slice(0, 7)}</td>
                                 <td style={{"backgroundColor": pixel.slice(0, 7)}}>{pixel.slice(8)}</td>
                             </tr>
                             )}
-                            </tbody>
-                        </table>
+                        </tbody></table>
+
                     </td>)}
-                </tr>
-            </tbody>
-        </table>
+
+        </tr></tbody></table>
         </>
     )
 }

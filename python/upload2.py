@@ -1,49 +1,11 @@
-# Upload (python server) is used to retrieve the colors from the provided path's image
-from PIL import Image
+# Upload2 (used in color_server) is used to retrieve the main colors of image.jpg
 from main_color import *
 from overlap_handler import *
 
 
-def upload(image_path):
-    """Takes an image_path, opens the image and analyzes all of its pixels; determines
+def upload2(all_pixels):
+    """Takes a dictionary of hsv pixels, and determines
     which 6 colors appear the most in the image, and returns them"""
-    try:
-        image = Image.open(image_path)
-
-    except FileNotFoundError:
-        print(f"Sending reply: File not found")
-        return "File not found"
-    except IsADirectoryError:
-        print(f"Sending reply: Directory")
-        return "Directory"
-    except PermissionError:
-        print(f"Sending reply: Permission denied")
-        return "Permission denied"
-
-    pixels = image.load()
-    width = image.size[0]
-    height = image.size[1]
-    all_pixels = dict()
-    all_hsvs = dict()
-
-    # iterates over each pixel of the image and adds its count to dict
-    for w in range(width):
-        for h in range(height):
-            pixel = pixels[w, h]
-            pixel = pixel[:3]
-
-            all_pixels[pixel] = 1 if pixel not in all_pixels else all_pixels[pixel] + 1
-
-    # converts all the founds pixels to hsv and adds it to a new dict
-    for pixel in all_pixels:
-        count = all_pixels[pixel]
-        # excludes pixels with miniscule count
-        if count > width * height * 0.000001:
-            hsv = tuple(convert_hsv(pixel))
-            all_hsvs[hsv] = count if hsv not in all_hsvs else all_hsvs[hsv] + count
-
-    all_pixels = all_hsvs
-
     # create a list of pixel totals
     counts = []
     for pixel in all_pixels:
@@ -81,6 +43,7 @@ def upload(image_path):
 
             move_overlapping(color_1, color_2, cat_1, cat_2, factors)
 
+    # converts each pixel back to rgb
     for idx in range(len(cats)):
         cat = cats[idx]
         rgb_cat = {"color": convert_rgb(cat["color"]),
@@ -93,6 +56,6 @@ def upload(image_path):
         cats[idx] = rgb_cat
 
     # determines which 6 colors to use
-    colors, cats = determine_main(cats, width*height)
+    colors, cats = determine_main(cats)
 
     return colors, cats

@@ -9,8 +9,8 @@ async function retrieve (data, port) {
         body: JSON.stringify({request: data, port: port}),
         headers: {"Content-type": "application/json"}
     })
-    // Returns error if manual error thrown
-    if (response.status == 419){
+    // Handles if response is a string
+    if (response.status == 200){
         const msg = await response.text()
         return msg
     }
@@ -24,4 +24,19 @@ async function retrieve (data, port) {
     }
 }
 
+// Sends data from the uploaded image to the back end
+async function postImage (data) {
+    const response = await fetch("/image", {
+        method: "POST", 
+        body: JSON.stringify({request: data}),
+        headers: {"Content-type": "application/json"}
+    })
+
+    // Returns no real data, just a failure/success message
+    if (response.status == 419) return "failed"
+    else if (response.status == 413) return "large"
+    else return "success"
+}
+
 export default retrieve
+export {postImage}
