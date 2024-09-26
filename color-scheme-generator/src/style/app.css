@@ -57,6 +57,7 @@ button {
     width: 500px;
     padding-left: 110px;
     padding-right: 110px;
+    position: relative;
 }
 
 .delete {
@@ -85,9 +86,9 @@ button {
 div.message {
     max-width: 200px;
     text-align: left;
-    margin-left: 30px;
     position: absolute;
-    top: 48px;
+    top: 10px;
+    left: 50px;
 }
 
 

@@ -38,6 +38,16 @@ while True:
     elif message[0] == "path":
         print(f"Received image upload request")
 
+        # set the initial variables
+        all_colors, colors, cats, indices = {}, [], [], [0, 1, 2, 3, 4, 5]
+        originals = [colors, cats]
+
+        responses = {"path": 0,
+                     "colors": 1,
+                     "originals": 2,
+                     "details": 3,
+                     "delete": 4}
+
         # retrieves the pixels from the image
         res = upload1()
 

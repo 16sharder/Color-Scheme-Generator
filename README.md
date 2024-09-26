@@ -11,3 +11,19 @@ Results from the program can be downloaded as a pdf for future use.
 Interacts with a microservice created for this project by Michael Hrenko, with the purpose of converting color codes from RGB to HSB and back.
 
 Please feel free to leave me any comments or suggestions!
+
+
+
+
+To run the program:
+
+Open the software engineering folder in pycharm. 
+Open the ms_side.py file in the microservice folder.
+Run the file using pycharm's built in run button.
+Repeat with the color_server.py file in the python folder.
+
+Open the software engineering folder in visual studio. 
+Open two terminals, and cd into color-scheme-back and color-scheme-generator.
+Input npm start into both terminals, starting with the back end terminal.
+
+A browser should open automatically with the application running.
